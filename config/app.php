@@ -157,8 +157,12 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         /*
-         * Package Service Providers...
+         * Penyedia layanan paket
          */
+        // package image intervention agar bisa kompress, resize dan lain-lain.
+        Intervention\Image\ImageServiceProvider::class,
+        // package laravel-datatables adalah paket yang menangani pekerjaan sisi server dari datatables menggunakan laravel.
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -182,7 +186,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
+        // package image intervention agar bisa kompress, resize dan lain-lain.
+        'Image' => Intervention\Image\Facades\Image::class
     ])->toArray(),
 
 ];

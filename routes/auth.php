@@ -12,21 +12,21 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\AutentikasiController;
 use Illuminate\Support\Facades\Route;
 
-// middleware guest didaftarkan di App\Http\Kernel.php
+// middleware guest didaftarkan di App\Http\Kernel.php, middleware guest adalah alias dari file 
 // route tipe perangkat tengah, untuk user yang belum login
 // route tipe perangkat tengah, tamu, grup, jalankan fungsi
 Route::middleware('guest')->group(function () {
-    // route tipe dapatkan, jika user diarahkan ke url registrasi maka arahkan ke RegisteredUserController, method buat, name nya adalah register
+    // route tipe dapatkan, jika user diarahkan ke url registrasi maka arahkan ke RegisteredUserController, method buat, name nya adalah registrasi.buat
     Route::get('registrasi', [RegisteredUserController::class, 'create'])
-                ->name('register');
-    // route tipe kirim, jika user diarahkan ke url registrasi maka arahkan ke RegisteredUserController, method simpan
-    Route::post('register', [RegisteredUserController::class, 'store']);
+                ->name('registrasi.create');
+    // route tipe kirim, jika user diarahkan ke url registrasi maka arahkan ke RegisteredUserController, method simpan, name nya adalah registrasi.simpan
+    Route::post('registrasi', [RegisteredUserController::class, 'store'])->name('registrasi.store');
 
     // login
     // route tipe dapatkan, ke url /login, ke AutentikasiController, ke method index, name nya adalah login.index
     Route::get('/login', [AutentikasiController::class, 'index'])
                 ->name('login.index');
-    // route tipe kirim, ke url /login, ke AutentikasiController, ke method store, name nya adalah login.store
+    // route tipe kirim, ke url /login, ke AutentikasiController, ke method simpan, nama nya adalah gabung.simpan
     Route::post('/login', [AutentikasiController::class, 'store'])->name('login.store');
 
 
@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
     // route tipe letakkan, jika user diarahkan ke url password maka arahkan ke PasswordPengendali, method perbarui, name nya adalah password.perbarui
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-    // route tipe kirim, jika user diarahkan ke url logout maka arahkan ke AutentikasiSesiPengendali, method hancurkan, name nya adalah keluar
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    // route tipe kirim, jika user diarahkan ke url logout maka arahkan ke AutentikasiPengendali, method keluar, name nya adalah keluar
+    Route::post('logout', [AutentikasiController::class, 'logout'])
                 ->name('logout');
 });
