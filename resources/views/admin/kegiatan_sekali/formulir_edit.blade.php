@@ -2,46 +2,52 @@
 @extends('layouts.app')
 
 {{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
-@section('title', 'Kegiatan Rutin')
+@section('title', 'Edit Kegiatan Rutin')
 
-{{-- kirimkan  --}}
+{{-- kirimkan value @bagian('konten') ke @yield('konten')  --}}
 @section('konten')
     <div class="row">
         <div class="col-sm-12">
-            <form id="form_tambah">
+            <form id="form_edit">
                 {{-- laravel mewajibkan keamanan dari serangan csrf --}}
                 @csrf
+                {{-- tidak ada method="PUT" jadi aku paksa panggil route tipe PUT --}}
+                @method('PUT')
+                {{-- kegiatan_id --}}
+                <div class="form-group">
+                    <label for="kegiatan_id">Kegiatan ID<span class="text-danger"> *</span></label>
+                    {{-- cetak value $detail_kegiatan, column kegiatan_id yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
+                    <input id="kegiatan_id" name="kegiatan_id" class="form-control" type="number" readonly value="{{ $detail_kegiatan->kegiatan_id }}">
+                </div>
+
                 {{-- is-invalid --}}
                 {{-- nama_kegiatan --}}
                 <div class="form-group">
                     <label for="nama_kegiatan">Nama Kegiatan<span class="text-danger"> *</span></label>
-                    {{-- value input akan masuk ke value atttribute name yaitu name --}}
+                    {{-- cetak value $detail_kegiatan, column nama_kegiatan yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
                     <input id="nama_kegiatan" name="nama_kegiatan" class="nama_kegiatan_input input form-control" type="text"
-                        placeholder="Masukkan Nama Kegiatan" autocomplete="off">
+                        placeholder="Masukkan Nama Kegiatan" autocomplete="off" value="{{ $detail_kegiatan->nama_kegiatan }}">
                     {{-- pesan error --}}
                     <span class="nama_kegiatan_error pesan_error text-danger"></span>
                 </div>
 
-                {{-- hari --}}
+                {{-- is-invalid --}}
+                {{-- tanggal --}}
                 <div class="form-group">
-                    <label for="hari">Hari<span class="text-danger"> *</span></label>
-                    {{-- value input akan masuk ke value atttribute name yaitu hari --}}
-                    <select name="hari" class="form-control">
-                        <option value="Senin">Senin</option>
-                        <option value="Selasa">Selasa</option>
-                        <option value="Rabu">Rabu</option>
-                        <option value="Kamis">Kamis</option>
-                        <option value='Jum"at'>Jum'at</option>
-                        <option value="Sabtu">Sabtu</option>
-                        <option value="Minggu">Minggu</option>
-                    </select>
+                    <label for="tanggal">Tanggal<span class="text-danger"> *</span></label>
+                    {{-- cetak value $detail_kegiatan, column tanggal yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
+                    <input id="tanggal" name="tanggal" class="tanggal_input input form-control" type="date" style="width: 150px" 
+                    value="{{ $detail_kegiatan->tanggal }}">
+                    {{-- pesan error --}}
+                    <span class="tanggal_error pesan_error text-danger"></span>
                 </div>
 
                 {{-- is-invalid --}}
                 {{-- jam_mulai --}}
                 <div class="form-group">
                     <label for="jam_mulai">Jam Mulai<span class="text-danger"> *</span></label>
-                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 130px">
+                    {{-- cetak value $detail_kegiatan, column jam_mulai yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
+                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 130px" value="{{ $detail_kegiatan->jam_mulai }}">
                     {{-- pesan error --}}
                     <span class="jam_mulai_error pesan_error text-danger"></span>
                 </div>
@@ -50,7 +56,8 @@
                 {{-- jam_selesai --}}
                 <div class="form-group">
                     <label for="jam_selesai">Jam Selesai<span class="text-danger"> *</span></label>
-                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 130px">
+                    {{-- cetak value $detail_kegiatan, column jam_selesai yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
+                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 130px" value="{{ $detail_kegiatan->jam_selesai }}">
                     {{-- pesan error --}}
                     <span class="jam_selesai_error pesan_error text-danger"></span>
                 </div>
@@ -59,8 +66,8 @@
                 <div class="form-group">
                     <label for="pilih_gambar_kegiatan">Gambar Kegiatan</label>
                     <br>
-                    {{-- asset akan memanggil folder public --}}
-                    <img id="pratinjau_gambar_kegiatan" src=""
+                    {{-- / berarti public arahkan ke storage/gambar_kegiatan/ lalu panggil value $detail_kegiatan, column gambar_kegiatan --}}
+                    <img id="pratinjau_gambar_kegiatan" src="/storage/gambar_kegiatan/{{ $detail_kegiatan->gambar_kegiatan }}"
                         alt="Gambar Kegiatan" width="150px" height="150px" class="mb-3 rounded">
                     <div class="input-group">
                         <div class="custom-file">
@@ -71,7 +78,6 @@
                     </div>
                     <span class="pesan_error gambar_kegiatan_error text-danger"></span>
                 </div>
-
                 
                 <button id="tombol_simpan" type="submit" class="btn btn-primary">
                     <i class="mdi mdi-content-save"></i>
@@ -104,64 +110,55 @@
             };
         });
 
-        // jika formulir tambah dikirim
-        // jika #form_tambah dikirim maka jalankan fungsi berikut dan ambil event nya
-        $("#form_tambah").on("submit", function(e) {
-            // cegah bawaannya yaitu reload
+        
+        // Update
+        // jika #form_edit di kirim, maka jalankan fungsi berikut dan ambil event nya
+        $("#form_edit").on("submit", function(e) {
+            // event atau acara cegah bawaan nya yaitu reload atau muat ulang
             e.preventDefault();
-            // jquery, lakukan ajax
+            // berisi panggil #kegiatan_id lalu ambil value nya
+            let kegiatan_id = $("#kegiatan_id").val();
+            // jquery lakukan ajax
             $.ajax({
-                // url ke route kegiatan_rutin.store
-                url: "{{ route('kegiatan_rutin.store') }}",
-                // panggil route kirim
+                // ke method update
+                // panggil url /kegiatan/ lalu kirimkan kegiatan_id
+                url: `/kegiatan-rutin/${kegiatan_id}`,
+                // panggil route tipe PUT karena sudah aku paksa ubah di modal edit
                 type: "POST",
-                // kirimkan data dari #form_data, otomatis membuat objek atau {}
+                // kirimkan formulir data atau value input2x dari #form_edit
                 data: new FormData(this),
-                // aku butuh 2 baris kode berikut, kalau membuat objek secara manual maka tidak butuh 3 baris kode berikut
-                // prosesData: salah,
+                // aku butuh ketiga baris kode di bawah ini
                 processData: false,
                 contentType: false,
                 cache: false,
-                // sebelum kirim, hapus validasi error dulu
+                // hapus validasi error sebelum formulir di kirim
                 // sebelum kirim, jalankan fungsi berikut
                 beforeSend: function() {
-                    // panggil .input lalu hapus .is-invalid
+                    // panggil .input lalu hapus class is-invalid
                     $(".input").removeClass("is-invalid");
-                    // panggil .pesan_error lalu kosongkan textnya
+                    // panggil .pesan_error lalu kosongkan text nya
                     $(".pesan_error").text("");
                 }
             })
-            // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil 
+            // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tangggapannya
             .done(function(resp) {
-                // jika validasi menemukan error
-                // jika resp.status sama dengan 0
+                // jika validasi error
+                // jika tangggapan.status sama dengan 0
                 if (resp.status === 0) {
-                    // lakukan pengulangan
-                    // key berisi semua nilai name.
-                    // value berisi array yang menyimpan semua pesan error
-                    // jquery.setiap(tanggapan.kesalahan2x, fungsi(kunci, nilai))
+                    // tampilkan validasi error
+                    // lakukan pengulangan kepada resp.error
+                    // key berisi semua value attribute name yang error misalnya nama_kegiatan, value berisi pesan error nya misalnya "Nama kegiatan harus diisi"
+                    // setiap resp.errors, jalankan fungsi berikut, parameter key dan value
                     $.each(resp.errors, function(key, value) {
                         // contohnya panggil .nama_kegiatan_input lalu tambah class is-invalid
-                        $(`.${key}_input`).addClass("is-invalid");
-                        // contohnya panggil .nama_kegiatan_error lalu isi textnya dengan pesan error
-                        $(`.${key}_error`).text(value[0]);
+                        $(`.${key}_input`).addClass('is-invalid');
+                        // contohnya panggil .nama_kegiatan_error lalu isi textnya dengan paramter value
+                        $(`.${key}_error`).text(value);
                     });
-                }
-                // jika berhasil menyimpan kegiatan rutin
-                // lain jika resp.status sama dengan 200
-                else if (resp.status === 200) {
-                    // // reset formulir
-                    // panggil #form_tambah index ke 0 lalu atur ulang semua input termasuk select
-                    $("#form_tambah")[0].reset();
-                    // reset pratinjau gambar
-                    // jquery panggil #pratinjau_gambar_kegiatan, lalu attribute src, value nya di kosongkan pake ""
-                    $("#pratinjau_gambar_kegiatan").attr("src", "");
-                    // nama kegiatan di focuskan
-                    // panggil #nama_kegiatan lalu focuskan
-                    $("#nama_kegiatan").focus();
-                    // notifikasi
-                    // panggil toastr tipe sukses dan tampilkan pesannya
-                    toastr.success(`${resp.pesan}.`);
+                    // jika validasi berhasil
+                } else if (resp.status === 200) {
+                    // berikan notifikasi menggunakna package toastr
+                    toastr.success("Kegiatan Rutin Berhasil Diperbarui.");
                 };
             });
         });

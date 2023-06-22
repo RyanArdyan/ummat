@@ -43,12 +43,6 @@
                 </table>
             </form>
         </div>
-
-        {{-- Fitur hapus beberapa pengeluaran berdasarkan kotak centang yang di checklist --}}
-        <button id="tombol_hapus" type="button" class="btn btn-danger btn-flat btn-sm">
-            <i class="mdi mdi-delete"></i>
-            Hapus
-        </button>
     </div>
 </div>
 @endsection
@@ -130,50 +124,6 @@ let table = $("table").DataTable({
         // url memanggil folder public/
         url: "/terjemahan_datatable/indonesia.json"
     }
-});
-
-// Delete atau hapus
-// jika #tombol_hapus di click maka jalankan fungsi berikut
-$("#tombol_hapus").on("click", function() {
-    // jika input .pilih yang di centang panjang nya sama dengan 0 maka
-    if ($("input.pilih:checked").length === 0) {
-        // tampilkan notifikasi menggunakan sweetalert yang menyatakan pesan berikut
-        Swal.fire('Anda belum memilih baris data');
-    }
-    // jika input .pilih yang di centang panjang nya lebih atau sama dengan 1 maka
-    else if ($("input.pilih:checked").length >= 1) {
-        // tampilkan konfirmasi penghapusan menggunakan sweetalert
-        Swal.fire({
-            title: 'Apakah anda yakin?',
-            text: "Anda tidak akan dapat mengembalikan ini!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!'
-        })
-        // kmeudian hasilnya, jalankan fungsi berikut, parameter result
-        .then((result) => {
-            // jika hasilnya di konfirmasi
-            if (result.isConfirmed) {
-                // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
-                // sebenarnya aku mengirim beberapa value input name="pengeluaran_ids" yang di centang
-                // jquery lakukan ajax tipe kirim, ke url /pengeluarn/destroy, panggil #form_pengeluaran, kirimkan value input
-                $.post('/pengeluaran/destroy', $('#form_pengeluaran').serialize())
-                    // 
-                    .done(function(resp) {
-                        // notifkasi
-                        Swal.fire(
-                            'Dihapus!',
-                            'Berhasil menghapus pengeluaran yang dipilih.',
-                            'success'
-                        );
-                        // reload ajax table
-                        table.ajax.reload();
-                    });
-            };
-        });
-    };
 });
 </script>
 @endpush

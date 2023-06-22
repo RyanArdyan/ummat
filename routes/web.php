@@ -41,5 +41,9 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     Route::post('/kegiatan-rutin/store', [KegiatanRutinController::class, 'store'])->name('kegiatan_rutin.store');
     // route tipe dapatkan, jika user dirahkan ke url /kegiatan-rutin/baca maka arahkan ke KegiatanRutinController, method baca, nama nya adalah kegiatan_rutin.baca
     Route::get('/kegiatan-rutin/read', [KegiatanRutinController::class, 'read'])->name('kegiatan_rutin.read');
+    // route tipe dapatkan, jika user dirahkan ke url /kegiatan-rutin/edit maka kirimknan vaue kegiatan_id nya agar aku bisa mengambil detail kegiatan_rutin berdasarkan kegiatan_id arahkan ke KegiatanRutinController, method edit, nama nya adalah kegiatan_rutin.edit
+    Route::get('/kegiatan-rutin/edit/{kegiatan_id}', [KegiatanRutinController::class, 'edit'])->name('kegiatan_rutin.edit');
+    // route tipe letakkan, jika user dirahkan ke url /kegiatan-rutin/ maka kirimknan value kegiatan_id nya agar aku bisa memperbarui detail kegiatan_rutin berdasarkan kegiatan_id arahkan ke KegiatanRutinController, method update, nama nya adalah kegiatan_rutin.update
+    Route::put('/kegiatan-rutin/{kegiatan_id}', [KegiatanRutinController::class, 'update'])->name('kegiatan_rutin.update');
 });
 
