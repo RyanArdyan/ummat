@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+// package image intervention untuk kompress gambar, ubah lebar dan tinggi gambar dan lain-lain.
+// image adalah alias yang di daftarkan di config/app
+use Image;
 use App\Models\User;
 
 class EditProfileController extends Controller
@@ -48,8 +51,8 @@ class EditProfileController extends Controller
             // value input nomor_wa itu wajib
             'nomor_wa' => 'required',
             'tgl_lahir' => 'required',
-            // input foto harus berisi gambar dan maksimal ukuran gambar nya adalah 600
-            'foto' => 'image|max:600'
+            // input foto harus berisi gambar
+            'foto' => 'image'
         ],
         // Terjamahan validasi 
         [
@@ -73,31 +76,56 @@ class EditProfileController extends Controller
             // jika user memiliki file foto atau jika user mengganti foto
             // jika ($permintaan->memilikiFile('foto'))
             if ($request->hasFile('foto')) {
-                // jika value detail user yang login, column foto nya sama dengan 'foto_default.png maka
-                if ($detail_user_yang_login->foto === 'foto_default.png') {
-                    // jangan hapus file foto_default.png
-                    // lakukan upload foto
-                    // nama foto baru
-                    // anggaplah berisi 123_1.jpg
-                    $nama_foto_baru = time() . '_' . $request->id . '.' . $request->file('foto')->extension();
-                    // upload foto dan ganti nama foto
-                    // argument pertama pada putFileAs adalah tempat atau folder foto akan disimpan
-                    // argumen kedua adalah input name="foto"
-                    // argument ketiga adalah nama file foto nya
+                // jika value detail user yang login, column foto nya sama dengan default_foto.jpg maka
+                if ($detail_user_yang_login->foto === 'default_foto.jpg') {
+                    // lakukan upload gambar
+                    // $nama_foto_baru misalnya berisi 12345.jpg
+                    // waktu() . '.' . $permintaan->file('foto')->ekstensi();
+                    $nama_foto_baru = time() . '.' . $request->file('foto')->extension();
+                    // upload gambar dan ganti nama gambar
+                    // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
+                    // argumen kedua adalah value input name="foto"
+                    // argument ketiga adalah nama file gambar baru nya
                     Storage::putFileAs('public/foto_profil/', $request->file('foto'), $nama_foto_baru);
-                // lain jika value pada detail)user_yang_login, column foto tidak sma dengan 'foto_default.png' maka itu berarti aku akan menghapus file foto nya
-                } else if ($detail_user_yang_login->foto !== 'foto_default.png') {
+
+                    // berisi panggil gambar dan jalur nya
+                    $jalur_gambar = public_path("storage/foto_profil/$nama_foto_baru");
+
+                    // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
+                    // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 600, dan tinggi nya 600, resize gambar juga termasuk kompres gamabr
+                    $gambar = Image::make($jalur_gambar)->resize(600, 600);
+
+                    // argument pertama pada save adalah simpan gambar dengan cara timpa file
+                    // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
+                    // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
+                    $gambar->save($jalur_gambar, 100, 'jpg');
+                // lain jika value pada detail)user_yang_login, column foto tidak sma dengan 'default_foto.jpg' maka itu berarti aku akan menghapus file foto nya
+                } else if ($detail_user_yang_login->foto !== 'default_foto.jpg') {
                     // hapus foto lama
                     // Penyimpanan::hapus('/public/foto_profil/' digabung value detail_user_yang_login, column foto
                     Storage::delete('public/foto_profil/' . $detail_user_yang_login->foto);
-                    // nama foto baru
-                    // anggaplah berisi 123_1.jpg
-                    $nama_foto_baru = time() . '_' . $request->id . '.' . $request->file('foto')->extension();
-                    // upload foto dan ganti nama foto
-                    // argument pertama pada putFileAs adalah tempat atau folder foto akan disimpan
-                    // argumen kedua adalah input name="foto"
-                    // argument ketiga adalah nama file foto nya
+
+                    // lakukan upload gambar
+                    // $nama_foto_baru misalnya berisi 12345.jpg
+                    // waktu() . '.' . $permintaan->file('foto')->ekstensi();
+                    $nama_foto_baru = time() . '.' . $request->file('foto')->extension();
+                    // upload gambar dan ganti nama gambar
+                    // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
+                    // argumen kedua adalah value input name="foto"
+                    // argument ketiga adalah nama file gambar baru nya
                     Storage::putFileAs('public/foto_profil/', $request->file('foto'), $nama_foto_baru);
+
+                    // berisi panggil gambar dan jalur nya
+                    $jalur_gambar = public_path("storage/foto_profil/$nama_foto_baru");
+
+                    // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
+                    // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 600, dan tinggi nya 600, resize gambar juga termasuk kompres gamabr
+                    $gambar = Image::make($jalur_gambar)->resize(600, 600);
+
+                    // argument pertama pada save adalah simpan gambar dengan cara timpa file
+                    // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
+                    // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
+                    $gambar->save($jalur_gambar, 100, 'jpg');
                 };
             } 
             // jika user tidak mengupload foto lewat input name="foto" maka pakai value column detail_user_yang_login, column foto ketia update profile

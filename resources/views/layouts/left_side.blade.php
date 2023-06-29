@@ -29,32 +29,14 @@
             <ul class="metismenu" id="side-menu">
 
                 <li class="menu-title">Navigasi</li>
-                {{-- jika kasir yang login --}}
-                {{-- jika user yang login, value column is_admin nya adalah "0" maka --}}
-                @if (auth()->user()->is_admin === '0')
-                    {{-- Dashboard --}}
+                    {{-- home --}}
                     <li>
-                        {{-- jika permintaan adalah dashboard maka aktifkan, kalau bukan kasi string kosong --}}
-                        <a href="{{ route('dashboard.index') }}"
-                            class="{{ Request()->is('dashboard*') ? 'active' : '' }}">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            <span> Dashboard </span>
-                        </a>
-                    </li>
-                @endif
-
-                {{-- jika admin yang login --}}
-                {{-- jika yang login, value column is_admin nya adalah 1 maka --}}
-                {{-- @jika (autentikasi()->pengguna()->adalah_admin === 1) --}}
-                @if (auth()->user()->is_admin === '1')
-                    {{-- Dashboard --}}
-                    <li>
-                        {{-- panggil route dashboard.index --}}
-                        {{-- jika permintaan adalah url dashboard dan apapun setalah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
-                        <a href="{{ route('dashboard.index') }}"
-                            class="{{ Request()->is('dashboard*') ? 'active' : '' }}">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            <span> Dashboard </span>
+                        {{-- panggil route home.index --}}
+                        {{-- jika permintaan adalah route home. dan apapun setalah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                        <a href="{{ route('home.index') }}"
+                            class="{{ Request()->routeIs('home.*') ? 'active' : '' }}">
+                            <i class="mdi mdi-home-account"></i>
+                            <span> home </span>
                         </a>
                     </li>
 
@@ -62,17 +44,29 @@
                     <li>
                         <a href="javascript: void(0);">
                             <i class="mdi mdi-calendar-account"></i>
-                            <span> Kegiatan </span>
+                            <span> Master Data </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <ul class="nav-second-level" aria-expanded="false">
-                            {{-- panggil route kegiatan_rutin.index --}}
-                            {{-- Jika permintaan adalah url kegiatan-rutin dan apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
-                            <li class="{{ (request()->is('kegiatan-rutin*') ? 'active' : '') }}"><a href="{{ route('kegiatan_rutin.index') }}">Kegiatan Rutin</a></li>
-                            <li class="active"><a href="ui-cards.html">Kegiatan Sekali</a></li>
+                            {{-- Cetak jika permintaan adalah route kegiatan_rutin. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('kegiatan_rutin.*') ? 'active' : '') }}">
+                                {{-- panggil route kegiatan_rutin.index --}}
+                                <a href="{{ route('kegiatan_rutin.index') }}">Kegiatan Rutin</a>
+                            </li>
+
+                            {{-- cetak jika permintaan adalah route kegiatan_sekali. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('kegiatan_sekali.*') ? 'active' : '') }}">
+                                {{-- panggil route kegiatan_sekali.index --}}
+                                <a href="{{ route('kegiatan_sekali.index') }}">Kegiatan sekali</a>
+                            </li>
+
+                            {{-- cetak jika permintaan adalah route doa. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('doa.*') ? 'active' : '') }}">
+                                {{-- panggil route doa.index --}}
+                                <a href="{{ route('doa.index') }}">Doa Pendek</a>
+                            </li>
                         </ul>
                     </li>
-                @endif
             </ul>
 
         </div>

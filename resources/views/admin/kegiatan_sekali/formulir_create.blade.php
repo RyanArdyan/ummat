@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 {{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
-@section('title', 'Kegiatan Rutin')
+@section('title', 'Kegiatan Sekali')
 
 {{-- kirimkan  --}}
 @section('konten')
@@ -22,26 +22,22 @@
                     <span class="nama_kegiatan_error pesan_error text-danger"></span>
                 </div>
 
-                {{-- hari --}}
+                {{-- is-invalid --}}
+                {{-- tanggal --}}
                 <div class="form-group">
-                    <label for="hari">Hari<span class="text-danger"> *</span></label>
-                    {{-- value input akan masuk ke value atttribute name yaitu hari --}}
-                    <select name="hari" class="form-control">
-                        <option value="Senin">Senin</option>
-                        <option value="Selasa">Selasa</option>
-                        <option value="Rabu">Rabu</option>
-                        <option value="Kamis">Kamis</option>
-                        <option value='Jum"at'>Jum'at</option>
-                        <option value="Sabtu">Sabtu</option>
-                        <option value="Minggu">Minggu</option>
-                    </select>
+                    <label for="tanggal">Tanggal<span class="text-danger"> *</span></label>
+                    {{-- value input akan masuk ke value atttribute name yaitu tanggal --}}
+                    <input id="tanggal" name="tanggal" class="tanggal_input input form-control" type="date"
+                        autocomplete="off" style="width: 150px">
+                    {{-- pesan error --}}
+                    <span class="tanggal_error pesan_error text-danger"></span>
                 </div>
 
                 {{-- is-invalid --}}
                 {{-- jam_mulai --}}
                 <div class="form-group">
                     <label for="jam_mulai">Jam Mulai<span class="text-danger"> *</span></label>
-                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 130px">
+                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 150px">
                     {{-- pesan error --}}
                     <span class="jam_mulai_error pesan_error text-danger"></span>
                 </div>
@@ -50,7 +46,7 @@
                 {{-- jam_selesai --}}
                 <div class="form-group">
                     <label for="jam_selesai">Jam Selesai<span class="text-danger"> *</span></label>
-                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 130px">
+                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 150px">
                     {{-- pesan error --}}
                     <span class="jam_selesai_error pesan_error text-danger"></span>
                 </div>
@@ -82,7 +78,7 @@
     </div>
 @endsection
 
-{{-- dorong vaue @dorong('script') ke @stack('script') --}}
+{{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
     <script>
         // tampilkan pratinjau gambar ketika user mengubah gambar
@@ -111,8 +107,8 @@
             e.preventDefault();
             // jquery, lakukan ajax
             $.ajax({
-                // url ke route kegiatan_rutin.store
-                url: "{{ route('kegiatan_rutin.store') }}",
+                // url ke route kegiatan_sekali.store
+                url: "{{ route('kegiatan_sekali.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}
@@ -147,11 +143,11 @@
                         $(`.${key}_error`).text(value[0]);
                     });
                 }
-                // jika berhasil menyimpan kegiatan rutin
+                // jika berhasil menyimpan kegiatan sekali
                 // lain jika resp.status sama dengan 200
                 else if (resp.status === 200) {
-                    // // reset formulir
-                    // panggil #form_tambah index ke 0 lalu atur ulang semua input termasuk select
+                    // reset formulir
+                    // panggil #form_tambah index ke 0 lalu atur ulang semua input
                     $("#form_tambah")[0].reset();
                     // reset pratinjau gambar
                     // jquery panggil #pratinjau_gambar_kegiatan, lalu attribute src, value nya di kosongkan pake ""
@@ -160,7 +156,7 @@
                     // panggil #nama_kegiatan lalu focuskan
                     $("#nama_kegiatan").focus();
                     // notifikasi
-                    // panggil toastr tipe sukses dan tampilkan pesannya
+                    // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
                     toastr.success(`${resp.pesan}.`);
                 };
             });

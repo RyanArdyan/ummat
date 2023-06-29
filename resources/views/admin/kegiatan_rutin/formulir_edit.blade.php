@@ -17,7 +17,7 @@
                 <div class="form-group">
                     <label for="kegiatan_rutin_id">Kegiatan Rutin ID<span class="text-danger"> *</span></label>
                     {{-- cetak value $detail_kegiatan, column kegiatan_rutin_id yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
-                    <input id="kegiatan_rutin_id" name="kegiatan_rutin_id" class="form-control" type="number" readonly value="{{ $detail_kegiatan->kegiatan_rutin_id }}">
+                    <input id="kegiatan_rutin_id" name="kegiatan_rutin_id" class="form-control" type="text" readonly value="{{ $detail_kegiatan->kegiatan_rutin_id }}">
                 </div>
 
                 {{-- is-invalid --}}
@@ -92,7 +92,7 @@
                 
                 <button id="tombol_simpan" type="submit" class="btn btn-primary">
                     <i class="mdi mdi-content-save"></i>
-                    Simpan
+                    Perbarui
                 </button>
             </form>
         </div>
@@ -168,8 +168,17 @@
                     });
                     // jika validasi berhasil
                 } else if (resp.status === 200) {
-                    // berikan notifikasi menggunakna package toastr
-                    toastr.success("Kegiatan Rutin Berhasil Diperbarui.");
+                    // berikan notifikasi menggunakan package sweetalert
+                    Swal.fire({
+                        title: 'Sukses',
+                        text: 'Berhasil menyimpan perubahan',
+                        icon: 'success'
+                    });
+                    // setelah 2 detik 500 milidetik maka jalankan fungsi berikt
+                    setTimeout(function() {
+                        // panggil route kegiatan_rutin.index
+                        window.location.href = "{{ route('kegiatan_rutin.index') }}";
+                    }, 2500);
                 };
             });
         });

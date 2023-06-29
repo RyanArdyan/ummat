@@ -222,9 +222,9 @@
                         }
                         // lain jika yang login adalah admin
                         else if (is_admin === "1") {
-                            // panggil route dashboard
-                            // lokasi.href berisi panggil rute dashboard
-                            location.href = `{{ route('dashboard.index') }}`;
+                            // panggil route login
+                            // lokasi.href berisi panggil rute login
+                            location.href = `{{ route('login.index') }}`;
                         };
                     }, 2000);
                 }

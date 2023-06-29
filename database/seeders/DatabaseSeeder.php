@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             // column is_admin diisi "1"
             'is_admin' => "1",
             // column foto diisi 'default_foto.jpg'
-            'foto' => 'foto_default.png',
+            'foto' => 'default_foto.jpg',
             // column name diisi value 'Admin'
             'name' => 'Admin',
             // column email diisi value 'admin123@gmail.com'
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             // column is_admin diisi "0"
             'is_admin' => "0",
             // column foto diisi 'default_foto.jpg'
-            'foto' => 'foto_default.png',
+            'foto' => 'default_foto.jpg',
             // column name diisi value 'Jamaah 1'
             'name' => 'Jamaah 1',
             // column email diisi value 'jamaah1@gmail.com'

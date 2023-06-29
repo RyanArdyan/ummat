@@ -12,9 +12,8 @@
         <li class="dropdown notification-list">
             <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                 {{-- asset() akan memanggil folder public --}}
-                {{-- cetak value detail_user yang login, column foto --}}
-                {{-- autentikasi()->pengguna()->foto --}}
-                <img src="{{ asset('storage/foto_profil') }}/{{ auth()->user()->foto }}" alt="Foto Profile" class="rounded-circle foto_profil">
+                {{-- jika ada value detail_user yang login, column foto maka panggil value detail_user yg login column foto, jika tidak ada maka panggil default_foto.jpg --}}
+                <img src="{{ (auth()->user()->foto) ? asset('storage/foto_profil/' . auth()->user()->foto . '') : asset('storage/foto_profil/default_foto.jpg') }}" class="rounded-circle foto_profil">
                 <span class="pro-user-name ml-1 nama_user">
                     {{-- cetak value detail user yang login, column name --}}
                     {{-- cetak autentikasi()->pengguna()->nama --}}
@@ -26,6 +25,21 @@
                 <div class="dropdown-header noti-title">
                     <h6 class="text-overflow m-0">Welcome !</h6>
                 </div>
+
+                {{-- jika jamaah yang login --}}
+                {{-- jika yang login, value column is_jamaah nya adalah "0" maka --}}
+                {{-- @jika (autentikasi()->is_jamaah === "0") --}}
+                @if (auth()->user()->is_admin === "0")
+                    <!-- Edit Profile-->
+                    {{-- jika menu Edit Profile di click maka panggil route edit_profile --}}
+                    {{-- class adropddown-item adalah .active --}}
+                    {{-- jika permintaan adalah edit-profile* maka aktifkan kan menu nya kalau bukan maka jangan aktifkan --}}
+                    {{-- *  berarti apapun setelah nya --}}
+                    <a href="{{ route('edit_profile') }}" class="{{ Request()->is('edit-profile*') ? 'adropdown-item' : 'dropdown-item' }} notify-item">
+                        <i class="mdi mdi-account-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                @endif
 
                 {{-- jika admin yang login --}}
                 {{-- jika yang login, value column is_admin nya adalah "1" maka --}}
@@ -74,13 +88,16 @@
     <div class="logo-box">
         <a href="javascript:void(0)" class="logo text-center mt-3">
             <span class="logo-lg">
-                {{-- cetak panggil public/storage/foto_profil/ value detail user yang login, column  --}}
-                <img src="{{ asset('storage/foto_profil') }}/{{ auth()->user()->foto }}" alt="Foto Profile" height="50" class="foto_profil">
+
+                {{-- asset() akan memanggil folder public --}}
+                {{-- jika ada value detail_user yang login, column foto maka panggil value detail_user yg login column foto, jika tidak ada maka panggil default_foto.jpg --}}
+                <img src="{{ (auth()->user()->foto) ? asset('storage/foto_profil/' . auth()->user()->foto . '') : asset('storage/foto_profil/default_foto.jpg') }}" alt="Foto Profile" height="50" class="foto_profil rounded-circle">
                 <!-- <span class="logo-lg-text-light">Xeria</span> -->
             </span>
             <span class="logo-sm">
-                <!-- <span class="logo-sm-text-dark">X</span> -->
-                <img src="{{ asset('storage/foto_profil') }}/{{ auth()->user()->foto }}" alt="Foto Profile" height="50" class="foto_profil">
+                {{-- asset() akan memanggil folder public --}}
+                {{-- jika ada value detail_user yang login, column foto maka panggil value detail_user yg login column foto, jika tidak ada maka panggil default_foto.jpg --}}
+                <img src="{{ (auth()->user()->foto) ? asset('storage/foto_profil/' . auth()->user()->foto . '') : asset('storage/foto_profil/default_foto.jpg') }}" alt="Foto Profile" height="50" class="foto_profil rounded-circle">
             </span>
         </a>
     </div>

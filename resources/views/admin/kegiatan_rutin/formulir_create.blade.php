@@ -77,6 +77,11 @@
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
+                {{-- cetak, panggil route kegiatan_rutin.index --}}
+                <a href="{{ route('kegiatan_rutin.index') }}" class="btn btn-danger">
+                    <i class="mdi mdi-arrow-left"></i>
+                    Kembali
+                </a>
             </form>
         </div>
     </div>

@@ -1,0 +1,25 @@
+Real Projects
+1. Data Jamaah 
+	Daftar Dirinya
+	NIK KTP
+	No WA
+	Email 
+	Foto Diri
+2. Jadwal Kegiatan Jamaah
+3. Amalan atau Doa atau Zikir
+4. Donasi
+	Program Donasi
+	Rekening Bank
+	Data Donatur
+5. Tausiyah dan pembicara
+
+Algoritma
+1. User tidak perlu login untuk membuka web nya karena user bakal malas kalau dipaksa untuk registrasi dan login
+
+
+Catatan sementara:
+Buka form-quilljs.html dan coba pahami. Apakah text editor banyak digunakan? aku pikir hanya di fitur doa panjang berarti aku tidak akan letakkan di layouts.app. aku push saja pake @push.
+
+Aku akan desain table dulu woke
+Zikir dan doa itu berbeda. dzikir hanya ada 1 berarti aku tidak perlu buat database ya, buat tampilan saja. Aku perlu halaman kosong.
+
