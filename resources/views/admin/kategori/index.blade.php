@@ -2,25 +2,25 @@
 @extends('layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
-@section('title', 'Kegiatan Sekali')
+@section('title', 'Kategori')
 
 {{-- Dorong value @dorong('css') ke @stack('css') --}}
 @push('css')
 @endpush
 
-{{-- kirimkan  --}}
+{{-- kirimkan value @bagian('konten') lalu nanti ditangkap @yield('konten')  --}}
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah kegiatan maka pindah halaman dengan cara panggil route kegiatan_sekali.create --}}
-        <a href="{{ route('kegiatan_sekali.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah kategori maka pindah url dan halaman dengan cara panggil route kategori.create --}}
+        <a href="{{ route('kategori.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
-            Tambah Kegiatan
+            Tambah kategori
         </a>
 
         <div class="table-responsive">
-            {{-- aku membungkus table ke dalam form agar aku bisa mengambil value column kegiatan_sekali_id yang disimpan ke dalam input type="checkbox" --}}
-            <form id="form_kegiatan_sekali">
+            {{-- aku membungkus table ke dalam form agar aku bisa mengambil value column kategori_id yang disimpan ke dalam input type="checkbox" --}}
+            <form id="form_kategori">
                 <!-- laravel mewajibkan keamanan dari serangan csrf -->
                 @csrf
                 <table class="table table-striped table-sm">
@@ -28,15 +28,11 @@
                         <tr>
                             <!-- Pilih atau kotak centang -->
                             <th scope="col" width="5%">
-                                {{-- buat kotak centang untuk memilih semua kegiatan_sekali --}}
-                                <input type="checkbox" name="select_all" id="select_all">
+                                {{-- buat kotak centang untuk memilih semua kategori --}}
+                                <input type="checkbox" name="pilih_semua" id="pilih_semua">
                             </th>
                             <th scope="col" width="5%">No</th>
-                            <th scope="col" width="22%">Gambar</th>
-                            <th scope="col">Nama Kegiatan</th>
-                            <th scope="col">Tanggal</th>
-                            <th scope="col">Jam Mulai</th>
-                            <th scope="col">Jam Selesai</th>
+                            <th scope="col">Nama Kategori</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -44,9 +40,7 @@
             </form>
         </div>
 
-        
-
-        {{-- Fitur hapus beberapa kegiatan_sekali berdasarkan kotak centang yang di checklist --}}
+        {{-- Fitur hapus beberapa kategori berdasarkan kotak centang yang di checklist --}}
         <button id="tombol_hapus" type="button" class="btn btn-danger btn-flat btn-sm mt-3">
             <i class="mdi mdi-delete"></i>
             Hapus
@@ -58,9 +52,8 @@
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
 <script>
-
-// read daftar kegiatan_sekali
-// berisi panggil table kegiatan_sekali, gunakan datatable
+// read daftar kategori
+// berisi panggil table kategori, gunakan datatable
 let table = $("table").DataTable({
     // ketika data masih di muat, tampilkan animasi processing
     // processing: benar
@@ -68,51 +61,33 @@ let table = $("table").DataTable({
     // serverSide digunakan agar ketika data sudah lebih dari 10.000 maka web masih lancar
     // sisi server: benar
     serverSide: true,
-    // lakukan ajax, ke route kegiatan_sekali.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('kegiatan_sekali.read') }}",
-    // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table kegiatan, dimana value column tipe_kegiatan nya sama dengan 'Kegiatan sekali'
+    // lakukan ajax, cetak ke route kategori.read yang tipe nya adalah dapatkan
+    ajax: "{{ route('kategori.read') }}",
+    // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table kategori
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
         // kotak centang
         {
-            // select di dapatkan dari AddColumn('select') milik KegiatanSekaliController, method read
+            // select di dapatkan dari rawColumns('select') milik KategoriController, method read
             data: "select",
             // menonaktifkan fungsi icon anak panah atau fitur balikkan data
             sortable: false
         },
         // lakukan pengulangan nomor
-        // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari KegiatanSekaliController, method index, AddIndexColumn
+        // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari KategoriController, method index, AddIndexColumn
         {
             data: 'DT_RowIndex',
             name: 'DT_RowIndex',
+            // Menonaktifkan fitur anak panah atau fitur balikkan data
             sortable: false
         },
         {
-            // gambar_kegiatan di dapatkan dari AddColumn('gambar_kegiatan') milik KegiatanSekaliController, method read
-            data: "gambar_kegiatan",
+            // nama di dapatkan dari query kategori::select()
+            data: 'nama_kategori',
+            name: 'nama_kategori'
         },
         {
-            // nama di dapatkan dari query Kegiatan::select()
-            data: 'nama_kegiatan',
-            name: 'nama_kegiatan'
-        },
-        {
-            // tanggal di dapatkan dari AddColumn('tanggal') milik KegiatanSekaliController, method read
-            data: 'tanggal',
-            name: 'tanggal'
-        },
-        {
-            // jam_mulai di dapatkan dari query Kegiatan::select()
-            data: 'jam_mulai',
-            name: 'jam_mulai'
-        },
-        {
-            // jam_selesai di dapatkan dari query Kegiatan::select()
-            data: 'jam_selesai',
-            name: 'jam_selesai'
-        },
-        {
-            // action di dapatkan dari AddColumn('action') milik KegiatanSekaliController, method read
+            // action di dapatkan dari AddColumn('action') milik KategoriController, method read
             data: 'action',
             name: 'action',
             // menonaktifkan fungsi icon anak panah atau fitur balikkan data
@@ -132,14 +107,14 @@ let table = $("table").DataTable({
 
 // pilih semua
 // jika #pilih_semua di click maka jalankan fungsi berikut
-$("#select_all").on("click", function() {
+$("#pilih_semua").on("click", function() {
     // jika #pilih_semua di centang maka
-    if ($("#select_all").prop("checked")) {
-        // panggil .pilih lalu centang nya benar
+    if ($("#pilih_semua").prop("checked")) {
+        // panggil .pilih yang dibuat di KategoriController, method read, lalu centang nya benar
         $(".pilih").prop("checked", true);
     } 
     // jika #pilih_semua tidak di centang maka
-    else {
+    else if (!$("#pilih_semua").prop("checked")) {
         // panggil .pilih lalu centang nya dihapus atau salah
         $(".pilih").prop("checked", false);
     };
@@ -149,12 +124,12 @@ $("#select_all").on("click", function() {
 // Delete atau hapus
 // jika #tombol_hapus di click maka jalankan fungsi berikut
 $("#tombol_hapus").on("click", function() {
-    // jika input .pilih yang di centang di KegiatanSekaliController, panjang nya sama dengan 0 maka
+    // jika input .pilih yang di centang di KategoriController, method read, bagian select, panjang nya sama dengan 0 maka
     if ($("input.pilih:checked").length === 0) {
         // tampilkan notifikasi menggunakan sweetalert yang menyatakan pesan berikut
-        Swal.fire('Anda belum memilih kegiatan sekali.');
+        Swal.fire('Anda belum memilih baris kategori untuk dihapus.');
     }
-    // jika input .pilih yang di centang di KegiatanSekaliController, panjang nya lebih atau sama dengan 1 maka
+    // lain jika input .pilih yang di centang di KategoriController, method read, bagian select, panjang nya lebih atau sama dengan 1 maka
     else if ($("input.pilih:checked").length >= 1) {
         // tampilkan konfirmasi penghapusan menggunakan sweetalert
         Swal.fire({
@@ -176,17 +151,16 @@ $("#tombol_hapus").on("click", function() {
         // kmeudian hasilnya, jalankan fungsi berikut, parameter result
         .then((result) => {
             // jika hasilnya di konfirmasi
-            if (result.isConfirmed) {
-                // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
-                // sebenarnya aku mengirim beberapa value input name="pengeluaran_ids" yang di centang
-                // jquery lakukan ajax tipe kirim, panggil route kegiatan_sekali.destroy, panggil #form_kegiatan_sekali, kirimkan value input
-                $.post("{{ route('kegiatan_sekali.destroy') }}", $("#form_kegiatan_sekali").serialize())
+            if (result.isConfirmed) { 
+                // .serialize() berarti aku mengirim beberapa value input name="kategori_ids" yang di centang karena aku menyimpan table dan data nya di dalam form
+                // jquery lakukan ajax tipe kirim, panggil route kategori.destroy, panggil #form_kategori, kirimkan value input name="kategori_ids" atau #form_kategori, membuat cerita bersambung
+                $.post("{{ route('kategori.destroy') }}", $("#form_kategori").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
                         Swal.fire(
                             'Dihapus!',
-                            'Berhasil menghapus kegiatan_sekali yang dipilih.',
+                            'Berhasil menghapus kategori yang dipilih.',
                             'success'
                         );
                         // reload ajax table
@@ -196,6 +170,32 @@ $("#tombol_hapus").on("click", function() {
             };
         });
     };
+});
+
+// jika .tombol_detail_kategori di click maka jalankan fungsi
+// alasan pake $(document) adalah karena tombol detail dibuat oleh controller atau lebih tepat nya script
+$(document).on("click", ".tombol_detail_kategori", function() {
+    // ambil value attribute data-kategori-id
+    // panggil .tombol_detail_kategori, lalu cetak value attribute data-kategori-id
+    let kategori_id = $(this).data("kategori-id");
+    // jquery lakukan ajax untuk mengambil detail_kategori
+    $.ajax({
+        // url panggil url /kategori lalu kirimkan value variable kategori_id
+        // tanda backtiq (``) bisa mencetak value variable di dalam string menggunakan ${}
+        url: `/kategori/${kategori_id}`,
+        type: 'GET',
+    })
+    // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
+    .done(function(resp) {
+        // panggil #nama_kategori lalu text nya diisi tanggapan.detaiL_kategori.nama_kategori
+        $("#nama_kategori").text(resp.detail_kategori.nama_kategori);
+        // panggil #bacaan_arab lalu text nya diisi tanggapan.detaiL_kategori.bacaan_arab
+        $("#bacaan_arab").text(resp.detail_kategori.bacaan_arab);
+        // panggil #bacaan_latin lalu text nya diisi tanggapan.detaiL_kategori.bacaan_latin
+        $("#bacaan_latin").text(resp.detail_kategori.bacaan_latin);
+        // panggil #arti_kategorinya lalu text nya diisi tanggapan.detaiL_kategori.arti_kategorinya
+        $("#arti_kategorinya").text(`Artinya: ${resp.detail_kategori.arti_kategorinya}`);
+    });
 });
 </script>
 @endpush

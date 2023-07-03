@@ -25,9 +25,7 @@
 
         <!--- Sidemenu -->
         <div id="sidebar-menu">
-
             <ul class="metismenu" id="side-menu">
-
                 <li class="menu-title">Navigasi</li>
                     {{-- home --}}
                     <li>
@@ -64,6 +62,16 @@
                             <li class="{{ (request()->routeIs('doa.*') ? 'active' : '') }}">
                                 {{-- panggil route doa.index --}}
                                 <a href="{{ route('doa.index') }}">Doa Pendek</a>
+                            </li>
+                            {{-- cetak jika permintaan adalah route kategori. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('kategori.*') ? 'active' : '') }}">
+                                {{-- panggil route kategori.index --}}
+                                <a href="{{ route('kategori.index') }}">Kategori</a>
+                            </li>
+                            {{-- cetak jika permintaan adalah route postingan. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('postingan.*') ? 'active' : '') }}">
+                                {{-- panggil route postingan.index --}}
+                                <a href="{{ route('postingan.index') }}">Postingan</a>
                             </li>
                         </ul>
                     </li>

@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Image;
 // package laravel datatables
 use DataTables;
-use App\Models\KegiatanSekali;
+use App\Models\Postingan;
 
-class KegiatanSekaliController extends Controller
+class PostinganController extends Controller
 {
     // Method index menampilkan halaman kegiatan sekali
     // publik fungsi index
@@ -26,29 +26,29 @@ class KegiatanSekaliController extends Controller
         // jika yang login adalah admin maka 
         // jika value variable is_admin nya sama dengan "1"
         if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.kegiatan_sekali.index
-            return view('admin.kegiatan_sekali.index');
+            // kembalikkan ke tampilan admin.postingan.index
+            return view('admin.postingan.index');
         }
         // lain jika yang login adalah jamaah maka
         else if ($is_admin === "0") {
             // ambil semua kegiatan sekali, ambil data terbaru
-            // berisi KegiatanSekali, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_kegiatan_sekali = KegiatanSekali::orderBy('updated_at', 'desc')->get();
+            // berisi Postingan, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
+            $semua_postingan = Postingan::orderBy('updated_at', 'desc')->get();
 
-            // kembalikkan ke tampilan jamaah.kegiatan_sekali.index, kirimkan data berupa array, 
-            return view('jamaah.kegiatan_sekali.index', [
-                // key semua_kegiatan_sekali berisi value $semua_kegiatan_sekali
-                'semua_kegiatan_sekali' => $semua_kegiatan_sekali
+            // kembalikkan ke tampilan jamaah.postingan.index, kirimkan data berupa array, 
+            return view('jamaah.postingan.index', [
+                // key semua_postingan berisi value $semua_postingan
+                'semua_postingan' => $semua_postingan
             ]);
         };
     }
 
-    // menampilkan semua data table kegiatan_sekali, yang column tipe_kegiatan nya berisi "Kegiatan sekali".
+    // menampilkan semua data table postingan, yang column tipe_kegiatan nya berisi "Kegiatan sekali".
     public function read()
     {
-        // ambil semua value dari column kegiatan_sekali_id, nama_kegiatan dan lain-lain dimana value column tipe_kegiatan sama dengan "Kegiatan sekali", dapatkan semua data nya
-        // beriisi KegiatanSekali::pilih('kegiatan_sekali_id', 'nama_kegiatan', 'dan-lain-lain') dimana value column tipe_kegiatan sama dengan value 'Kegiatan sekali', dapatkan()
-        $semua_kegiatan = KegiatanSekali::select('kegiatan_sekali_id', 'nama_kegiatan', 'gambar_kegiatan', 'tanggal', 'jam_mulai', 'jam_selesai')->get();
+        // ambil semua value dari column postingan_id, nama_kegiatan dan lain-lain dimana value column tipe_kegiatan sama dengan "Kegiatan sekali", dapatkan semua data nya
+        // beriisi Postingan::pilih('postingan_id', 'nama_kegiatan', 'dan-lain-lain') dimana value column tipe_kegiatan sama dengan value 'Kegiatan sekali', dapatkan()
+        $semua_kegiatan = Postingan::select('postingan_id', 'nama_kegiatan', 'gambar_kegiatan', 'tanggal', 'jam_mulai', 'jam_selesai')->get();
         // syntax punya yajra
         // kembalikkan datatables dari semua_kegiatan
         return DataTables::of($semua_kegiatan)
@@ -56,26 +56,26 @@ class KegiatanSekaliController extends Controller
             // tambah index column
             ->addIndexColumn()
             // ulang detail_kegiatan menggunakan $kegiatan
-            // tambah column pilih, jalankan fungsi, KegiatanSekali $kegiatan
-            ->addColumn('select', function(KegiatanSekali $kegiatan) {
+            // tambah column pilih, jalankan fungsi, Postingan $kegiatan
+            ->addColumn('select', function(Postingan $kegiatan) {
                 // return element html
-                // name="kegiatan_sekali_ids[]" karena name akan menyimpan array yang berisi beberapa kegiatan_sekali_id, contohnya ["1", "2"]
-                // attribute value digunakan untuk memanggil setiap value column kegiatan_sekali_id
+                // name="postingan_ids[]" karena name akan menyimpan array yang berisi beberapa postingan_id, contohnya ["1", "2"]
+                // attribute value digunakan untuk memanggil setiap value column postingan_id
                 return '
-                        <input name="kegiatan_sekali_ids[]" value="' . $kegiatan->kegiatan_sekali_id . '" class="pilih select form-check-input mx-auto" type="checkbox">
+                        <input name="postingan_ids[]" value="' . $kegiatan->postingan_id . '" class="pilih select form-check-input mx-auto" type="checkbox">
                 ';
             })
-            ->addColumn('gambar_kegiatan', function(KegiatanSekali $kegiatan) {
+            ->addColumn('gambar_kegiatan', function(Postingan $kegiatan) {
                 // buat img, yg attribute src nya memanggil public/storage/gambar_kegiatan/$kegiatan->gambar_kegiatan, / berarti panggil public, kutip dua bisa mencetak value variable
-                return "<img src='/storage/gambar_kegiatan_sekali/$kegiatan->gambar_kegiatan' width='50px' height='50px'>";
+                return "<img src='/storage/gambar_postingan/$kegiatan->gambar_kegiatan' width='50px' height='50px'>";
 
             })
             // buat tombol edit
             // tambahKolom('aksi', fungsi(Kegiatan $kegiatan))
-            ->addColumn('action', function(KegiatanSekali $kegiatan) {
-                // panggil url /kegiatan-sekali/edit/ lalu kirimkan value kegiatan_sekali_id nya agar aku bisa mengambil detail kegiatan_sekali berdasarkan kegiatan_sekali_id
+            ->addColumn('action', function(Postingan $kegiatan) {
+                // panggil url /kegiatan-sekali/edit/ lalu kirimkan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id
                 return  "
-                    <a href='/kegiatan-sekali/edit/$kegiatan->kegiatan_sekali_id' class='btn btn-warning btn-sm'>
+                    <a href='/kegiatan-sekali/edit/$kegiatan->postingan_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";
@@ -91,8 +91,8 @@ class KegiatanSekaliController extends Controller
     // publik fungsi buat()
     public function create()
     {
-        // kembalikkan ke tampilan admin.kegiatan_sekali.formulir_create
-        return view('admin.kegiatan_sekali.formulir_create');
+        // kembalikkan ke tampilan admin.postingan.formulir_create
+        return view('admin.postingan.formulir_create');
     }
 
     // parameter $permintaan berisi semua value attribute name
@@ -136,10 +136,10 @@ class KegiatanSekaliController extends Controller
             // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
             // argumen kedua adalah value input name="gambar_kegiatan"
             // argument ketiga adalah nama file gambar baru nya
-            $file_gambar = Storage::putFileAs('public/gambar_kegiatan_sekali/', $request->file('gambar_kegiatan'), $nama_gambar_baru);
+            $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_baru);
 
             // berisi panggil gambar dan jalur nya
-            $jalur_gambar = public_path("storage/gambar_kegiatan_sekali/$nama_gambar_baru");
+            $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_baru");
 
             // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
             // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
@@ -150,9 +150,9 @@ class KegiatanSekaliController extends Controller
             // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
             $gambar->save($jalur_gambar, 100, 'jpg');
 
-            // Simpan kegiatan_sekali ke table kegiatan_sekali
-            // KegiatanSekali buat
-            kegiatanSekali::create([
+            // Simpan postingan ke table postingan
+            // Postingan buat
+            Postingan::create([
                 // column nama_kegiatan di table kegiatan diisi dengan value input name="nama_kegiatan"
                 'nama_kegiatan' => $request->nama_kegiatan,
                 'tanggal' => $request->tanggal,
@@ -172,21 +172,21 @@ class KegiatanSekaliController extends Controller
         };
     }
 
-    // method edit, $kegiatan_sekali_id itu fitur Pengikatan Model Rute jadi parameter $kegiatan_sekali_id berisi detail_kegiatan_id berdasarkan id yang dikirimkan
-    public function edit(KegiatanSekali $kegiatan_sekali_id)
+    // method edit, $postingan_id itu fitur Pengikatan Model Rute jadi parameter $postingan_id berisi detail_kegiatan_id berdasarkan id yang dikirimkan
+    public function edit(Postingan $postingan_id)
     {
-        // kembalikkkan ke tampilan admin.kegiatan_sekali.formulir_edit, lalu kirimkan array yang berisi key detail_kegiatan_sekali berisi value variable $detail_kegiatan_sekali
-        return view('admin.kegiatan_sekali.formulir_edit', ['detail_kegiatan_sekali' => $kegiatan_sekali_id]);
+        // kembalikkkan ke tampilan admin.postingan.formulir_edit, lalu kirimkan array yang berisi key detail_postingan berisi value variable $detail_postingan
+        return view('admin.postingan.formulir_edit', ['detail_postingan' => $postingan_id]);
     }
 
     // method perbarui untuk memperbarui kegiatan sekali
     // parameter $permintaan berisi semua value input
-    // $kegiatan_sekali_id berisi kegiatan_sekali_id yang dikirim url
-    public function update(Request $request, $kegiatan_sekali_id)
+    // $postingan_id berisi postingan_id yang dikirim url
+    public function update(Request $request, $postingan_id)
     {
-        // ambil detail kegiatan_sekali berdasarkan kegiatan_sekali_id
-        // berisi KegiatanSekali dimana value column kegiatan_sekali_id sama dengan kegiatan_sekali_id, data baris pertama saja
-        $detail_kegiatan = KegiatanSekali::where('kegiatan_sekali_id', $kegiatan_sekali_id)->first();
+        // ambil detail postingan berdasarkan postingan_id
+        // berisi Postingan dimana value column postingan_id sama dengan postingan_id, data baris pertama saja
+        $detail_kegiatan = Postingan::where('postingan_id', $postingan_id)->first();
 
         // validasi input yang punya attribute name
         // berisi validator buat semua permintaan
@@ -219,9 +219,9 @@ class KegiatanSekaliController extends Controller
             // jika user mengganti atau mengupload gambar_kegiatan
             // jika ($permintaan->memilikiFile('gambar_kegiatan'))
             if ($request->hasFile('gambar_kegiatan')) {
-                // hapus gambar kegiatan_sekali lama
-                // Penyimpanan::hapus('/public/gambar_kegiatan_sekali/' digabung value detail_kegiatan, column gambar_kegiatan
-                Storage::delete('public/gambar_kegiatan_sekali/' . $detail_kegiatan->gambar_kegiatan);
+                // hapus gambar postingan lama
+                // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_kegiatan, column gambar_kegiatan
+                Storage::delete('public/gambar_postingan/' . $detail_kegiatan->gambar_kegiatan);
 
                 // lakukan upload gambar
                 // $nama_gambar_kegiatan_baru misalnya berisi 12345.jpg
@@ -231,10 +231,10 @@ class KegiatanSekaliController extends Controller
                 // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
                 // argumen kedua adalah value input name="gambar_kegiatan"
                 // argument ketiga adalah nama file gambar baru nya
-                $file_gambar = Storage::putFileAs('public/gambar_kegiatan_sekali/', $request->file('gambar_kegiatan'), $nama_gambar_kegiatan_baru);
+                $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_kegiatan_baru);
 
                 // berisi panggil gambar dan jalur nya
-                $jalur_gambar = public_path("storage/gambar_kegiatan_sekali/$nama_gambar_kegiatan_baru");
+                $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_kegiatan_baru");
 
                 // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
                 // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
@@ -272,27 +272,27 @@ class KegiatanSekaliController extends Controller
         };
     }
 
-    // Hapus beberapa kegiatan_sekali yang di centang
-    // $request berisi beberapa value input name="kegiatan_sekali_ids[]" yang dibuat di KegiatanSekaliController, method read, anggaplah berisi ["1", "2"]
+    // Hapus beberapa postingan yang di centang
+    // $request berisi beberapa value input name="postingan_ids[]" yang dibuat di PostinganController, method read, anggaplah berisi ["1", "2"]
     public function destroy(Request $request)
     {
-        // berisi $permintaan->kegiatan_sekali_ids atau value input name="kegiatan_sekali_ids[]", anggaplah berisi ["1", "2"]
-        $semua_kegiatan_sekali_id = $request->kegiatan_sekali_ids;
+        // berisi $permintaan->postingan_ids atau value input name="postingan_ids[]", anggaplah berisi ["1", "2"]
+        $semua_postingan_id = $request->postingan_ids;
 
         // pengulangan untuksetiap
-        // untukSetiap, $semua_kegiatan_sekali_id sebagai $kegiatan_sekali_id
-        foreach ($semua_kegiatan_sekali_id as $kegiatan_sekali_id) {
-            // ambil detail_kegiatan_sekali
-            // berisi model KegiatanSekali, dimana value column kegiatan_sekali_id sama dengan $kegiatan_sekali_id, ambil data baris pertama
-            $detail_kegiatan_sekali = KegiatanSekali::where('kegiatan_sekali_id', $kegiatan_sekali_id)->first();
+        // untukSetiap, $semua_postingan_id sebagai $postingan_id
+        foreach ($semua_postingan_id as $postingan_id) {
+            // ambil detail_postingan
+            // berisi model Postingan, dimana value column postingan_id sama dengan $postingan_id, ambil data baris pertama
+            $detail_postingan = Postingan::where('postingan_id', $postingan_id)->first();
 
             // hapus gambar
-            // Penyimpanan::hapus('/public/gambar_kegiatan_sekali/' digabung value detail_kegiatan, column gambar_kegiatan
-            Storage::delete('public/gambar_kegiatan_sekali/' . $detail_kegiatan_sekali->gambar_kegiatan);
+            // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_kegiatan, column gambar_kegiatan
+            Storage::delete('public/gambar_postingan/' . $detail_postingan->gambar_kegiatan);
 
             // hapus kegiatan sekali
-            // panggil detail_kegiatan_sekali lalu hapus
-            $detail_kegiatan_sekali->delete();
+            // panggil detail_postingan lalu hapus
+            $detail_postingan->delete();
         };
 
         // kembalikkan tanggapan berupa json

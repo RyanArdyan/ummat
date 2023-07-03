@@ -8,7 +8,7 @@
 @push('css')
 @endpush
 
-{{-- kirimkan value @bagian('konten') lalu nanti ditangkap @stack('konten')  --}}
+{{-- kirimkan value @bagian('konten') lalu nanti ditangkap @stack(j'konten')  --}}
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
@@ -57,12 +57,6 @@
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
 <script>
-// tambahkan kedua baris kode berikut agar bilah samping nya runtuh atau sidebar collapse atau agar left menu nya menjadi kecil
-// panggil element body, lalu tambahkan class berikut  class="enlarged" data-keep-enlarged="true"
-$("body").addClass("enlarged");
-// panggil element body, lalu tambah attribute data-tetap-membesar
-$("body").attr("data-keep-enlarged", "true");
-
 // read daftar doa
 // berisi panggil table doa, gunakan datatable
 let table = $("table").DataTable({

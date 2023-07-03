@@ -18,8 +18,53 @@ Algoritma
 
 
 Catatan sementara:
-Buka form-quilljs.html dan coba pahami. Apakah text editor banyak digunakan? aku pikir hanya di fitur doa panjang berarti aku tidak akan letakkan di layouts.app. aku push saja pake @push.
+Contoh url: ummat/nama-kategori/judul-postingan
+Buat fitur postingan
 
-Aku akan desain table dulu woke
-Zikir dan doa itu berbeda. dzikir hanya ada 1 berarti aku tidak perlu buat database ya, buat tampilan saja. Aku perlu halaman kosong.
+table related_posts
+columns: related_id, post_id, related_post_id
+
+Jika aku hapus kategori maka semua postingan terkait nya juga akan terhapus.
+
+https://www.inews.id/lifestyle/muslim/dzikir-setelah-sholat-fardhu-lengkap-teks-arab-latin-arti-beserta-keutamaan
+https://www.iankumu.com/blog/laravel-many-to-many-relationship/
+https://www.iankumu.com/blog/page/3/?s=laravel
+
+
+1 postingan dibuat oleh 1 user.
+1 postingan boleh memiliki lebih dari satu kategori.
+
+Anggaplah table postingan, columns:
+postingan_id: 1,
+user_id: 1 (postingan ditulis oleh user_id 1)
+judul_postingan: Bacaan zikir setelah sholat.
+slug_postingan: bacaan-zikir-setelah-sholat.
+gambar_postingan: 31231231.jpg
+konten_postingan: lorem50
+postingan_dipublikasi_pada: 2023-07-02 09:47:00
+
+Disitu user memilih kategori doa_pendek dan doa_penjang maka pada table postingan_kategori, columns:
+postingan_kategori_id: 1
+postingan_id: 1
+kategori_id: 1
+
+baris dua
+postingan_kategori_id: 2
+postingan_id: 1
+kategori_id: 2
+
+Aku buat desain dulu lah
+berarti aku buat input judul_postingan, kategori pake select dan option yang bisa pilih ganda, konten_postingan pake text-editor, gambar_postingan, postingan_dipublikasi_pada pake input date-time
+
+Buat menu postingan, aku click maka panggil route postingan.index, lalu ke PostinganController, method index, aku tidak menampilkan data dulu lah lalu ke views.admin.postingn.index.
+
+Bagaimana yang login adalah admin maka url /postingan akan menampilkan table, kalau yang login adalah jaamah maka yang tampil adalah card karena kan postingan, di dalam card ada gambar postingan, judul_postingan, aku click card nya pindah ke route postingan.detail.
+
+Ada fitur tampilan, read, tambah, edit, perbarui dan hapus postingan.
+
+Aku click tombol tambah postingan maka pindah ke url ke /postingan/create lalu pindah ke halaman postingan/formulir_tambah, berarti di mulai dari views/admin/postingan/formulir_tambah, tombol tambah.
+
+Aku akan pake pilih ganda kategori yang bisa dicari
+
+
 

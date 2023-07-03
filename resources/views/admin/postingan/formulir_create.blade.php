@@ -2,7 +2,18 @@
 @extends('layouts.app')
 
 {{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
-@section('title', 'Kegiatan Sekali')
+@section('title', 'postingan')
+
+{{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
+@push('css')
+    <!-- Plugins text editor menggunakan bubble atau quill editor -->
+    {{-- asset berarti memanggil folder public --}}
+    {{-- cetak panggil folder public/assets --}}
+    <link href="{{ asset('adminto/assets/libs/quill/quill.bubble.css') }}" rel="stylesheet"/>
+    {{-- agar bisa memilih multipe kategori atau multi select --}}
+    <link href="{{ asset('adminto/assets/libs/multiselect/multi-select.css') }}"  rel="stylesheet" />
+
+@endpush
 
 {{-- kirimkan  --}}
 @section('konten')
@@ -12,72 +23,47 @@
                 {{-- laravel mewajibkan keamanan dari serangan csrf --}}
                 @csrf
                 {{-- is-invalid --}}
-                {{-- nama_kegiatan --}}
+                {{-- judul_postingan --}}
                 <div class="form-group">
-                    <label for="nama_kegiatan">Nama Kegiatan<span class="text-danger"> *</span></label>
-                    {{-- value input akan masuk ke value atttribute name yaitu name --}}
-                    <input id="nama_kegiatan" name="nama_kegiatan" class="nama_kegiatan_input input form-control" type="text"
-                        placeholder="Masukkan Nama Kegiatan" autocomplete="off">
+                    <label for="judul_postingan">Judul Postingan<span class="text-danger"> *</span></label>
+                    {{-- value input akan masuk ke value atttribute name yaitu judul_postingan --}}
+                    <input id="judul_postingan" name="judul_postingan" class="judul_postingan_input input form-control" type="text"
+                        placeholder="Masukkan Judul Postingan" autocomplete="off">
                     {{-- pesan error --}}
-                    <span class="nama_kegiatan_error pesan_error text-danger"></span>
+                    <span class="judul_postingan_error pesan_error text-danger"></span>
                 </div>
 
-                {{-- is-invalid --}}
-                {{-- tanggal --}}
                 <div class="form-group">
-                    <label for="tanggal">Tanggal<span class="text-danger"> *</span></label>
-                    {{-- value input akan masuk ke value atttribute name yaitu tanggal --}}
-                    <input id="tanggal" name="tanggal" class="tanggal_input input form-control" type="date"
-                        autocomplete="off" style="width: 150px">
-                    {{-- pesan error --}}
-                    <span class="tanggal_error pesan_error text-danger"></span>
+                    <label for="bubble-editor">Konten<span class="text-danger"> *</span></label>
+                    {{-- jangan pernah mengubah #bubble-editor, jika diubah maka akan error --}}
+                    <div id="bubble-editor" name="konten_postingan" style="height: 300px;" class="konten_postingan_input input form-control">
+                        {{-- <h3>Aku bisa menulis text disini</h3> --}}
+                    </div> <!-- end Snow-editor-->
+                    <span class="konten_postingan_error pesan_error text-danger"></span>
                 </div>
 
-                {{-- is-invalid --}}
-                {{-- jam_mulai --}}
+                {{-- gambar_postingan --}}
                 <div class="form-group">
-                    <label for="jam_mulai">Jam Mulai<span class="text-danger"> *</span></label>
-                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 150px">
-                    {{-- pesan error --}}
-                    <span class="jam_mulai_error pesan_error text-danger"></span>
-                </div>
-
-                {{-- is-invalid --}}
-                {{-- jam_selesai --}}
-                <div class="form-group">
-                    <label for="jam_selesai">Jam Selesai<span class="text-danger"> *</span></label>
-                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 150px">
-                    {{-- pesan error --}}
-                    <span class="jam_selesai_error pesan_error text-danger"></span>
-                </div>
-
-                {{-- gambar_kegiatan --}}
-                <div class="form-group">
-                    <label for="pilih_gambar_kegiatan">Gambar Kegiatan</label>
+                    <label for="pilih_gambar_postingan">Gambar Postingan</label>
                     <br>
                     {{-- asset akan memanggil folder public --}}
-                    <img id="pratinjau_gambar_kegiatan" src=""
-                        alt="Gambar Kegiatan" width="150px" height="150px" class="mb-3 rounded">
+                    <img id="pratinjau_gambar_postingan" src=""
+                        alt="Gambar postingan" width="150px" height="150px" class="mb-3 rounded">
                     <div class="input-group">
                         <div class="custom-file">
-                            <input name="gambar_kegiatan" type="file" class="input gambar_kegiatan_input custom-file-input" id="pilih_gambar_kegiatan">
+                            <input name="gambar_postingan" type="file" class="input gambar_postingan_input custom-file-input" id="pilih_gambar_postingan">
                             {{-- pesan error --}}
-                            <label class="custom-file-label" for="gambar_kegiatan">Pilih file</label>
+                            <label class="custom-file-label" for="gambar_postingan">Pilih file</label>
                         </div>
                     </div>
-                    <span class="pesan_error gambar_kegiatan_error text-danger"></span>
+                    <span class="pesan_error gambar_postingan_error text-danger"></span>
                 </div>
 
                 
-                <button id="tombol_simpan" type="submit" class="btn btn-sm btn-primary">
+                <button id="tombol_simpan" type="submit" class="btn btn-primary">
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
-                {{-- panggil route kegiatan_sekali.index --}}
-                <a href="{{ route('kegiatan_sekali.index') }}" class="btn btn-sm btn-danger">
-                    <i class="mdi md-arrow-left"></i>
-                    Kembali
-                </a>
             </form>
         </div>
     </div>
@@ -85,11 +71,22 @@
 
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
+    <!-- Plugins js untuk text editor  -->
+    <script src="{{ asset('adminto/assets/libs/quill/quill.min.js') }}"></script>
+    <!-- init js untuk text editor -->
+    <script src="{{ asset('adminto/assets/js/pages/form-editor.init.js') }}"></script>
+
+    {{-- Plugin js untuk multi select --}}
+    <script src="{{ asset('adminto/assets/libs/multiselect/jquery.multi-select.js') }}"></script>
+    <script src="{{ asset('adminto/assets/libs/jquery-quicksearch/jquery.quicksearch.min.js') }}"></script>
+    <!-- Init js untuk multi select-->
+    <script src="{{ asset('adminto/assets/js/pages/form-advanced.init.js') }}"></script>
+
     <script>
         // tampilkan pratinjau gambar ketika user mengubah gambar
-        // jika #pilih_gambar_kegiatan diubah maka jalankan fungsi berikut
-        $("#pilih_gambar_kegiatan").on("change", function() {
-            // ambil gambarnya, this berarti #pilih_gambar_kegiatan, index ke 0
+        // jika #pilih_gambar_postingan diubah maka jalankan fungsi berikut
+        $("#pilih_gambar_postingan").on("change", function() {
+            // ambil gambarnya, this berarti #pilih_gambar_postingan, index ke 0
             let gambar = this.files[0];
             // jika ada gambar yang di pilih
             if (gambar) {
@@ -97,8 +94,8 @@
                 let filePembaca = new FileReader();
                 // file pembaca ketika dimuad maka jalankan fungsi berikut dan tangkap eventnya
                 filePembaca.onload = function(e) {
-                    // panggil #pratinjau_gambar_kegiatan lalu pangil attribute src diisi dengan acara.target.hasil
-                    $("#pratinjau_gambar_kegiatan").attr("src", e.target.result);
+                    // panggil #pratinjau_gambar_postingan lalu pangil attribute src diisi dengan acara.target.hasil
+                    $("#pratinjau_gambar_postingan").attr("src", e.target.result);
                 };
                 // new FileReader() baca data sebagai url dari this.file[0]
                 filePembaca.readAsDataURL(gambar);
@@ -112,8 +109,8 @@
             e.preventDefault();
             // jquery, lakukan ajax
             $.ajax({
-                // url ke route kegiatan_sekali.store
-                url: "{{ route('kegiatan_sekali.store') }}",
+                // url ke route postingan.store
+                url: "{{ route('postingan.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}
@@ -142,24 +139,24 @@
                     // value berisi array yang menyimpan semua pesan error
                     // jquery.setiap(tanggapan.kesalahan2x, fungsi(kunci, nilai))
                     $.each(resp.errors, function(key, value) {
-                        // contohnya panggil .nama_kegiatan_input lalu tambah class is-invalid
+                        // contohnya panggil .judul_postingan_input lalu tambah class is-invalid
                         $(`.${key}_input`).addClass("is-invalid");
-                        // contohnya panggil .nama_kegiatan_error lalu isi textnya dengan pesan error
+                        // contohnya panggil .judul_postingan_error lalu isi textnya dengan pesan error
                         $(`.${key}_error`).text(value[0]);
                     });
                 }
-                // jika berhasil menyimpan kegiatan sekali
+                // jika berhasil menyimpan postingan
                 // lain jika resp.status sama dengan 200
                 else if (resp.status === 200) {
                     // reset formulir
                     // panggil #form_tambah index ke 0 lalu atur ulang semua input
                     $("#form_tambah")[0].reset();
                     // reset pratinjau gambar
-                    // jquery panggil #pratinjau_gambar_kegiatan, lalu attribute src, value nya di kosongkan pake ""
-                    $("#pratinjau_gambar_kegiatan").attr("src", "");
-                    // nama kegiatan di focuskan
-                    // panggil #nama_kegiatan lalu focuskan
-                    $("#nama_kegiatan").focus();
+                    // jquery panggil #pratinjau_gambar_postingan, lalu attribute src, value nya di kosongkan pake ""
+                    $("#pratinjau_gambar_postingan").attr("src", "");
+                    // Judul Postingan di focuskan
+                    // panggil #judul_postingan lalu focuskan
+                    $("#judul_postingan").focus();
                     // notifikasi
                     // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
                     toastr.success(`${resp.pesan}.`);

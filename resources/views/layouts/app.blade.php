@@ -26,7 +26,7 @@
         {{-- toastr css --}}
         <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
 
-        {{-- berfungsi menangkap @push('css') --}}
+        {{-- berfungsi menangkap value @push('css') --}}
         @stack('css')
         
         <style>
@@ -102,8 +102,8 @@
 
          
         {{-- input mask agar bisa mengubah 1000 menjadi Rp 1.000 --}}
-        <script src="{{ asset('inputmask_5') }}/dist/jquery.inputmask.js"></script>
-        <script src="{{ asset('inputmask_5') }}/dist/bindings/inputmask.binding.js"></script>
+        {{-- <script src="{{ asset('inputmask_5') }}/dist/jquery.inputmask.js"></script>
+        <script src="{{ asset('inputmask_5') }}/dist/bindings/inputmask.binding.js"></script> --}}
         {{-- Script child akan di push kesini(parent) menggunakan @push('script') --}}
         @stack('script')
         {{-- fitur tooltip atau misalnya aku hover tombol hapus maka muncul sebuah text box yang menyatakan hapus --}}

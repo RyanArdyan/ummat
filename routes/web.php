@@ -6,6 +6,9 @@ use App\Http\Controllers\KegiatanRutinController;
 use App\Http\Controllers\KegiatanSekaliController;
 use App\Http\Controllers\DoaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\PostinganController;
+
 
 // panggil routes/auth.php
 // membutuhkan directori yang sma digabung auth.php
@@ -58,11 +61,37 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     Route::put('/doa/{doa}', [DoaController::class, 'update'])->name('doa.update');
     // route tipe kirim, jika user dirahkan ke url /doa/hancurkan maka arahkan ke DoaController, method hancurkan, name nya adalah doa.hancurkan
     Route::post('/doa/destroy', [DoaController::class, 'destroy'])->name('doa.destroy');
+
+    // route tipe dapatkan, jika user dirahkan ke url /kategori/create maka arahkan ke KategoriController, method create, name nya adalah kategori.create
+    Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
+    // route tipe kirim, jika user dirahkan ke url /kategori maka arahkan ke KategoriController, method simpan, name nya adalah kategori.simpan
+    Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
+    // route tipe dapatkan, jika user dirahkan ke url /kategori/baca maka arahkan ke KategoriController, method baca, nama nya adalah kategori.baca
+    Route::get('/kategori/read', [KategoriController::class, 'read'])->name('kategori.read');
+    // route tipe dapatkan, jika user dirahkan ke url /kategori/edit maka kirimkan value slug_kategori pake {kategori:slug_kategori} karena aku tidak mengirim primary key, biarkan {kategori} karena aku menggunakan fitur fitur pengikatan route model, nya agar aku bisa mengambil detail kategori berdasarkan slug arahkan ke KategoriController, method edit, nama nya adalah kategori.edit
+    Route::get('/kategori/edit/{kategori:slug_kategori}', [KategoriController::class, 'edit'])->name('kategori.edit');
+    // route tipe letakkan, jika user dirahkan ke url /kategori/ maka kirimkan value kategori_id nya agar aku bisa memperbarui detail kategori berdasarkan kategori_id arahkan ke KategoriController, method update, nama nya adalah kategori.update
+    Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
+    // route tipe kirim, jika user dirahkan ke url /kategori/hancurkan maka arahkan ke KategoriController, method hancurkan, name nya adalah kategori.hancurkan
+    Route::post('/kategori/destroy', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/create maka arahkan ke PostinganController, method create, name nya adalah postingan.create
+    Route::get('/postingan/create', [PostinganController::class, 'create'])->name('postingan.create');
+    // route tipe kirim, jika user dirahkan ke url /postingan/simpan maka arahkan ke PostinganController, method simpan, name nya adalah postingan.simpan
+    Route::post('/postingan/store', [PostinganController::class, 'store'])->name('postingan.store');
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/baca maka arahkan ke PostinganController, method baca, nama nya adalah postingan.baca
+    Route::get('/postingan/read', [PostinganController::class, 'read'])->name('postingan.read');
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/edit maka kirimknan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id arahkan ke PostinganController, method edit, nama nya adalah postingan.edit
+    Route::get('/postingan/edit/{postingan_id}', [PostinganController::class, 'edit'])->name('postingan.edit');
+    // route tipe letakkan, jika user dirahkan ke url /postingan/ maka kirimknan value postingan_id nya agar aku bisa memperbarui detail postingan berdasarkan postingan_id arahkan ke PostinganController, method update, nama nya adalah postingan.update
+    Route::put('/postingan/{postingan_id}', [PostinganController::class, 'update'])->name('postingan.update');
+    // route tipe kirim, jika user dirahkan ke url /postingan/hancurkan maka arahkan ke PostinganController, method hancurkan, name nya adalah postingan.hancurkan
+    Route::post('/postingan/destroy', [PostinganController::class, 'destroy'])->name('postingan.destroy');
 });
 
 
 // auth di dapatkan dari Kernel.php
-// hanya admin yang sudah login dan verifikasi di column email_verified_at yang bisa mengakses url berikut
+// hanya yang sudah login dan verifikasi di column email_verified_at yang bisa mengakses url berikut
 // route group middleware, untuk yang sudah lgin dan verifikasi di colum email_diverifikasi_pada yang bisa mengakses route berikut
 Route::middleware(['auth', 'verified'])->group(function() {
     // home
@@ -91,6 +120,12 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/doa', [DoaController::class, 'index'])->name('doa.index');
     // route tipe dapatkan, jika user dirahkan ke url /doa lalu tangkap dan kirimkan doa_id ke parameter method show milik DoaController, name nya adalah doa.show
     Route::get('/doa/{doa}', [DoaController::class, 'show'])->name('doa.show');
+
+    // route tipe dapatkan, jika user dirahkan ke url /kategori maka arahkan ke KategoriController, method index, name nya adalah kategori.index
+    Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
+
+    // route tipe dapatkan, jika user dirahkan ke url /postingan maka arahkan ke PostinganController, method index, name nya adalah postingan.index
+    Route::get('/postingan', [PostinganController::class, 'index'])->name('postingan.index');
 });
 
 

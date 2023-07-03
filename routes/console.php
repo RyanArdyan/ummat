@@ -5,15 +5,17 @@ use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
-| Console Routes
+| Console Routes Rute-rute konsol
 |--------------------------------------------------------------------------
 |
-| This file is where you may define all of your Closure based console
-| commands. Each Closure is bound to a command instance allowing a
-| simple approach to interacting with each command's IO methods.
+| File ini adalah tempat Anda dapat menentukan semua perintah konsol berbasis Penutupan. Setiap Penutupan terikat pada instance perintah yang memungkinkan pendekatan sederhana untuk berinteraksi dengan metode IO setiap perintah.
 |
 */
 
+// tukang, perintah, inspirasi, jalankan fungsi
 Artisan::command('inspire', function () {
+    // class console, koment, inspirasi::quote
     $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+})
+// tujuan nya sebagai berikut
+->purpose('Tampilkan kutipan yang menginspirasi');

@@ -56,10 +56,14 @@
                 </div>
 
                 
-                <button id="tombol_simpan" type="submit" class="btn btn-primary">
+                <button id="tombol_simpan" type="submit" class="btn btn-sm btn-primary">
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
+                <a href="{{ route('doa.index') }}" class="btn btn-sm btn-danger">
+                    <i class="mdi mdi-arrow-left"></i>
+                    Kembali
+                </a>
             </form>
         </div>
     </div>

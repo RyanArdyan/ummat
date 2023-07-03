@@ -73,12 +73,12 @@
                 </div>
 
                 
-                <button id="tombol_simpan" type="submit" class="btn btn-primary">
+                <button id="tombol_simpan" type="submit" class="btn btn-primary btn-sm">
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
                 {{-- cetak, panggil route kegiatan_rutin.index --}}
-                <a href="{{ route('kegiatan_rutin.index') }}" class="btn btn-danger">
+                <a href="{{ route('kegiatan_rutin.index') }}" class="btn btn-danger btn-sm">
                     <i class="mdi mdi-arrow-left"></i>
                     Kembali
                 </a>
