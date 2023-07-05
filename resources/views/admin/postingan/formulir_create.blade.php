@@ -34,6 +34,20 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="my_multi_select3">Kategori <span class="text-danger"> *</span></label>
+                    <select id="my_multi_select3" name="kategori" class="multi-select" multiple="" >
+                        <option value="AF">Afghanistan</option>
+                        <option value="AL">Albania</option>
+                        <option value="DZ">Algeria</option>
+                        <option value="AS">American Samoa</option>
+                        <option value="AD">Andorra</option>
+                        <option value="AO">Angola</option>
+                    </select>
+                    {{-- pesan error --}}
+                    <span class="kategori_error pesan_error text-danger"></span>
+                </div>
+
+                <div class="form-group">
                     <label for="bubble-editor">Konten<span class="text-danger"> *</span></label>
                     {{-- jangan pernah mengubah #bubble-editor, jika diubah maka akan error --}}
                     <div id="bubble-editor" name="konten_postingan" style="height: 300px;" class="konten_postingan_input input form-control">

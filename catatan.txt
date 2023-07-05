@@ -64,7 +64,7 @@ Ada fitur tampilan, read, tambah, edit, perbarui dan hapus postingan.
 
 Aku click tombol tambah postingan maka pindah ke url ke /postingan/create lalu pindah ke halaman postingan/formulir_tambah, berarti di mulai dari views/admin/postingan/formulir_tambah, tombol tambah.
 
-Aku akan pake pilih ganda kategori yang bisa dicari
+Aku akan simpan kategori diatas input konten berarti aku harus bungkus pake div dan gunakan .form-control dan kasi class error. aku bi
 
 
 
