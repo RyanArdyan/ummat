@@ -54,17 +54,11 @@ postingan_id: 1
 kategori_id: 2
 
 Aku buat desain dulu lah
-berarti aku buat input judul_postingan, kategori pake select dan option yang bisa pilih ganda, konten_postingan pake text-editor, gambar_postingan, postingan_dipublikasi_pada pake input date-time
+Bagaimana yang login adalah admin, maka url /postingan akan menampilkan table, kalau yang login adalah jaamah maka yang tampil adalah card karena kan postingan, di dalam card ada gambar postingan, judul_postingan, aku click card nya pindah ke route postingan.detail.
 
-Buat menu postingan, aku click maka panggil route postingan.index, lalu ke PostinganController, method index, aku tidak menampilkan data dulu lah lalu ke views.admin.postingn.index.
+Catatan Sementara
+Semua input pada formulir lalu aku click tombol simpan maka tampilkan validasi error, aku ingin lihat error pada input konten.
 
-Bagaimana yang login adalah admin maka url /postingan akan menampilkan table, kalau yang login adalah jaamah maka yang tampil adalah card karena kan postingan, di dalam card ada gambar postingan, judul_postingan, aku click card nya pindah ke route postingan.detail.
-
-Ada fitur tampilan, read, tambah, edit, perbarui dan hapus postingan.
-
-Aku click tombol tambah postingan maka pindah ke url ke /postingan/create lalu pindah ke halaman postingan/formulir_tambah, berarti di mulai dari views/admin/postingan/formulir_tambah, tombol tambah.
-
-Aku akan simpan kategori diatas input konten berarti aku harus bungkus pake div dan gunakan .form-control dan kasi class error. aku bi
 
 
 

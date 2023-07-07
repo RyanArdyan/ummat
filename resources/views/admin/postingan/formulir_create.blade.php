@@ -6,16 +6,15 @@
 
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
 @push('css')
-    <!-- Plugins text editor menggunakan bubble atau quill editor -->
-    {{-- asset berarti memanggil folder public --}}
-    {{-- cetak panggil folder public/assets --}}
-    <link href="{{ asset('adminto/assets/libs/quill/quill.bubble.css') }}" rel="stylesheet"/>
+    {{-- untuk menggunakan trix text editor milik https://github.com/amaelftah/laravel-trix --}}
+    @trixassets
+
     {{-- agar bisa memilih multipe kategori atau multi select --}}
     <link href="{{ asset('adminto/assets/libs/multiselect/multi-select.css') }}"  rel="stylesheet" />
 
 @endpush
 
-{{-- kirimkan  --}}
+{{-- kirimkan value @bagian('konten') ke @yield('konten') --}}
 @section('konten')
     <div class="row">
         <div class="col-sm-12">
@@ -35,24 +34,21 @@
 
                 <div class="form-group">
                     <label for="my_multi_select3">Kategori <span class="text-danger"> *</span></label>
-                    <select id="my_multi_select3" name="kategori" class="multi-select" multiple="" >
-                        <option value="AF">Afghanistan</option>
-                        <option value="AL">Albania</option>
-                        <option value="DZ">Algeria</option>
-                        <option value="AS">American Samoa</option>
-                        <option value="AD">Andorra</option>
-                        <option value="AO">Angola</option>
+                    <select id="my_multi_select3" name="kategori_id[]" class="multi-select" multiple="" >
+                        {{-- lakukan pengulangan element option menggunakan pengulangan @untukSetiap, value attribute value berisi setiap value column kategori_id, value element option berisi setiap value column nama_kategori --}}
+                        @foreach($semua_kategori as $kategori)
+                        {{-- cetak setiap value variable kategori dan column kategori_id dan column nama_kategori --}}
+                            <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}</option>
+                        @endforeach
                     </select>
                     {{-- pesan error --}}
-                    <span class="kategori_error pesan_error text-danger"></span>
+                    <span class="kategori_id_error pesan_error text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label for="bubble-editor">Konten<span class="text-danger"> *</span></label>
-                    {{-- jangan pernah mengubah #bubble-editor, jika diubah maka akan error --}}
-                    <div id="bubble-editor" name="konten_postingan" style="height: 300px;" class="konten_postingan_input input form-control">
-                        {{-- <h3>Aku bisa menulis text disini</h3> --}}
-                    </div> <!-- end Snow-editor-->
+                    <label for="konten">Konten<span class="text-danger"> *</span></label>
+                    <!-- perhatikan bahwa bidang konten tidak disajikan dalam model Posting -->
+                    @trix(\App\Models\Postingan::class, 'konten_postingan')
                     <span class="konten_postingan_error pesan_error text-danger"></span>
                 </div>
 
@@ -73,6 +69,12 @@
                     <span class="pesan_error gambar_postingan_error text-danger"></span>
                 </div>
 
+                <div class="form-group">
+                    <label for="dipublikasi_pada">Dipublikasi Pada</label>
+                    <input type="datetime-local" id="dipublikasi_pada" name="dipublikasi_pada" class="form-control">
+                    <span class="pesan_error dipublikasi_pada_error text-danger"></span>
+                </div>
+
                 
                 <button id="tombol_simpan" type="submit" class="btn btn-primary">
                     <i class="mdi mdi-content-save"></i>
@@ -85,11 +87,6 @@
 
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
-    <!-- Plugins js untuk text editor  -->
-    <script src="{{ asset('adminto/assets/libs/quill/quill.min.js') }}"></script>
-    <!-- init js untuk text editor -->
-    <script src="{{ asset('adminto/assets/js/pages/form-editor.init.js') }}"></script>
-
     {{-- Plugin js untuk multi select --}}
     <script src="{{ asset('adminto/assets/libs/multiselect/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('adminto/assets/libs/jquery-quicksearch/jquery.quicksearch.min.js') }}"></script>
@@ -129,13 +126,21 @@
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}
                 data: new FormData(this),
-                // aku butuh 2 baris kode berikut, kalau membuat objek secara manual maka tidak butuh 3 baris kode berikut
+                // aku butuh 3 baris kode berikut, kalau membuat objek secara manual maka tidak butuh 3 baris kode berikut
                 // prosesData: salah,
                 processData: false,
                 contentType: false,
                 cache: false,
                 // sebelum kirim, hapus validasi error dulu
                 // sebelum kirim, jalankan fungsi berikut
+
+                // kirimkan data berupa object
+                // data: {
+                //     // key konten berisi jquery panggil #bubble-editor, lalu ambil text nya
+                //     'konten': $("#bubble-editor").text(),
+                //     // key _token berisi cetak method csrf_token()
+                //     '_token': "{{ csrf_token() }}"
+                // },
                 beforeSend: function() {
                     // panggil .input lalu hapus .is-invalid
                     $(".input").removeClass("is-invalid");
@@ -145,6 +150,10 @@
             })
             // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil 
             .done(function(resp) {
+                // cetak value resp.semua_data
+                console.log(resp.semua_data);
+
+
                 // jika validasi menemukan error
                 // jika resp.status sama dengan 0
                 if (resp.status === 0) {
@@ -162,18 +171,21 @@
                 // jika berhasil menyimpan postingan
                 // lain jika resp.status sama dengan 200
                 else if (resp.status === 200) {
-                    // reset formulir
-                    // panggil #form_tambah index ke 0 lalu atur ulang semua input
-                    $("#form_tambah")[0].reset();
-                    // reset pratinjau gambar
-                    // jquery panggil #pratinjau_gambar_postingan, lalu attribute src, value nya di kosongkan pake ""
-                    $("#pratinjau_gambar_postingan").attr("src", "");
-                    // Judul Postingan di focuskan
-                    // panggil #judul_postingan lalu focuskan
-                    $("#judul_postingan").focus();
-                    // notifikasi
-                    // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
-                    toastr.success(`${resp.pesan}.`);
+                    // cetak value tanggapan.semua_data yaitu semua value input
+                    console.log(resp.semua_data);
+
+                    // // reset formulir
+                    // // panggil #form_tambah index ke 0 lalu atur ulang semua input
+                    // $("#form_tambah")[0].reset();
+                    // // reset pratinjau gambar
+                    // // jquery panggil #pratinjau_gambar_postingan, lalu attribute src, value nya di kosongkan pake ""
+                    // $("#pratinjau_gambar_postingan").attr("src", "");
+                    // // Judul Postingan di focuskan
+                    // // panggil #judul_postingan lalu focuskan
+                    // $("#judul_postingan").focus();
+                    // // notifikasi
+                    // // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
+                    // toastr.success(`${resp.pesan}.`);
                 };
             });
         });

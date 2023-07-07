@@ -13,6 +13,7 @@ use Image;
 // package laravel datatables
 use DataTables;
 use App\Models\Postingan;
+use App\Models\Kategori;
 
 class PostinganController extends Controller
 {
@@ -91,85 +92,96 @@ class PostinganController extends Controller
     // publik fungsi buat()
     public function create()
     {
-        // kembalikkan ke tampilan admin.postingan.formulir_create
-        return view('admin.postingan.formulir_create');
+        // berisi models kategori pilih atau ambil semua value column kategori_id dan nama_kategori
+        $semua_kategori = Kategori::select('kategori_id', 'nama_kategori')->get();
+        // kembalikkan ke tampilan admin.postingan.formulir_create lalu kirimkan data berupa array
+        return view('admin.postingan.formulir_create', [
+            // key semua_kategori berisi value variable semua_kategori
+            'semua_kategori' => $semua_kategori
+        ]);
     }
 
     // parameter $permintaan berisi semua value attribute name
     public function store(Request $request)
     {
-        // validasi semua inout yang punya attribute name
-        // berisi validator buat untuk semua permintaan
-        $validator = Validator::make($request->all(), [
-            // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
-            'nama_kegiatan' => 'required|max:255',
-            // value input name tanggal harus wajib
-            'tanggal' => 'required',
-            // value input name jam_mulai harus wajib
-            'jam_mulai' => 'required',
-            // value input name jam_selesai harus wajib
-            'jam_selesai' => 'required',
-            // value input name gambar_kegiatan harus wajib, harus berupa gambar.
-            'gambar_kegiatan' => 'required|image',
+        // kembalikkan tanggapan berupa json, kirimkan data berupa array
+        return response()->json([
+            // key semua_data berisi $permintaan->all() atau semua data input
+            'semua_data' => $request->all()
         ]);
 
-        // buat validasi
-        // jika validator gagal
-        if ($validator->fails()) {
-            // kembalikkan tanggapan berupa json
-            return response()->json([
-                // key status berisi 0
-                'status' => 0,
-                // key pesan berisi pesan berikut
-                'pesan' => 'Validasi Menemukan Error',
-                // key errors berisi semua value input dan pesan yang error
-                'errors' => $validator->errors()
-            ]);
-        }
-        // jika validasi berhasil
-        else {
-            // lakukan upload gambar
-            // $nama_gambar_baru misalnya berisi 12345.jpg
-            // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
-            $nama_gambar_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
-            // upload gambar dan ganti nama gambar
-            // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
-            // argumen kedua adalah value input name="gambar_kegiatan"
-            // argument ketiga adalah nama file gambar baru nya
-            $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_baru);
+        // // validasi semua inout yang punya attribute name
+        // // berisi validator buat untuk semua permintaan
+        // $validator = Validator::make($request->all(), [
+        //     // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
+        //     'nama_kegiatan' => 'required|max:255',
+        //     // value input name tanggal harus wajib
+        //     'tanggal' => 'required',
+        //     // value input name jam_mulai harus wajib
+        //     'jam_mulai' => 'required',
+        //     // value input name jam_selesai harus wajib
+        //     'jam_selesai' => 'required',
+        //     // value input name gambar_kegiatan harus wajib, harus berupa gambar.
+        //     'gambar_kegiatan' => 'required|image',
+        // ]);
 
-            // berisi panggil gambar dan jalur nya
-            $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_baru");
+        // // buat validasi
+        // // jika validator gagal
+        // if ($validator->fails()) {
+        //     // kembalikkan tanggapan berupa json
+        //     return response()->json([
+        //         // key status berisi 0
+        //         'status' => 0,
+        //         // key pesan berisi pesan berikut
+        //         'pesan' => 'Validasi Menemukan Error',
+        //         // key errors berisi semua value input dan pesan yang error
+        //         'errors' => $validator->errors()
+        //     ]);
+        // }
+        // // jika validasi berhasil
+        // else {
+        //     // lakukan upload gambar
+        //     // $nama_gambar_baru misalnya berisi 12345.jpg
+        //     // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
+        //     $nama_gambar_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
+        //     // upload gambar dan ganti nama gambar
+        //     // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
+        //     // argumen kedua adalah value input name="gambar_kegiatan"
+        //     // argument ketiga adalah nama file gambar baru nya
+        //     $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_baru);
 
-            // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
-            // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
-            $gambar = Image::make($jalur_gambar)->resize(500, 285);
+        //     // berisi panggil gambar dan jalur nya
+        //     $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_baru");
 
-            // argument pertama pada save adalah simpan gambar dengan cara timpa file
-            // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
-            // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
-            $gambar->save($jalur_gambar, 100, 'jpg');
+        //     // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
+        //     // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
+        //     $gambar = Image::make($jalur_gambar)->resize(500, 285);
 
-            // Simpan postingan ke table postingan
-            // Postingan buat
-            Postingan::create([
-                // column nama_kegiatan di table kegiatan diisi dengan value input name="nama_kegiatan"
-                'nama_kegiatan' => $request->nama_kegiatan,
-                'tanggal' => $request->tanggal,
-                'gambar_kegiatan' => $nama_gambar_baru,
-                'tanggal' => $request->tanggal,
-                'jam_mulai' => $request->jam_mulai,
-                'jam_selesai' => $request->jam_selesai
-            ]);
+        //     // argument pertama pada save adalah simpan gambar dengan cara timpa file
+        //     // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
+        //     // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
+        //     $gambar->save($jalur_gambar, 100, 'jpg');
 
-            // kembalikkan tanggapan berupa json
-            return response()->json([
-                // key status berisi 200
-                'status' => 200,
-                // key pesan berisi "kegiatan PT Bisa berhasil disimpan."
-                'pesan' => "Kegiatan $request->nama_kegiatan berhasil disimpan.",
-            ]);
-        };
+        //     // Simpan postingan ke table postingan
+        //     // Postingan buat
+        //     Postingan::create([
+        //         // column nama_kegiatan di table kegiatan diisi dengan value input name="nama_kegiatan"
+        //         'nama_kegiatan' => $request->nama_kegiatan,
+        //         'tanggal' => $request->tanggal,
+        //         'gambar_kegiatan' => $nama_gambar_baru,
+        //         'tanggal' => $request->tanggal,
+        //         'jam_mulai' => $request->jam_mulai,
+        //         'jam_selesai' => $request->jam_selesai
+        //     ]);
+
+        //     // kembalikkan tanggapan berupa json
+        //     return response()->json([
+        //         // key status berisi 200
+        //         'status' => 200,
+        //         // key pesan berisi "kegiatan PT Bisa berhasil disimpan."
+        //         'pesan' => "Kegiatan $request->nama_kegiatan berhasil disimpan.",
+        //     ]);
+        // };
     }
 
     // method edit, $postingan_id itu fitur Pengikatan Model Rute jadi parameter $postingan_id berisi detail_kegiatan_id berdasarkan id yang dikirimkan

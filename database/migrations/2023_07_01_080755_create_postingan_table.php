@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('gambar_postingan');
             // tipe text, column konten
             $table->text('konten_postingan');
-            $table->dateTime('postingan_dipublikasi_pada');
+            $table->dateTime('dipublikasi_pada');
             $table->timestamps();
         });
     }
