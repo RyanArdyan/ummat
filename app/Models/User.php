@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-// import atau gunakan 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    // Gunakan MemilikiUuIds
-    use HasUuids, HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     // nama table bawaan nya adalah jamak versi inggris maka nya aku mengubah nya
     // lindungi $meja = 'users';

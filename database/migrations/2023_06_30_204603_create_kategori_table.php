@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Jalankan migrasi
      */
     public function up(): void
     {
+        // skema buat table kategori, jalankan fungsi, Cetakbiru $meja
         Schema::create('kategori', function (Blueprint $table) {
-            // buat tipe data uuid
-            $table->uuid('kategori_id');
-            // jadikan kategori_id sebagai primary key
-            $table->primary('kategori_id');
-            // tipe varchar, column nama_kategori, harus unik
+            // buat tipe data big integer yang auto increment dan primary key atau kunci utama
+            $table->bigIncrements('kategori_id');
+            // tipe string, column nama_kategori, harus unique
             $table->string('nama_kategori')->unique();
+            // tipe string, column slug_kategori
             $table->string('slug_kategori');
             $table->timestamps();
         });

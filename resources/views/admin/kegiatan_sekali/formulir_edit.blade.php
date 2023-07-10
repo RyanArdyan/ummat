@@ -14,11 +14,12 @@
                 {{-- tidak ada method="PUT" jadi laravel mamaksa panggil route tipe PUT --}}
                 @method('PUT')
                 {{-- kegiatan_sekali_id --}}
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label for="kegiatan_sekali_id">Kegiatan Sekali ID<span class="text-danger"> *</span></label>
                     {{-- cetak value $detail_kegiatan_sekali, column kegiatan_sekali_id yang di kirimkan KegiatanSekaliController, method edit di attribute value --}}
                     <input id="kegiatan_sekali_id" name="kegiatan_sekali_id" class="form-control" type="text" readonly value="{{ $detail_kegiatan_sekali->kegiatan_sekali_id }}">
                 </div>
+
 
                 {{-- is-invalid --}}
                 {{-- nama_kegiatan --}}

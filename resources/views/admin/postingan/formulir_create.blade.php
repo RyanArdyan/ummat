@@ -6,12 +6,18 @@
 
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
 @push('css')
-    {{-- untuk menggunakan trix text editor milik https://github.com/amaelftah/laravel-trix --}}
-    @trixassets
+    {{-- untuk menggunakan trix editor --}}
+    {{-- cetak panggil asset('') berarti memanggil folder public --}}
+    <link rel="stylesheet" href="{{ asset('trix_editor/css/trix_2.0.0.css') }}">
 
-    {{-- agar bisa memilih multipe kategori atau multi select --}}
-    <link href="{{ asset('adminto/assets/libs/multiselect/multi-select.css') }}"  rel="stylesheet" />
-
+    <style>
+        /* Menyembunyikan tombol upload file di trix editor */
+        /* panggil .berikut */
+        trix-toolbar .trix-button-group--file-tools {
+            /* tampilan: tidak ada */
+            display: none;
+        }
+    </style>
 @endpush
 
 {{-- kirimkan value @bagian('konten') ke @yield('konten') --}}
@@ -33,22 +39,29 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="my_multi_select3">Kategori <span class="text-danger"> *</span></label>
-                    <select id="my_multi_select3" name="kategori_id[]" class="multi-select" multiple="" >
+                    <label for="kategori_id">Kategori <span class="text-danger"> *</span></label>
+                    <br>
+                    <select id="kategori_id" name="kategori_id[]" multiple="" class="form-control">
+                        {{-- Jika ingin element <option> terpilih maka gunakan attribute selected --}}
                         {{-- lakukan pengulangan element option menggunakan pengulangan @untukSetiap, value attribute value berisi setiap value column kategori_id, value element option berisi setiap value column nama_kategori --}}
                         @foreach($semua_kategori as $kategori)
                         {{-- cetak setiap value variable kategori dan column kategori_id dan column nama_kategori --}}
                             <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}</option>
                         @endforeach
                     </select>
+                    <br>
+                    {{-- keterangan --}}
+                    <span class="text-warning">Tekan CTRL + Click agar bisa pilih banyak kategori.</span>
+                    <br>
                     {{-- pesan error --}}
                     <span class="kategori_id_error pesan_error text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label for="konten">Konten<span class="text-danger"> *</span></label>
-                    <!-- perhatikan bahwa bidang konten tidak disajikan dalam model Posting -->
-                    @trix(\App\Models\Postingan::class, 'konten_postingan')
+                    <label for="konten_postingan">Konten<span class="text-danger"> *</span></label>
+                    <input id="konten_postingan" type="hidden" name="konten_postingan" value="" />
+                    {{-- pake package trix editor, jangan mengubah .trix-content, biarkan default --}}
+                    <trix-editor input="konten_postingan" class="trix-content"></trix-editor>
                     <span class="konten_postingan_error pesan_error text-danger"></span>
                 </div>
 
@@ -71,27 +84,33 @@
 
                 <div class="form-group">
                     <label for="dipublikasi_pada">Dipublikasi Pada</label>
-                    <input type="datetime-local" id="dipublikasi_pada" name="dipublikasi_pada" class="form-control">
+                    <input type="datetime-local" id="dipublikasi_pada" name="dipublikasi_pada" class="form-control" style="width: 200px">
                     <span class="pesan_error dipublikasi_pada_error text-danger"></span>
                 </div>
 
                 
-                <button id="tombol_simpan" type="submit" class="btn btn-primary">
+                <button id="tombol_simpan" type="submit" class="btn btn-sm btn-primary">
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
+                {{-- cetak panggil route postingan.index --}}
+                <a href="{{ route('postingan.index') }}" class="btn btn-sm btn-danger">
+                    <i class="mdi mdi-arrow-left">
+                        Kembali
+                    </i>
+                </a>
             </form>
         </div>
     </div>
 @endsection
 
+
+
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
-    {{-- Plugin js untuk multi select --}}
-    <script src="{{ asset('adminto/assets/libs/multiselect/jquery.multi-select.js') }}"></script>
-    <script src="{{ asset('adminto/assets/libs/jquery-quicksearch/jquery.quicksearch.min.js') }}"></script>
-    <!-- Init js untuk multi select-->
-    <script src="{{ asset('adminto/assets/js/pages/form-advanced.init.js') }}"></script>
+    {{-- Untuk mengggunakan trix editor --}}
+    {{-- cetak asset('') berarti panggil folder public --}}
+    <script src="{{ asset('trix_editor/js/trix_2.0.0.umd.min.js') }}"></script>
 
     <script>
         // tampilkan pratinjau gambar ketika user mengubah gambar
@@ -133,14 +152,6 @@
                 cache: false,
                 // sebelum kirim, hapus validasi error dulu
                 // sebelum kirim, jalankan fungsi berikut
-
-                // kirimkan data berupa object
-                // data: {
-                //     // key konten berisi jquery panggil #bubble-editor, lalu ambil text nya
-                //     'konten': $("#bubble-editor").text(),
-                //     // key _token berisi cetak method csrf_token()
-                //     '_token': "{{ csrf_token() }}"
-                // },
                 beforeSend: function() {
                     // panggil .input lalu hapus .is-invalid
                     $(".input").removeClass("is-invalid");
@@ -148,46 +159,47 @@
                     $(".pesan_error").text("");
                 }
             })
-            // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil 
+            // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
             .done(function(resp) {
-                // cetak value resp.semua_data
-                console.log(resp.semua_data);
-
-
                 // jika validasi menemukan error
                 // jika resp.status sama dengan 0
                 if (resp.status === 0) {
+                    // cetak value dari tanggapan.kesalahan
+                    // console.log(resp.errors);
                     // lakukan pengulangan
-                    // key berisi semua nilai name.
-                    // value berisi array yang menyimpan semua pesan error
+                    // key berisi semua nilai attribute name misalnya judul_postingan
+                    // value berisi array yang menyimpan semua pesan error misalnya "Judul Postingan Harus Diiisi"
                     // jquery.setiap(tanggapan.kesalahan2x, fungsi(kunci, nilai))
                     $.each(resp.errors, function(key, value) {
                         // contohnya panggil .judul_postingan_input lalu tambah class is-invalid
                         $(`.${key}_input`).addClass("is-invalid");
                         // contohnya panggil .judul_postingan_error lalu isi textnya dengan pesan error
                         $(`.${key}_error`).text(value[0]);
+
                     });
                 }
                 // jika berhasil menyimpan postingan
                 // lain jika resp.status sama dengan 200
                 else if (resp.status === 200) {
-                    // cetak value tanggapan.semua_data yaitu semua value input
-                    console.log(resp.semua_data);
+                    // reset formulir
+                    // panggil #form_tambah index ke 0 lalu atur ulang semua input
+                    $("#form_tambah")[0].reset();
+                    // reset value dari input trix editor
+                    // $("#konten_postingan").val("");
 
-                    // // reset formulir
-                    // // panggil #form_tambah index ke 0 lalu atur ulang semua input
-                    // $("#form_tambah")[0].reset();
-                    // // reset pratinjau gambar
-                    // // jquery panggil #pratinjau_gambar_postingan, lalu attribute src, value nya di kosongkan pake ""
-                    // $("#pratinjau_gambar_postingan").attr("src", "");
-                    // // Judul Postingan di focuskan
-                    // // panggil #judul_postingan lalu focuskan
-                    // $("#judul_postingan").focus();
-                    // // notifikasi
-                    // // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
-                    // toastr.success(`${resp.pesan}.`);
+                    // reset pratinjau gambar
+                    // jquery panggil #pratinjau_gambar_postingan, lalu attribute src, value nya di kosongkan pake ""
+                    $("#pratinjau_gambar_postingan").attr("src", "");
+                    // Judul Postingan di focuskan
+                    // panggil #judul_postingan lalu focuskan
+                    $("#judul_postingan").focus();
+                    // notifikasi
+                    // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
+                    toastr.success(`Berhasil menyimpan.`);
                 };
             });
         });
     </script>
 @endpush
+
+

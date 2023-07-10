@@ -42,11 +42,10 @@
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
 <script>
-// tambahkan kedua baris kode berikut agar bilah samping nya runtuh atau sidebar collapse atau agar left menu nya menjadi kecil
-// panggil element body, lalu tambahkan class="enlarged"
-$("body").addClass("enlarged");
-// panggil element body, lalu tambah attribute data-tetap-membesar, value nya benar
-$("body").attr("data-keep-enlarged", "true");
-
+    // tambahkan kedua baris kode berikut agar bilah samping nya runtuh atau sidebar collapse atau agar left menu nya menjadi kecil
+    // panggil element body, lalu tambahkan class="enlarged"
+    $("body").addClass("enlarged");
+    // panggil element body, lalu tambah attribute data-tetap-membesar, value nya benar
+    $("body").attr("data-keep-enlarged", "true");
 </script>
 @endpush

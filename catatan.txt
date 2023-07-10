@@ -18,7 +18,7 @@ Algoritma
 
 
 Catatan sementara:
-Contoh url: ummat/nama-kategori/judul-postingan
+Contoh url: ummat/judul-postingan
 Buat fitur postingan
 
 table related_posts
@@ -31,34 +31,8 @@ https://www.iankumu.com/blog/laravel-many-to-many-relationship/
 https://www.iankumu.com/blog/page/3/?s=laravel
 
 
-1 postingan dibuat oleh 1 user.
-1 postingan boleh memiliki lebih dari satu kategori.
-
-Anggaplah table postingan, columns:
-postingan_id: 1,
-user_id: 1 (postingan ditulis oleh user_id 1)
-judul_postingan: Bacaan zikir setelah sholat.
-slug_postingan: bacaan-zikir-setelah-sholat.
-gambar_postingan: 31231231.jpg
-konten_postingan: lorem50
-postingan_dipublikasi_pada: 2023-07-02 09:47:00
-
-Disitu user memilih kategori doa_pendek dan doa_penjang maka pada table postingan_kategori, columns:
-postingan_kategori_id: 1
-postingan_id: 1
-kategori_id: 1
-
-baris dua
-postingan_kategori_id: 2
-postingan_id: 1
-kategori_id: 2
-
-Aku buat desain dulu lah
-Bagaimana yang login adalah admin, maka url /postingan akan menampilkan table, kalau yang login adalah jaamah maka yang tampil adalah card karena kan postingan, di dalam card ada gambar postingan, judul_postingan, aku click card nya pindah ke route postingan.detail.
 
 Catatan Sementara
-Semua input pada formulir lalu aku click tombol simpan maka tampilkan validasi error, aku ingin lihat error pada input konten.
+Aku hapus postingan maka semua postingan_kategori nya juga otomatis terhapus, code nya dimulai dari tombol hapus. Hapus juga gambar nya. Dimulai dari views/admin/postingan/index.
 
-
-
-
+Aku tidak bisa menghapus kategori jika kategori_id nya ada di table postingan_kategori, column kategori_id,

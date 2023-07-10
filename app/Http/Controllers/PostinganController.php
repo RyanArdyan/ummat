@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 // package image intervention untuk kompress gambar, ubah lebar dan tinggi gambar dan lain-lain.
 // image adalah alias yang di daftarkan di config/app
 use Image;
@@ -14,10 +15,11 @@ use Image;
 use DataTables;
 use App\Models\Postingan;
 use App\Models\Kategori;
+use App\Models\PostinganKategori;
 
 class PostinganController extends Controller
 {
-    // Method index menampilkan halaman kegiatan sekali
+    // Method index menampilkan halaman postingan
     // publik fungsi index
     public function index()
     {
@@ -27,14 +29,26 @@ class PostinganController extends Controller
         // jika yang login adalah admin maka 
         // jika value variable is_admin nya sama dengan "1"
         if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.postingan.index
+            // // ambil semua data postingan, Data terbaru akan tampil paling atas
+            // // berisi Postinngan pilih columns, dipesan oleh column diperbarui_pada, descending, dapatkan
+            // $semua_postingan = Postingan::select("user_id",   "judul_postingan", "slug_postingan", "gambar_postingan",  "dipublikasi_pada")->orderBy('updated_at', 'desc')->get();
+
+            // $semua_postingan = Postingan::orderBy("updated_at", "desc")->get();
+
+
+            // // kembalikkan ke tampilan admin.postingan.index, kirimkan data berupa array
             return view('admin.postingan.index');
+
+            // return response()->json($semua_postingan);
         }
         // lain jika yang login adalah jamaah maka
         else if ($is_admin === "0") {
-            // ambil semua kegiatan sekali, ambil data terbaru
-            // berisi Postingan, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_postingan = Postingan::orderBy('updated_at', 'desc')->get();
+            // ambil semua postingan, ambil data terbaru
+            // berisi Postingan, pilih column user_id agar relasi nya terpanggil judul_postingan, slug_postingan, gambar_postingan, dipublikasi_pada di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
+            $semua_postingan = Postingan::select("user_id", "judul_postingan", 'slug_postingan', 'gambar_postingan', 'dipublikasi_pada')->orderBy('updated_at', 'desc')->get();
+
+            // kembalikkan tanggapna berupa json lalu kirimkan value $semua_postingan
+            // return response()->json($semua_postingan);
 
             // kembalikkan ke tampilan jamaah.postingan.index, kirimkan data berupa array, 
             return view('jamaah.postingan.index', [
@@ -44,51 +58,73 @@ class PostinganController extends Controller
         };
     }
 
-    // menampilkan semua data table postingan, yang column tipe_kegiatan nya berisi "Kegiatan sekali".
+    // menampilkan semua data table postingan
     public function read()
     {
-        // ambil semua value dari column postingan_id, nama_kegiatan dan lain-lain dimana value column tipe_kegiatan sama dengan "Kegiatan sekali", dapatkan semua data nya
-        // beriisi Postingan::pilih('postingan_id', 'nama_kegiatan', 'dan-lain-lain') dimana value column tipe_kegiatan sama dengan value 'Kegiatan sekali', dapatkan()
-        $semua_kegiatan = Postingan::select('postingan_id', 'nama_kegiatan', 'gambar_kegiatan', 'tanggal', 'jam_mulai', 'jam_selesai')->get();
+        // jadi ambil semua_postingan lalu data terbaru akan tampil yang pertama
+        // berisi postingan dipesanOleh column diperbarui_pada, menurun, dapatkan semua data
+        $semua_postingan = Postingan::orderBy("updated_at", "desc")->get();
+
         // syntax punya yajra
-        // kembalikkan datatables dari semua_kegiatan
-        return DataTables::of($semua_kegiatan)
-            // nomor kegiatan
+        // kembalikkan datatables dari semua_postingan
+        return DataTables::of($semua_postingan)
+            // nomor postingan
             // tambah index column
             ->addIndexColumn()
-            // ulang detail_kegiatan menggunakan $kegiatan
-            // tambah column pilih, jalankan fungsi, Postingan $kegiatan
-            ->addColumn('select', function(Postingan $kegiatan) {
+            // ulang detail_postingan menggunakan $postingan
+            // tambah column pilih, jalankan fungsi, Postingan $postingan
+            ->addColumn('select', function(Postingan $postingan) {
                 // return element html
                 // name="postingan_ids[]" karena name akan menyimpan array yang berisi beberapa postingan_id, contohnya ["1", "2"]
                 // attribute value digunakan untuk memanggil setiap value column postingan_id
                 return '
-                        <input name="postingan_ids[]" value="' . $kegiatan->postingan_id . '" class="pilih select form-check-input mx-auto" type="checkbox">
+                        <input name="postingan_ids[]" value="' . $postingan->postingan_id . '" class="pilih select form-check-input mx-auto" type="checkbox">
                 ';
             })
-            ->addColumn('gambar_kegiatan', function(Postingan $kegiatan) {
-                // buat img, yg attribute src nya memanggil public/storage/gambar_kegiatan/$kegiatan->gambar_kegiatan, / berarti panggil public, kutip dua bisa mencetak value variable
-                return "<img src='/storage/gambar_postingan/$kegiatan->gambar_kegiatan' width='50px' height='50px'>";
+            // tambahKolom penulis, jalankan fungsi, parameter $postingan berisi setiap detail_postingan
+            ->addColumn('penulis', function(Postingan $postingan) {
+                // cetak value detail_postingan yang berelasi dengan detail_user, column name
+                return $postingan->user->name;
+            })
+            // tambahKolom kategori, jalankan fungsi, parameter $postingan berisi setiap detail_postingan
+            ->addColumn('kategori', function(Postingan $postingan) {
+                // // berisi element div yang akan digunakan sebagai wadah dari element <p></p>
+                $html = "<div>
+                
+                </div>";
+
+                // looping, 1 postingan bisa punya banyak kategori
+                foreach ($postingan->kategori as $kategori) {
+                    // Cetak value setiap hubungan kategori yang berelasi dengan postingan, column nama_kategori
+                    // jadi ul akan berisi li contohnya <ul><li></li></ul>
+                    $html .= "<p class='badge badge-success m-0'>$kategori->nama_kategori</p>";
+                };
+
+                return $html;
+            })
+            ->addColumn('gambar_postingan', function(Postingan $postingan) {
+                // buat img, yg attribute src nya memanggil public/storage/gambar_postingan/$postingan->gambar_postingan, / berarti panggil public, kutip dua bisa mencetak value variable
+                return "<img src='/storage/gambar_postingan/$postingan->gambar_postingan' width='50px' height='50px'>";
 
             })
             // buat tombol edit
-            // tambahKolom('aksi', fungsi(Kegiatan $kegiatan))
-            ->addColumn('action', function(Postingan $kegiatan) {
-                // panggil url /kegiatan-sekali/edit/ lalu kirimkan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id
+            // tambahKolom('aksi', fungsi(postingan $postingan)) parameter $postingan berisi setiap value detail_postingan
+            ->addColumn('action', function(Postingan $postingan) {
+                // panggil url /postingan/edit/ lalu kirimkan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id, aku akan gunakan fitur pengingakatan route model
                 return  "
-                    <a href='/kegiatan-sekali/edit/$kegiatan->postingan_id' class='btn btn-warning btn-sm'>
+                    <a href='/postingan/edit/$postingan->postingan_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";
             })
         // jika sebuah column berisi relasi antar table, memanggil helpers dan membuat elemnt html maka harus dimasukkan ke dalam mentahColumn2x
         // mentahKolom2x select dan lain-lain
-        ->rawColumns(['select', 'gambar_kegiatan', 'action'])
+        ->rawColumns(['select', 'penulis', 'kategori', 'gambar_postingan', 'action'])
         // buat benar
         ->make(true);
     }
 
-    // method buat untuk menampilkan formulir tambah kegiatan
+    // method buat untuk menampilkan formulir tambah postingan
     // publik fungsi buat()
     public function create()
     {
@@ -104,115 +140,147 @@ class PostinganController extends Controller
     // parameter $permintaan berisi semua value attribute name
     public function store(Request $request)
     {
-        // kembalikkan tanggapan berupa json, kirimkan data berupa array
-        return response()->json([
-            // key semua_data berisi $permintaan->all() atau semua data input
-            'semua_data' => $request->all()
+        // validasi semua input yang punya attribute name
+        // berisi validator buat untuk semua permintaan
+        $validator = Validator::make($request->all(), [
+            // value input name judul_postingan harus wajib dan maksimal nya adalah 255
+            'judul_postingan' => 'required|unique:postingan|max:255',
+            // value input name kategori_id harus wajib
+            'kategori_id' => 'required',
+            "konten_postingan" => 'required',
+            // value input name gambar_postingan harus wajib, harus berupa gambar.
+            'gambar_postingan' => 'required|image',
+            // value input dipublikasi_pada itu harus diisi
+            'dipublikasi_pada' => 'required'
         ]);
 
-        // // validasi semua inout yang punya attribute name
-        // // berisi validator buat untuk semua permintaan
-        // $validator = Validator::make($request->all(), [
-        //     // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
-        //     'nama_kegiatan' => 'required|max:255',
-        //     // value input name tanggal harus wajib
-        //     'tanggal' => 'required',
-        //     // value input name jam_mulai harus wajib
-        //     'jam_mulai' => 'required',
-        //     // value input name jam_selesai harus wajib
-        //     'jam_selesai' => 'required',
-        //     // value input name gambar_kegiatan harus wajib, harus berupa gambar.
-        //     'gambar_kegiatan' => 'required|image',
-        // ]);
+        // buat validasi
+        // jika validator gagal
+        if ($validator->fails()) {
+            // kembalikkan tanggapan berupa json
+            return response()->json([
+                // key status berisi 0
+                'status' => 0,
+                // key pesan berisi pesan berikut
+                'pesan' => 'Validasi Menemukan Error',
+                // key errors berisi semua value input dan pesan yang error
+                'errors' => $validator->errors(),
+            ]);
+        }
+        // jika validasi berhasil
+        else {
+            // return response()->json($request->all());
+            // lakukan upload gambar
+            // $nama_gambar_baru misalnya berisi 12345.jpg
+            // waktu() digabung '.' digabung $permintaan->file('gambar_postingan')->ekstensi();
+            $nama_gambar_baru = time() . '.' . $request->file('gambar_postingan')->extension();
+            // upload gambar dan ganti nama gambar
+            // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
+            // argumen kedua adalah value input name="gambar_postingan"
+            // argument ketiga adalah nama file gambar baru nya
+            Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_postingan'), $nama_gambar_baru);
 
-        // // buat validasi
-        // // jika validator gagal
-        // if ($validator->fails()) {
-        //     // kembalikkan tanggapan berupa json
-        //     return response()->json([
-        //         // key status berisi 0
-        //         'status' => 0,
-        //         // key pesan berisi pesan berikut
-        //         'pesan' => 'Validasi Menemukan Error',
-        //         // key errors berisi semua value input dan pesan yang error
-        //         'errors' => $validator->errors()
-        //     ]);
-        // }
-        // // jika validasi berhasil
-        // else {
-        //     // lakukan upload gambar
-        //     // $nama_gambar_baru misalnya berisi 12345.jpg
-        //     // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
-        //     $nama_gambar_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
-        //     // upload gambar dan ganti nama gambar
-        //     // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
-        //     // argumen kedua adalah value input name="gambar_kegiatan"
-        //     // argument ketiga adalah nama file gambar baru nya
-        //     $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_baru);
+            // berisi panggil gambar dan jalur nya
+            $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_baru");
 
-        //     // berisi panggil gambar dan jalur nya
-        //     $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_baru");
+            // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
+            // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 1250 , dan tinggi nya 500, resize gambar juga termasuk kompres gambar
+            $gambar = Image::make($jalur_gambar)->resize(1250, 500);
 
-        //     // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
-        //     // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
-        //     $gambar = Image::make($jalur_gambar)->resize(500, 285);
+            // argument pertama pada save adalah simpan gambar dengan cara timpa file
+            // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
+            // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi jpg
+            $gambar->save($jalur_gambar, 100, 'jpg');
 
-        //     // argument pertama pada save adalah simpan gambar dengan cara timpa file
-        //     // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
-        //     // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
-        //     $gambar->save($jalur_gambar, 100, 'jpg');
 
-        //     // Simpan postingan ke table postingan
-        //     // Postingan buat
-        //     Postingan::create([
-        //         // column nama_kegiatan di table kegiatan diisi dengan value input name="nama_kegiatan"
-        //         'nama_kegiatan' => $request->nama_kegiatan,
-        //         'tanggal' => $request->tanggal,
-        //         'gambar_kegiatan' => $nama_gambar_baru,
-        //         'tanggal' => $request->tanggal,
-        //         'jam_mulai' => $request->jam_mulai,
-        //         'jam_selesai' => $request->jam_selesai
-        //     ]);
 
-        //     // kembalikkan tanggapan berupa json
-        //     return response()->json([
-        //         // key status berisi 200
-        //         'status' => 200,
-        //         // key pesan berisi "kegiatan PT Bisa berhasil disimpan."
-        //         'pesan' => "Kegiatan $request->nama_kegiatan berhasil disimpan.",
-        //     ]);
-        // };
+            // Simpan postingan ke table postingan
+            // Postingan buat
+            $postingan = Postingan::create([
+                // column user_id di table postingan diisi dengan value detail_user yang login, column user_id
+                'user_id' => Auth::user()->user_id,
+                // column judul_postingan di table postingan diisi dengan value input name="judul_postingan"
+                'judul_postingan' => $request->judul_postingan,
+                // column slug_postingan diisi buat slug dari value $permintaan->judul_postingan
+                'slug_postingan' => Str::slug($request->judul_postingan, '-'),
+                'gambar_postingan' => $nama_gambar_baru,
+                // $request->input("post-trixFields") adalah kode dari https://github.com/amaelftah/laravel-trix
+                'konten_postingan' => $request->konten_postingan,
+                'dipublikasi_pada' => $request->dipublikasi_pada,
+            ]);
+
+            // 1 postingan bisa punya banyak kategori, jadi aku mengisi table postingan_kategori, misalnya postingan_id 1 berjudul "Ini adalah judul" lalu ada 2 kategori yaitu kategori_id yang berisi 1 dan 2
+            // $postingan->kategori()->menempelkan($permintaan->kategori_id)
+            $postingan->kategori()->attach($request->kategori_id);
+
+            // kembalikkan tanggapan berupa json
+            return response()->json([
+                // key status berisi 200
+                'status' => 200,
+                // key pesan berisi "postingan PT Bisa berhasil disimpan."
+                'pesan' => "Postingan $request->judul_postingan berhasil disimpan.",
+            ]);
+        };
     }
 
-    // method edit, $postingan_id itu fitur Pengikatan Model Rute jadi parameter $postingan_id berisi detail_kegiatan_id berdasarkan id yang dikirimkan
-    public function edit(Postingan $postingan_id)
+    // method show, parameter $postingan itu fitur Pengikatan Model Rute jadi parameter $postingan berisi detail_postingan berdasarkan slug_postingan yang dikirimkan
+    public function show(Postingan $postingan)
     {
-        // kembalikkkan ke tampilan admin.postingan.formulir_edit, lalu kirimkan array yang berisi key detail_postingan berisi value variable $detail_postingan
-        return view('admin.postingan.formulir_edit', ['detail_postingan' => $postingan_id]);
+        // kembalikkkan ke tampilan jamaah.postingan.detail_postingan, lalu kirimkan array yang berisi key detail_postingan berisi value variable $detail_postingan
+        return view('jamaah.postingan.detail_postingan', ['detail_postingan' => $postingan]);
     }
 
-    // method perbarui untuk memperbarui kegiatan sekali
+    // method edit, parameter $postingan itu fitur Pengikatan Model Rute jadi parameter $postingan_id berisi detail_postingan berdasarkan postingan_id yang dikirimkan
+    public function edit(Postingan $postingan)
+    {
+        // kembalikkan tanggapna berupa json lalu kirimkan value parameter $postingan
+        // return response()->json($postingan);
+
+        // kembalikkan tanggapan berupa json lalu kirimkan value detail_postingan yang memiliki banyak kategori
+        // return response()->json(['kategori_terpilih' => $postingan->kategori]);
+        // 1 postingan punya banyak kategori. artinya aku mengambil kategori2x yang dipilih user
+        $kategori_terpilih = $postingan->kategori;
+
+        // kembalikkkan ke tampilan admin.postingan.formulir_edit, lalu kirimkan array
+        return view('admin.postingan.formulir_edit', [
+            // key detail_postingan berisi value variable $detail_postingan
+            'detail_postingan' => $postingan,
+            // key semua_kategori berisi 
+            // berisi models kategori pilih atau ambil semua value column kategori_id dan nama_kategori
+            'semua_kategori' => Kategori::select('kategori_id', 'nama_kategori')->get(),
+            // key kategori_terpilih berisi value $postingan->kategori artinya aku mengirim kategori2x yang dipilih user
+            'kategori_terpilih' => $kategori_terpilih
+        ]);
+    }
+
+    // method perbarui untuk memperbarui postingan 
     // parameter $permintaan berisi semua value input
-    // $postingan_id berisi postingan_id yang dikirim url
-    public function update(Request $request, $postingan_id)
+    // $postingan berisi mengambil detail_postingan berdasarkan postingan_id dari yang dikirim url
+    public function update(Request $request, Postingan $postingan)
     {
-        // ambil detail postingan berdasarkan postingan_id
-        // berisi Postingan dimana value column postingan_id sama dengan postingan_id, data baris pertama saja
-        $detail_kegiatan = Postingan::where('postingan_id', $postingan_id)->first();
+        // jika nilai input judul_postingan sama dengan nilai column judul_postingan dari detail $postingan berarti user tidak mengubah judul_postingannya nya
+        if ($request->judul_postingan === $postingan->judul_postingan) {
+            // judul_postingan harus wajib, string, minimal 3 dan maksimal 255
+            $validasi_judul_postingan = 'required|max:255';
+        }
+        // lain jika value input name="judul_postingan" tidak sama dengan detail_postingan, column judul_postingan berarti user mengubah judul_postingan nya atau maka baris detail_postingan akan di skip datanya lalu value input judul_postingan tidak boleh sama dengan baris detail_postingan, column judul_postingan lain nya
+        else if ($request->judul_postingan !== $postingan->judul_postingan) {
+            // validasi judul_postingan harus wajib, unik, max 255 
+            $validasi_judul_postingan = 'required|unique:postingan|max:255';
+        };
 
         // validasi input yang punya attribute name
         // berisi validator buat semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
-            'nama_kegiatan' => 'required|max:255',
-            // value input name tanggal harus wajib
-            'tanggal' => 'required',
-            // value input name jam_mulai harus wajib
-            'jam_mulai' => 'required',
-            // value input name jam_selesai harus wajib
-            'jam_selesai' => 'required',
-            // value input name="gambar_kegiatan" harus berupa gambar
-            'gambar_kegiatan' => 'image'
+            // value input name judul_postingan mengikut aturan dari value variabel $validasi_judul_postingan
+            'judul_postingan' => $validasi_judul_postingan,
+            // value input name kategori_id harus wajib
+            'kategori_id' => 'required',
+            "konten_postingan" => 'required',
+            // value input name gambar_postingan harus wajib, harus berupa gambar.
+            'gambar_postingan' => 'image',
+            // value input dipublikasi_pada itu harus diisi
+            'dipublikasi_pada' => 'required'
         ]);
 
         // jika validasi gagal
@@ -228,58 +296,72 @@ class PostinganController extends Controller
         } 
         // jika validasi berhasil
         else {
-            // jika user mengganti atau mengupload gambar_kegiatan
-            // jika ($permintaan->memilikiFile('gambar_kegiatan'))
-            if ($request->hasFile('gambar_kegiatan')) {
+            // jika user mengganti atau mengupload gambar_postingan
+            // jika ($permintaan->memilikiFile('gambar_postingan'))
+            if ($request->hasFile('gambar_postingan')) {
                 // hapus gambar postingan lama
-                // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_kegiatan, column gambar_kegiatan
-                Storage::delete('public/gambar_postingan/' . $detail_kegiatan->gambar_kegiatan);
+                // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail postingan, column gambar_postingan
+                Storage::delete('public/gambar_postingan/' . $postingan->gambar_postingan);
 
                 // lakukan upload gambar
-                // $nama_gambar_kegiatan_baru misalnya berisi 12345.jpg
-                // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
-                $nama_gambar_kegiatan_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
+                // $nama_gambar_postingan_baru misalnya berisi 1_0912345.jpg
+                // value detail_postingan, column postingan_id, waktu() . '.' . $permintaan->file('gambar_postingan')->ekstensi();
+                $nama_gambar_postingan_baru = $postingan->postingan_id . time() . '.' . $request->file('gambar_postingan')->extension();
                 // upload gambar dan ganti nama gambar
                 // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
-                // argumen kedua adalah value input name="gambar_kegiatan"
+                // argumen kedua adalah value input name="gambar_postingan"
                 // argument ketiga adalah nama file gambar baru nya
-                $file_gambar = Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_kegiatan'), $nama_gambar_kegiatan_baru);
+                Storage::putFileAs('public/gambar_postingan/', $request->file('gambar_postingan'), $nama_gambar_postingan_baru);
 
                 // berisi panggil gambar dan jalur nya
-                $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_kegiatan_baru");
+                $jalur_gambar = public_path("storage/gambar_postingan/$nama_gambar_postingan_baru");
 
                 // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
-                // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
-                $gambar = Image::make($jalur_gambar)->resize(500, 285);
+                // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 1250 , dan tinggi nya 500, resize gambar juga termasuk kompres gambar
+                $gambar = Image::make($jalur_gambar)->resize(1250, 500);
 
                 // argument pertama pada save adalah simpan gambar dengan cara timpa file
                 // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
                 // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
                 $gambar->save($jalur_gambar, 100, 'jpg');
             } 
-            // jika user tidak mengupload gambar_kegiatan lewat input name="gambar_kegiatan" maka pakai value column detail_kegiatan, column gambar_kegiatan
-            // lain jika $permintaan tidak memiliki file dari input name="gambar_kegiatan"
-            else if (!$request->hasFile('gambar_kegiatan')) {
-                // berisi memanggil value detail user, column gambar_kegiatan
-                $nama_gambar_kegiatan_baru = $detail_kegiatan->gambar_kegiatan;
+            // jika user tidak mengupload gambar_postingan lewat input name="gambar_postingan" maka pakai value column postingan, column gambar_postingan
+            // lain jika $permintaan tidak memiliki file dari input name="gambar_postingan"
+            else if (!$request->hasFile('gambar_postingan')) {
+                // berisi memanggil value detail postingan, column gambar_postingan
+                $nama_gambar_postingan_baru = $postingan->gambar_postingan;
             };
 
-            // Perbarui kegiatan
-            // panggil detail_kegiatan, column nama_kegiatan lalu diisi dengan input name="nama_kegiatan"
-            $detail_kegiatan->nama_kegiatan = $request->nama_kegiatan;
-            $detail_kegiatan->gambar_kegiatan = $nama_gambar_kegiatan_baru;
-            $detail_kegiatan->tanggal = $request->tanggal;
-            $detail_kegiatan->jam_mulai = $request->jam_mulai;
-            $detail_kegiatan->jam_selesai = $request->jam_selesai;
-            // detail_kegiatan di perbarui
-            $detail_kegiatan->update();
+            // Perbarui postingan
+            // value detail_postingan, column user_id di table postingan diisi dengan value detail_user yang login, column user_id
+            $postingan->user_id = Auth::user()->user_id;
+            // panggil detail_postingan, column judul_postingan lalu diisi dengan input name="judul_postingan"
+            $postingan->judul_postingan = $request->judul_postingan;
+            // value detail_postingan, column slug_postingan diisi buat slug dari value $permintaan->judul_postingan
+            $postingan->slug_postingan = Str::slug($request->judul_postingan, '-');
+            // panggil detail_postingan, column gambar_postingan lalu diisi dengan input value variable $nama_gambar_postingan_baru
+            $postingan->gambar_postingan = $nama_gambar_postingan_baru;
+            // $request->input("post-trixFields") adalah kode dari https://github.com/amaelftah/laravel-trix
+            // value detail_postingan, column konten_postingan diisi value input name="konten_postingan"
+            $postingan->konten_postingan = $request->konten_postingan;
+            // value detail_postingan, column dipublikasi_pada diisi value input name="dipublikasi_pada"
+            $postingan->dipublikasi_pada = $request->dipublikasi_pada;
+            // postingan di perbarui
+            $postingan->update();
+
+            // Lepaskan semua kategori dari postingan atau hapus semua kategori dari postingan
+            $postingan->kategori()->detach();
+
+            // 1 postingan bisa punya banyak kategori, jadi aku mengisi table postingan_kategori, misalnya postingan_id 1 berjudul "Ini adalah judul" lalu ada 2 kategori yaitu kategori_id yang berisi 1 dan 2
+            // $postingan->kategori()->menempelkan($permintaan->kategori_id)
+            $postingan->kategori()->attach($request->kategori_id);
 
             // kembalikkan tanggapan berupa json lalu kirimkan data-data
             return response()->json([
                 // key status berisi value 200
                 'status' => 200,
                 // key pesan berisi pesna berikut, contohnya "Kegatan gaji karyawan berhasil di perbarui" 
-                'pesan' => "Kegiatan $request->nama_kegiatan berhasil diperbarui.",
+                'pesan' => "Postingan $request->judul_postingan berhasil diperbarui.",
             ]);
         };
     }
@@ -299,10 +381,10 @@ class PostinganController extends Controller
             $detail_postingan = Postingan::where('postingan_id', $postingan_id)->first();
 
             // hapus gambar
-            // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_kegiatan, column gambar_kegiatan
-            Storage::delete('public/gambar_postingan/' . $detail_postingan->gambar_kegiatan);
+            // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_postingan, column gambar_postingan
+            Storage::delete('public/gambar_postingan/' . $detail_postingan->gambar_postingan);
 
-            // hapus kegiatan sekali
+            // hapus postingan 
             // panggil detail_postingan lalu hapus
             $detail_postingan->delete();
         };
@@ -311,7 +393,7 @@ class PostinganController extends Controller
         return response()->json([
             // key status berisi value 200
             'status' => 200,
-            'pesan' => 'Berhasil menghapus kegiatan sekali yang dipilih.'
+            'pesan' => 'Berhasil menghapus postingan  yang dipilih.'
         ]);
     }
 }

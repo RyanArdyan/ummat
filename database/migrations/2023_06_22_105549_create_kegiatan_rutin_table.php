@@ -13,10 +13,8 @@ return new class extends Migration
     {
         // skema buat table kegiatan_rutin, jalankan fungsi berikut, Cetakbiru $meja
         Schema::create('kegiatan_rutin', function (Blueprint $table) {
-            // buat tipe data uuid yang primary key
-            $table->uuid('kegiatan_rutin_id');
-            // jadikan kegiatan_rutin_id sebagai primary key
-            $table->primary('kegiatan_rutin_id');
+            // buat tipe data big integer yang auto increment dan primary key atau kunci utama
+            $table->bigIncrements('kegiatan_rutin_id');
             // tipe string, column nama_kegiatan
             $table->string('nama_kegiatan');
             // tipe string, column gambar_kegiatan

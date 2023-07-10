@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('postingan', function (Blueprint $table) {
-            // buat tipe data uuid
-            $table->uuid('postingan_id');
-            // jadikan postingan_id sebagai primary key
-            $table->primary('postingan_id');
-            // foreign key atau kunci asing, relasinya adalah 1 postingan ditulis 1 user
-            // buat foreign key column di table postingan yaitu user_id yang berelasi dengean column user_id milik table user, ketika user di hapus maka postingan nya juga akan terhapus
-            $table->foreignUuid('user_id')->constrained('users')
+            // buat tipe data big integer yang auto increment dan primary key atau kunci utama
+            $table->bigIncrements('postingan_id');
+            // foreign key atau kunci asing, relasinya adalah 1 produk milik 1 user dan 1 user memiliki banyak produk
+            // buat foreign k
+            // foreign artinya asing, constrained artinya dibatasi
+            $table->foreignId('user_id')->constrained('users')
+                // referensi column user_id milik table users
                 ->references('user_id')
                 ->onUpdate('cascade')
+                // ketika di hapus mengalir
                 ->onDelete('cascade');
             // tipe varchar, column judul_postingan harus unique
             $table->string('judul_postingan')->unique();

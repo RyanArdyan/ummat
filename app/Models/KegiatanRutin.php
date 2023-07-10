@@ -4,13 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-// import atau gunakan 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class KegiatanRutin extends Model
 {
-    // Gunakan MemilikiUuIds
-    use HasUuids, HasFactory;
+    use HasFactory;
 
     // nama table bawaan nya adalah jamak versi inggris maka nya aku mengubah nya
     // lindungi $meja = 'kegiatan_rutin';

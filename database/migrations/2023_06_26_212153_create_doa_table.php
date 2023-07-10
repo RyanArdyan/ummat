@@ -13,10 +13,8 @@ return new class extends Migration
     {
         // skema buat table doa jalankan fngsi berikut (Cetakbirut, $meja)
         Schema::create('doa', function (Blueprint $table) {
-            // buat tipe data uuid
-            $table->uuid('doa_id');
-            // jadikan doa_id sebagai primary key
-            $table->primary('doa_id');
+            // buat tipe data big integer yang auto increment dan primary key atau kunci utama
+            $table->bigIncrements('doa_id');
             // tipe string, column nama_doa, harus unique()
             $table->string('nama_doa')->unique();
             // tipe string, column bacaan_arab, harus unique()

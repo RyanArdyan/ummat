@@ -5,7 +5,6 @@ use App\Http\Controllers\EditProfileController;
 use App\Http\Controllers\KegiatanRutinController;
 use App\Http\Controllers\KegiatanSekaliController;
 use App\Http\Controllers\DoaController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PostinganController;
 
@@ -68,7 +67,7 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
     // route tipe dapatkan, jika user dirahkan ke url /kategori/baca maka arahkan ke KategoriController, method baca, nama nya adalah kategori.baca
     Route::get('/kategori/read', [KategoriController::class, 'read'])->name('kategori.read');
-    // route tipe dapatkan, jika user dirahkan ke url /kategori/edit maka kirimkan value slug_kategori pake {kategori:slug_kategori} karena aku tidak mengirim primary key, biarkan {kategori} karena aku menggunakan fitur fitur pengikatan route model, nya agar aku bisa mengambil detail kategori berdasarkan slug arahkan ke KategoriController, method edit, nama nya adalah kategori.edit
+    // route tipe dapatkan, jika user dirahkan ke url /kategori/edit maka kirimkan value slug_kategori pake {kategori:slug_kategori} karena aku tidak mengirim primary key, biarkan {kategori:slug_kategori} karena aku menggunakan fitur pengikatan route model, agar aku bisa mengambil detail kategori berdasarkan slug_kategori, arahkan ke KategoriController, method edit, nama nya adalah kategori.edit
     Route::get('/kategori/edit/{kategori:slug_kategori}', [KategoriController::class, 'edit'])->name('kategori.edit');
     // route tipe letakkan, jika user dirahkan ke url /kategori/ maka kirimkan value kategori_id nya agar aku bisa memperbarui detail kategori berdasarkan kategori_id arahkan ke KategoriController, method update, nama nya adalah kategori.update
     Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
@@ -81,10 +80,10 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     Route::post('/postingan/store', [PostinganController::class, 'store'])->name('postingan.store');
     // route tipe dapatkan, jika user dirahkan ke url /postingan/baca maka arahkan ke PostinganController, method baca, nama nya adalah postingan.baca
     Route::get('/postingan/read', [PostinganController::class, 'read'])->name('postingan.read');
-    // route tipe dapatkan, jika user dirahkan ke url /postingan/edit maka kirimknan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id arahkan ke PostinganController, method edit, nama nya adalah postingan.edit
-    Route::get('/postingan/edit/{postingan_id}', [PostinganController::class, 'edit'])->name('postingan.edit');
-    // route tipe letakkan, jika user dirahkan ke url /postingan/ maka kirimknan value postingan_id nya agar aku bisa memperbarui detail postingan berdasarkan postingan_id arahkan ke PostinganController, method update, nama nya adalah postingan.update
-    Route::put('/postingan/{postingan_id}', [PostinganController::class, 'update'])->name('postingan.update');
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/edit maka kirimknan value postingan_id pake {postingan}, aku mengunakan fitur pengikatan route model agar aku bisa mengambil detail postingan berdasarkan postingan_id arahkan ke PostinganController, method edit, nama nya adalah postingan.edit
+    Route::get('/postingan/edit/{postingan}', [PostinganController::class, 'edit'])->name('postingan.edit');
+    // route tipe letakkan, jika user dirahkan ke url /postingan/ maka kirimkan value postingan_id nya agar aku bisa memperbarui detail postingan berdasarkan postingan_id menggunakan fitur pengikatan route model lalu arahkan ke PostinganController, method update, nama nya adalah postingan.update
+    Route::put('/postingan/{postingan}', [PostinganController::class, 'update'])->name('postingan.update');
     // route tipe kirim, jika user dirahkan ke url /postingan/hancurkan maka arahkan ke PostinganController, method hancurkan, name nya adalah postingan.hancurkan
     Route::post('/postingan/destroy', [PostinganController::class, 'destroy'])->name('postingan.destroy');
 });
@@ -126,6 +125,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
     // route tipe dapatkan, jika user dirahkan ke url /postingan maka arahkan ke PostinganController, method index, name nya adalah postingan.index
     Route::get('/postingan', [PostinganController::class, 'index'])->name('postingan.index');
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/ maka kirimkan value slug_postingan pake {postingan:slug_postingan} karena aku tidak mengirim primary key, biarkan {postingan:slug_postingan} karena aku menggunakan fitur pengikatan route model, agar aku bisa mengambil detail_postingan berdasarkan slug_postingan, arahkan ke PostinganController, method show, nama nya adalah postingan.show
+    Route::get('/postingan/{postingan:slug_postingan}', [PostinganController::class, 'show'])->name('postingan.show');
 });
 
 

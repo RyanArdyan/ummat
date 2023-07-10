@@ -13,11 +13,8 @@ return new class extends Migration
     {
         // skema buat table penguna2x, jalankan fungsi, cetakBiru, $meja
         Schema::create('users', function (Blueprint $table) {
-            // buat tipe data uuid yang primary key
-            $table->uuid('user_id');
-            // jadikan column user_id sebagai kunci utama
-            // $table->utama('user_id')
-            $table->primary('user_id');
+            // buat tipe data big integer yang auto increment dan primary key atau kunci utama
+            $table->bigIncrements('user_id');
             // tipe enum, akan memberikan pilihan yang harus dipilih yaitu 1 berarti admin, 0 berarti jamaah, bawaan nya 0 berarti jamaah
             $table->enum('is_admin', [1, 0])->default("0");
             // tipe varchar, kolom foto, boleh ksoong karena ketika registrasi, user tidak harus memasukkan foto ya

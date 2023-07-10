@@ -18,7 +18,7 @@ class KategoriController extends Controller
         // berisi ambil value detail user yang autetikasi atau login, column is_admin
         $is_admin = Auth::user()->is_admin;
 
-        // jika yang login adalah admin maka 
+        // jika yang login adalah admin maka  
         // jika value variable is_admin nya sama dengan "1"
         if ($is_admin === "1") {
             // kembalikkan ke tampilan admin.kategori.index

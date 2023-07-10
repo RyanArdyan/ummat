@@ -14,7 +14,7 @@
                 {{-- tidak ada method="PUT" jadi aku paksa panggil route tipe PUT --}}
                 @method('PUT')
                 {{-- kegiatan_rutin_id --}}
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label for="kegiatan_rutin_id">Kegiatan Rutin ID<span class="text-danger"> *</span></label>
                     {{-- cetak value $detail_kegiatan, column kegiatan_rutin_id yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
                     <input id="kegiatan_rutin_id" name="kegiatan_rutin_id" class="form-control" type="text" readonly value="{{ $detail_kegiatan->kegiatan_rutin_id }}">
@@ -90,10 +90,15 @@
                     <span class="pesan_error gambar_kegiatan_error text-danger"></span>
                 </div>
                 
-                <button id="tombol_simpan" type="submit" class="btn btn-primary">
+                <button id="tombol_simpan" type="submit" class="btn btn-sm btn-primary">
                     <i class="mdi mdi-content-save"></i>
                     Perbarui
                 </button>
+                {{-- panggil route kegiatan_rutin.index --}}
+                <a href="{{ route('kegiatan_rutin.index') }}" class="btn btn-sm btn-danger">
+                    <i class="mdi mdi-arrow-left"></i>
+                    Kembali
+                </a>
             </form>
         </div>
     </div>
