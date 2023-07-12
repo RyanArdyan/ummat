@@ -86,12 +86,12 @@
         {{-- JQuery --}}
         {{-- asset akan memanggil folder public --}}
         <script src="{{ asset('js_saya/jquery-3.7.0.min.js') }}"></script>
-        <!-- Vendor js -->
+        {{-- <!-- Vendor js -->
         <script src="{{ asset('adminto') }}/assets/js/vendor.min.js"></script>
         <!-- knob plugin --> 
         <script src="{{ asset('adminto') }}/assets/libs/jquery-knob/jquery.knob.min.js"></script>
         <!-- App js -->
-        <script src="{{ asset('adminto') }}/assets/js/app.min.js"></script>
+        <script src="{{ asset('adminto') }}/assets/js/app.min.js"></script> --}}
         {{-- datatables js --}}
         <script src="https://cdn.datatables.net/v/bs4/dt-1.13.4/datatables.min.js"></script>
         {{-- sweetalert 2 --}}

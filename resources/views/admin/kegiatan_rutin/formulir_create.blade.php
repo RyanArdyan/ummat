@@ -41,7 +41,7 @@
                 {{-- jam_mulai --}}
                 <div class="form-group">
                     <label for="jam_mulai">Jam Mulai<span class="text-danger"> *</span></label>
-                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 130px">
+                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 160px">
                     {{-- pesan error --}}
                     <span class="jam_mulai_error pesan_error text-danger"></span>
                 </div>
@@ -50,7 +50,7 @@
                 {{-- jam_selesai --}}
                 <div class="form-group">
                     <label for="jam_selesai">Jam Selesai<span class="text-danger"> *</span></label>
-                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 130px">
+                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 160px">
                     {{-- pesan error --}}
                     <span class="jam_selesai_error pesan_error text-danger"></span>
                 </div>

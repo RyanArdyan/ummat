@@ -166,6 +166,13 @@ $("#tombol_hapus").on("click", function() {
                         // reload ajax table
                         // panggil value variable table, lalu ajax nya di muat ulang
                         table.ajax.reload();
+                    })
+                    // jika gagal karena ada kategori yang digunakan oleh postingan atau ada value kategori_id di table postingan_kategori, column kategori_id
+                    .fail(function() {
+                        // tampilkan notifikasi menggunakan package sweetalert
+                        Swal.fire(
+                            "Tidak dapat menghapus karena ada kategori yang masih digunakan di postingan"
+                        );
                     });
             };
         });
@@ -176,7 +183,7 @@ $("#tombol_hapus").on("click", function() {
 // alasan pake $(document) adalah karena tombol detail dibuat oleh controller atau lebih tepat nya script
 $(document).on("click", ".tombol_detail_kategori", function() {
     // ambil value attribute data-kategori-id
-    // panggil .tombol_detail_kategori, lalu cetak value attribute data-kategori-id
+    // panggil .tombol_detail_kategori, lalu cetak value attribute data- xkategori-id
     let kategori_id = $(this).data("kategori-id");
     // jquery lakukan ajax untuk mengambil detail_kategori
     $.ajax({

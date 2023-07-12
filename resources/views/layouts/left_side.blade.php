@@ -73,6 +73,11 @@
                                 {{-- panggil route postingan.index --}}
                                 <a href="{{ route('postingan.index') }}">Postingan</a>
                             </li>
+                            {{-- cetak jika permintaan adalah route penceramah. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('penceramah.*') ? 'active' : '') }}">
+                                {{-- panggil route penceramah.index --}}
+                                <a href="{{ route('penceramah.index') }}">Penceramah</a>
+                            </li>
                         </ul>
                     </li>
             </ul>

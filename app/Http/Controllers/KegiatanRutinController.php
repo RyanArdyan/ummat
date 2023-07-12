@@ -126,9 +126,9 @@ class KegiatanRutinController extends Controller
         // jika validasi berhasil
         else {
             // lakukan upload gambar
-            // $nama_gambar_baru misalnya berisi 12345.jpg
-            // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
-            $nama_gambar_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
+            // $nama_gambar_baru misalnya berisi tokomu_3242312345.jpg
+            // $permintaan->file('gambar_kegiatan')->hashNama();
+            $nama_gambar_baru = "tokomu_" . $request->file('gambar_kegiatan')->hashName();
             // upload gambar dan ganti nama gambar
             // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
             // argumen kedua adalah value input name="gambar_kegiatan"
@@ -220,9 +220,9 @@ class KegiatanRutinController extends Controller
 
 
                  // lakukan upload gambar
-                // $nama_gambar_kegiatan_baru misalnya berisi 12345.jpg
-                // waktu() . '.' . $permintaan->file('gambar_kegiatan')->ekstensi();
-                $nama_gambar_kegiatan_baru = time() . '.' . $request->file('gambar_kegiatan')->extension();
+                // $nama_gambar_kegiatan_baru misalnya berisi tokomu_23412345.jpg
+                // $permintaan->file('gambar_kegiatan')->hashNama();
+                $nama_gambar_kegiatan_baru = "tokomu_" . $request->file('gambar_kegiatan')->hashName();
                 // upload gambar dan ganti nama gambar
                 // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
                 // argumen kedua adalah value input name="gambar_kegiatan"

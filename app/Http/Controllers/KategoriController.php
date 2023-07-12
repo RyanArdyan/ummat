@@ -196,6 +196,9 @@ class KategoriController extends Controller
         // berisi $permintaan->kategori_ids atau value input name="kategori_ids[]", anggaplah berisi ["1", "2"] di dapatkan dari kategoriController, method read dan script
         $semua_kategori_id = $request->kategori_ids;
 
+        // kembalikkan tanggapan berupa json dari value variable berikut
+        // return response()->json($semua_kategori_id);
+
         // metode whereIn menghapus element dari kumpulan yang tidak memiliki nilai item tertentu yang terkandung dalam larik yang diberikan
         // $saringan_kategori berisi Semua kategori, dimana dalam column kategori_id berisi value yang sama dengan value variable $semua_kategori_id
         $filtered_kategori = Kategori::whereIn("kategori_id", $semua_kategori_id);

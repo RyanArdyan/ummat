@@ -7,6 +7,7 @@ use App\Http\Controllers\KegiatanSekaliController;
 use App\Http\Controllers\DoaController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PostinganController;
+use App\Http\Controllers\PenceramahController;
 
 
 // panggil routes/auth.php
@@ -15,7 +16,6 @@ require __DIR__.'/auth.php';
 
 // route tipe alihkan, jika user di url awal maka arahkan ke url /login
 Route::redirect('/', '/login');
-
 
 // middleware untuk admin yang sudah login dan sudah verifikasi di column email_verified_at
 // auth di dapatkan dari App/Http/Kernel.php
@@ -86,6 +86,19 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     Route::put('/postingan/{postingan}', [PostinganController::class, 'update'])->name('postingan.update');
     // route tipe kirim, jika user dirahkan ke url /postingan/hancurkan maka arahkan ke PostinganController, method hancurkan, name nya adalah postingan.hancurkan
     Route::post('/postingan/destroy', [PostinganController::class, 'destroy'])->name('postingan.destroy');
+
+    // route tipe dapatkan, jika user dirahkan ke url /penceramah/create maka arahkan ke PenceramahController, method create, name nya adalah penceramah.create
+    Route::get('/penceramah/create', [PenceramahController::class, 'create'])->name('penceramah.create');
+    // route tipe kirim, jika user dirahkan ke url /penceramah/simpan maka arahkan ke PenceramahController, method simpan, name nya adalah penceramah.simpan
+    Route::post('/penceramah/store', [PenceramahController::class, 'store'])->name('penceramah.store');
+    // route tipe dapatkan, jika user dirahkan ke url /penceramah/baca maka arahkan ke PenceramahController, method baca, nama nya adalah penceramah.baca
+    Route::get('/penceramah/read', [PenceramahController::class, 'read'])->name('penceramah.read');
+    // route tipe dapatkan, jika user dirahkan ke url /penceramah/edit maka kirimknan value penceramah_id pake {penceramah}, aku mengunakan fitur pengikatan route model agar aku bisa mengambil detail penceramah berdasarkan penceramah_id arahkan ke PenceramahController, method edit, nama nya adalah penceramah.edit
+    Route::get('/penceramah/edit/{penceramah}', [PenceramahController::class, 'edit'])->name('penceramah.edit');
+    // route tipe letakkan, jika user dirahkan ke url /penceramah/ maka kirimkan value penceramah_id nya agar aku bisa memperbarui detail penceramah berdasarkan penceramah_id menggunakan fitur pengikatan route model lalu arahkan ke PenceramahController, method update, nama nya adalah penceramah.update
+    Route::put('/penceramah/{penceramah}', [PenceramahController::class, 'update'])->name('penceramah.update');
+    // route tipe kirim, jika user dirahkan ke url /penceramah/hancurkan maka arahkan ke PenceramahController, method hancurkan, name nya adalah penceramah.hancurkan
+    Route::post('/penceramah/destroy', [PenceramahController::class, 'destroy'])->name('penceramah.destroy');
 });
 
 
@@ -127,6 +140,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/postingan', [PostinganController::class, 'index'])->name('postingan.index');
     // route tipe dapatkan, jika user dirahkan ke url /postingan/ maka kirimkan value slug_postingan pake {postingan:slug_postingan} karena aku tidak mengirim primary key, biarkan {postingan:slug_postingan} karena aku menggunakan fitur pengikatan route model, agar aku bisa mengambil detail_postingan berdasarkan slug_postingan, arahkan ke PostinganController, method show, nama nya adalah postingan.show
     Route::get('/postingan/{postingan:slug_postingan}', [PostinganController::class, 'show'])->name('postingan.show');
+
+    // route tipe dapatkan, jika user dirahkan ke url /penceramah maka arahkan ke PenceramahController, method index, name nya adalah penceramah.index
+    Route::get('/penceramah', [PenceramahController::class, 'index'])->name('penceramah.index');
 });
 
 

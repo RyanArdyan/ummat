@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
-@section('title', 'Postingan')
+@section('title', 'Penceramah')
 
 {{-- Dorong value @dorong('css') ke @stack('css') --}}
 @push('css')
@@ -12,15 +12,15 @@
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah Postingan maka pindah url dan halaman dengan cara cetak panggil route postingan.create --}}
-        <a href="{{ route('postingan.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah penceramah maka pindah url dan halaman dengan cara cetak panggil route penceramah.create --}}
+        <a href="{{ route('penceramah.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
-            Tambah Postingan
+            Tambah penceramah
         </a>
 
         <div class="table-responsive">
-            {{-- aku membungkus table ke dalam form agar aku bisa mengambil value column postingan_id yang disimpan ke dalam input type="checkbox" --}}
-            <form id="form_postingan">
+            {{-- aku membungkus table ke dalam form agar aku bisa mengambil value column penceramah_id yang disimpan ke dalam input type="checkbox" di PenceramahController, method read --}}
+            <form id="form_penceramah">
                 <!-- laravel mewajibkan keamanan dari serangan csrf -->
                 @csrf
                 <table class="table table-striped table-sm">
@@ -28,15 +28,12 @@
                         <tr>
                             <!-- Pilih atau kotak centang -->
                             <th scope="col" width="5%">
-                                {{-- buat kotak centang untuk memilih semua postingan --}}
+                                {{-- buat kotak centang untuk memilih semua penceramah --}}
                                 <input type="checkbox" name="select_all" id="select_all">
                             </th>
                             <th scope="col" width="5%">No</th>
-                            <th scope="col" width="22%">Gambar</th>
-                            <th scope="col">Judul</th>
-                            <th scope="col">Penulis</th>
-                            <th scope="col">Kategori</th>
-                            <th scope="col">Di publikasi pada</th>
+                            <th scope="col" width="22%">Foto</th>
+                            <th scope="col">Nama</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -46,7 +43,7 @@
 
         
 
-        {{-- Fitur hapus beberapa postingan berdasarkan kotak centang yang di checklist --}}
+        {{-- Fitur hapus beberapa penceramah berdasarkan kotak centang yang di checklist --}}
         <button id="tombol_hapus" type="button" class="btn btn-danger btn-flat btn-sm mt-3">
             <i class="mdi mdi-delete"></i>
             Hapus
@@ -59,8 +56,8 @@
 @push('script')
 <script>
 
-// read daftar postingan
-// berisi panggil table postingan, gunakan datatable
+// read daftar penceramah
+// berisi panggil table penceramah, gunakan datatable
 let table = $("table").DataTable({
     // ketika data masih di muat, tampilkan animasi processing
     // processing: benar
@@ -68,52 +65,41 @@ let table = $("table").DataTable({
     // serverSide digunakan agar ketika data sudah lebih dari 10.000 maka web masih lancar
     // sisi server: benar
     serverSide: true,
-    // lakukan ajax, ke route postingan.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('postingan.read') }}",
-    // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table postingan    
+    // lakukan ajax, ke route penceramah.read yang tipe nya adalah dapatkan
+    ajax: "{{ route('penceramah.read') }}",
+    // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table penceramah    
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
         // kotak centang
         {
-            // select di dapatkan dari AddColumn('select') milik PostinganController, method read
+            // select di dapatkan dari AddColumn('select') milik PenceramahController, method read
             data: "select",
             // menonaktifkan fungsi icon anak panah atau fitur balikkan data
+            // dapatDiurutkan: salah
             sortable: false
         },
         // lakukan pengulangan nomor
-        // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari PostinganController, method index, AddIndexColumn
+        // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari PenceramahController, method read, AddIndexColumn
         {
             data: 'DT_RowIndex',
             name: 'DT_RowIndex',
             sortable: false
         },
         {
-            // gambar_postingan di dapatkan dari AddColumn('gambar_postingan') milik PostinganController, method read
-            data: "gambar_postingan",
+            // foto_penceramah di dapatkan dari AddColumn('foto_penceramah') milik PenceramahController, method read
+            data: "foto_penceramah",
         },
         {
-            // nama di dapatkan dari query postingan::select()
-            data: 'judul_postingan',
-            name: 'judul_postingan'
+            // nama di dapatkan dari query penceramah::select()
+            data: 'nama_penceramah',
+            name: 'nama_penceramah'
         },
         {
-            
-            data: 'penulis',
-            name: 'penulis'
-        },
-        {
-            data: 'kategori',
-            name: 'kategori'
-        },
-        {
-            data: 'dipublikasi_pada',
-            name: 'dipublikasi_pada'
-        },
-        {
-            // action di dapatkan dari AddColumn('action') milik PostinganController, method read
+            // action di dapatkan dari AddColumn('action') milik PenceramahController, method read
             data: 'action',
             name: 'action',
             // menonaktifkan fungsi icon anak panah atau fitur balikkan data
+            // dapatDiurutkan: salah
             sortable: false,
             // dapatDicari: salah berarti tulisan edit pada column action tidak dapat di cari
             searchable: false
@@ -147,12 +133,12 @@ $("#select_all").on("click", function() {
 // Delete atau hapus
 // jika #tombol_hapus di click maka jalankan fungsi berikut
 $("#tombol_hapus").on("click", function() {
-    // jika input .pilih yang di centang di PostinganController, method read, panjang nya sama dengan 0 maka
+    // jika input .pilih yang di centang di PenceramahController, method read, panjang nya sama dengan 0 maka
     if ($("input.pilih:checked").length === 0) {
         // tampilkan notifikasi menggunakan sweetalert yang menyatakan pesan berikut
-        Swal.fire('Anda belum memilih postingan.');
+        Swal.fire('Anda belum memilih penceramah.');
     }
-    // lain jika input .pilih yang di centang di PostinganController, panjang nya lebih atau sama dengan 1 maka
+    // lain jika input .pilih yang di centang di PenceramahController, panjang nya lebih atau sama dengan 1 maka
     else if ($("input.pilih:checked").length >= 1) {
         // tampilkan konfirmasi penghapusan menggunakan sweetalert
         Swal.fire({
@@ -176,15 +162,15 @@ $("#tombol_hapus").on("click", function() {
             // jika hasilnya di konfirmasi
             if (result.isConfirmed) {
                 // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
-                // sebenarnya aku mengirim beberapa value input name="postingan_ids" yang di centang
-                // jquery lakukan ajax tipe kirim, panggil route postingan.destroy, panggil #form_postingan, kirimkan value input
-                $.post("{{ route('postingan.destroy') }}", $("#form_postingan").serialize())
+                // sebenarnya aku mengirim beberapa value input name="penceramah_ids" yang di centang
+                // jquery lakukan ajax tipe kirim, panggil route penceramah.destroy, panggil #form_penceramah, kirimkan value input
+                $.post("{{ route('penceramah.destroy') }}", $("#form_penceramah").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
                         Swal.fire(
                             'Dihapus!',
-                            'Berhasil menghapus postingan yang dipilih.',
+                            'Berhasil menghapus penceramah yang dipilih.',
                             'success'
                         );
                         // reload ajax tablez

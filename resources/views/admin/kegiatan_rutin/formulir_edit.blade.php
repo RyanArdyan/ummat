@@ -58,7 +58,7 @@
                 <div class="form-group">
                     <label for="jam_mulai">Jam Mulai<span class="text-danger"> *</span></label>
                     {{-- cetak value $detail_kegiatan, column jam_mulai yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
-                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 130px" value="{{ $detail_kegiatan->jam_mulai }}">
+                    <input id="jam_mulai" name="jam_mulai" class="jam_mulai_input input form-control" type="time" style="width: 160px" value="{{ $detail_kegiatan->jam_mulai }}">
                     {{-- pesan error --}}
                     <span class="jam_mulai_error pesan_error text-danger"></span>
                 </div>
@@ -68,7 +68,7 @@
                 <div class="form-group">
                     <label for="jam_selesai">Jam Selesai<span class="text-danger"> *</span></label>
                     {{-- cetak value $detail_kegiatan, column jam_selesai yang di kirimkan KegiatanRutinController, method edit di attribute value --}}
-                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 130px" value="{{ $detail_kegiatan->jam_selesai }}">
+                    <input id="jam_selesai" name="jam_selesai" class="jam_selesai_input input form-control" type="time" style="width: 160px" value="{{ $detail_kegiatan->jam_selesai }}">
                     {{-- pesan error --}}
                     <span class="jam_selesai_error pesan_error text-danger"></span>
                 </div>

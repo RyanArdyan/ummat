@@ -19,12 +19,6 @@ Algoritma
 
 Catatan sementara:
 Contoh url: ummat/judul-postingan
-Buat fitur postingan
-
-table related_posts
-columns: related_id, post_id, related_post_id
-
-Jika aku hapus kategori maka semua postingan terkait nya juga akan terhapus.
 
 https://www.inews.id/lifestyle/muslim/dzikir-setelah-sholat-fardhu-lengkap-teks-arab-latin-arti-beserta-keutamaan
 https://www.iankumu.com/blog/laravel-many-to-many-relationship/
@@ -32,7 +26,7 @@ https://www.iankumu.com/blog/page/3/?s=laravel
 
 
 
-Catatan Sementara
-Aku hapus postingan maka semua postingan_kategori nya juga otomatis terhapus, code nya dimulai dari tombol hapus. Hapus juga gambar nya. Dimulai dari views/admin/postingan/index.
+Tugas
+1. perbaiki nama gambar atau foto, sekarang gunakan hashName() di KegiatanSekaliController dan PostinganController, di method store dan index.
 
-Aku tidak bisa menghapus kategori jika kategori_id nya ada di table postingan_kategori, column kategori_id,
+yang belum aku baca kode nya:jika user mengubah gambar nya maka hapus gambar lama di folder storage lalu upload gambar baru kemudian resize gambar sudah auto compress.
