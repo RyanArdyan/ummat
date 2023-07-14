@@ -237,9 +237,10 @@ class PenceramahController extends Controller
                 Storage::delete('public/foto_penceramah/' . $penceramah->foto_penceramah);
 
                 // lakukan upload gambar
-                // $nama_foto_penceramah_baru misalnya berisi 1_0912345.jpg
-                // value detail_penceramah, column penceramah_id, waktu() . '.' . $permintaan->file('foto_penceramah')->ekstensi();
-                $nama_foto_penceramah_baru = $request->file('foto_penceramah')->hashName() . '.' . $request->file('foto_penceramah')->extension();
+                // $nama_foto_penceramah_baru misalnya berisi tokomu_3242312345.jpg
+                // $permintaan->file('foto_penceramah')->hashNama();
+                $nama_foto_penceramah_baru = "tokomu_" . $request->file('foto_penceramah')->hashName();
+
                 // upload gambar dan ganti nama gambar
                 // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
                 // argumen kedua adalah value input name="foto_penceramah"
@@ -250,15 +251,15 @@ class PenceramahController extends Controller
                 $jalur_gambar = public_path("storage/foto_penceramah/$nama_foto_penceramah_baru");
 
                 // kode berikut di dapatkan dari https://image.intervention.io/v2/api/save
-                // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 1250 , dan tinggi nya 500, resize gambar juga termasuk kompres gambar
-                $gambar = Image::make($jalur_gambar)->resize(1250, 500);
+                // buka gambar dan atur ulang ukuran gambar atau kecilkan ukuran gambar menjadi lebar nya 500, dan tinggi nya 285, resize gambar juga termasuk kompres gamabr
+                $gambar = Image::make($jalur_gambar)->resize(500, 285);
 
                 // argument pertama pada save adalah simpan gambar dengan cara timpa file
                 // argument kedua pada save adalah kualitas nya tidak aku turunkan karena 100% jadi terkompress hanya pada saat resize gambar
                 // argument ketiga adalah ekstensi file nya akan menjadi jpg, jadi jika user mengupload png maka akan menjadi png
                 $gambar->save($jalur_gambar, 100, 'jpg');
             } 
-            // jika user tidak mengupload foto_penceramah lewat input name="foto_penceramah" maka pakai value column penceramah, column foto_penceramah
+            // lain jika user tidak mengupload foto_penceramah lewat input name="foto_penceramah" maka pakai value detail_penceramah, column foto_penceramah
             // lain jika $permintaan tidak memiliki file dari input name="foto_penceramah"
             else if (!$request->hasFile('foto_penceramah')) {
                 // berisi memanggil value detail penceramah, column foto_penceramah
@@ -266,35 +267,19 @@ class PenceramahController extends Controller
             };
 
             // Perbarui penceramah
-            // value detail_penceramah, column user_id di table penceramah diisi dengan value detail_user yang login, column user_id
-            $penceramah->user_id = Auth::user()->user_id;
             // panggil detail_penceramah, column nama_penceramah lalu diisi dengan input name="nama_penceramah"
             $penceramah->nama_penceramah = $request->nama_penceramah;
-            // value detail_penceramah, column slug_penceramah diisi buat slug dari value $permintaan->nama_penceramah
-            $penceramah->slug_penceramah = Str::slug($request->nama_penceramah, '-');
             // panggil detail_penceramah, column foto_penceramah lalu diisi dengan input value variable $nama_foto_penceramah_baru
             $penceramah->foto_penceramah = $nama_foto_penceramah_baru;
-            // $request->input("post-trixFields") adalah kode dari https://github.com/amaelftah/laravel-trix
-            // value detail_penceramah, column konten_penceramah diisi value input name="konten_penceramah"
-            $penceramah->konten_penceramah = $request->konten_penceramah;
-            // value detail_penceramah, column dipublikasi_pada diisi value input name="dipublikasi_pada"
-            $penceramah->dipublikasi_pada = $request->dipublikasi_pada;
             // penceramah di perbarui
             $penceramah->update();
-
-            // Lepaskan semua kategori dari penceramah atau hapus semua kategori dari penceramah
-            $penceramah->kategori()->detach();
-
-            // 1 penceramah bisa punya banyak kategori, jadi aku mengisi table penceramah_kategori, misalnya penceramah_id 1 berjudul "Ini adalah judul" lalu ada 2 kategori yaitu kategori_id yang berisi 1 dan 2
-            // $penceramah->kategori()->menempelkan($permintaan->kategori_id)
-            $penceramah->kategori()->attach($request->kategori_id);
 
             // kembalikkan tanggapan berupa json lalu kirimkan data-data
             return response()->json([
                 // key status berisi value 200
                 'status' => 200,
-                // key pesan berisi pesna berikut, contohnya "Kegatan gaji karyawan berhasil di perbarui" 
-                'pesan' => "penceramah $request->nama_penceramah berhasil diperbarui.",
+                // key pesan berisi pesna berikut, contohnya "Penceramah abc berhasil di perbarui" 
+                'pesan' => "Penceramah $request->nama_penceramah berhasil diperbarui.",
             ]);
         };
     }

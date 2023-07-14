@@ -27,6 +27,11 @@ https://www.iankumu.com/blog/page/3/?s=laravel
 
 
 Tugas
-1. perbaiki nama gambar atau foto, sekarang gunakan hashName() di KegiatanSekaliController dan PostinganController, di method store dan index.
+berarti lakukan pengulangan pakai response lalu ambil property nya. pakai div saja dulu.
 
-yang belum aku baca kode nya:jika user mengubah gambar nya maka hapus gambar lama di folder storage lalu upload gambar baru kemudian resize gambar sudah auto compress.
+di jamaah index saja
+
+
+login sebagai jamaah di chrome
+
+

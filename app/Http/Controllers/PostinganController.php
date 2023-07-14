@@ -169,11 +169,11 @@ class PostinganController extends Controller
         }
         // jika validasi berhasil
         else {
-            // return response()->json($request->all());
             // lakukan upload gambar
-            // $nama_gambar_baru misalnya berisi 12345.jpg
-            // waktu() digabung '.' digabung $permintaan->file('gambar_postingan')->ekstensi();
-            $nama_gambar_baru = time() . '.' . $request->file('gambar_postingan')->extension();
+            // $nama_gambar_baru misalnya berisi tokomu_3242312345.jpg
+            // $permintaan->file('gambar_kegiatan')->hashNama();
+            $nama_gambar_baru = "tokomu_" . $request->file('gambar_postingan')->hashName();
+
             // upload gambar dan ganti nama gambar
             // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
             // argumen kedua adalah value input name="gambar_postingan"
@@ -301,12 +301,13 @@ class PostinganController extends Controller
             if ($request->hasFile('gambar_postingan')) {
                 // hapus gambar postingan lama
                 // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail postingan, column gambar_postingan
-                Storage::delete('public/gambar_postingan/' . $postingan->gambar_postingan);
+                Storage::delete('storage/public/gambar_postingan/' . $postingan->gambar_postingan);
 
                 // lakukan upload gambar
-                // $nama_gambar_postingan_baru misalnya berisi 1_0912345.jpg
-                // value detail_postingan, column postingan_id, waktu() . '.' . $permintaan->file('gambar_postingan')->ekstensi();
-                $nama_gambar_postingan_baru = $postingan->postingan_id . time() . '.' . $request->file('gambar_postingan')->extension();
+                // $nama_gambar_postingan_baru misalnya berisi tokomu_3242312345.jpg
+                // $permintaan->file('gambar_kegiatan')->hashNama();
+                $nama_gambar_postingan_baru = "tokomu_" . $request->file('gambar_postingan')->hashName();
+
                 // upload gambar dan ganti nama gambar
                 // argument pertama pada putFileAs adalah tempat atau folder gambar akan disimpan
                 // argumen kedua adalah value input name="gambar_postingan"
