@@ -27,11 +27,8 @@ https://www.iankumu.com/blog/page/3/?s=laravel
 
 
 Tugas
-berarti lakukan pengulangan pakai response lalu ambil property nya. pakai div saja dulu.
-
-di jamaah index saja
+Aku click card misalnya "doa sebelum tidur" maka pindah ke route doa.show lalu mengirim id nya atau url /doa/1, di route aku harus menangkap kemudian kirim id, lalu ke DoaController, method show, parameter tangkap id nya menggunakan doa_id, ambil detail baris data berdasarkan id lalu kirimkan ke tampilan views/admin/doa/detail mengunakan array dan key dan value. lalu di detail.blade aku bisa mencetak detail_doa lalu columnya misalnya nama_doa.
 
 
-login sebagai jamaah di chrome
 
-
+aku tidak butuh @push css, tidak butuh looping, tidak butuh @push script.

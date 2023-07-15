@@ -1,5 +1,5 @@
 /* agar teks biasa ketika di hover, kursor nya akan jadi anak panah */
-/* panggil .jadika_pointer */
+/* panggil .jadikan_pointer */
 .jadikan_pointer {
     /* property kursor: pointer */
     cursor: pointer;

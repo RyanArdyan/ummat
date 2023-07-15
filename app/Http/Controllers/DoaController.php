@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 // gunakan atau import
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 // package laravel datatables
 use DataTables;
 use App\Models\Doa;
@@ -26,12 +27,17 @@ class DoaController extends Controller
         else if ($is_admin === "0") {
             // ambil semua doa , ambil data terbaru
             // berisi Doa, pilih semua value column doa_id dan nama_doa, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_doa = Doa::select('doa_id', 'nama_doa')->orderBy('updated_at', 'desc')->get();
+            // $semua_doa = Doa::select('doa_id', 'nama_doa')->orderBy('updated_at', 'desc')->get();
+
+            // berisi mengambil data doa dari api external, aku dapat dari https://github.com/farizdotid/DAFTAR-API-LOKAL-INDONESIA
+            $semua_doa = Http::get('https://doa-doa-api-ahmadramadhan.fly.dev/api');
+
+            // return response()->json($semua_doa->json());
 
             // kembalikkan ke tampilan jamaah.doa.index, kirimkan data berupa array, 
             return view('jamaah.doa.index', [
                 // key semua_doa berisi value $semua_doa
-                'semua_doa' => $semua_doa
+                'semua_doa' => $semua_doa->json()
             ]);
         };
     }
@@ -80,12 +86,16 @@ class DoaController extends Controller
     }
 
     // method show untuk menampilkan detail_doa
-    // parameter doa adalah fitur pengikatan route model untuk mengambil detail_doa berdasarkan doa_id yang dikirim oleh script, karena url nya adalah {doa} maka parameter nya adalah $doa
-    public function show(Doa $doa) {
-        // kembalikan tanggapan berupa json lalu kirimkan data berupa array
-        return response()->json([
-            // key detail_doa berisi value parameter doa yang berisi detail_doa
-            'detail_doa' => $doa
+    // parameter doa_id berisi daa_id misalnya 1 yang dikirim oleh script
+    public function show($doa_id) {
+        // berisi panggil api external lalu kirimkan value parameter $doa_id lalu ubah data ke json, lalu ambil data index 0
+        // bersi Http dapatkan value detail baris data dari url berikut lalu kirimkan doa_id sebagai argument, lalu ubah ke json, lalu ambil data index 0
+        $detail_doa = Http::get("http://doa-doa-api-ahmadramadhan.fly.dev/api/$doa_id")->json()[0];
+
+        // kembalikkan ke tampilan jamaah.doa.detail lalu kirimkan data berupa array
+        return view('jamaah.doa.detail', [
+            // key detail_doa berisi value variable $detail_doa, ubah ke json   
+            'detail_doa' => $detail_doa
         ]);
     }
     

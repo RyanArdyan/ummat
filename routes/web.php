@@ -130,8 +130,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
     
     // route tipe dapatkan, jika user dirahkan ke url /doa maka arahkan ke DoaController, method index, name nya adalah doa.index
     Route::get('/doa', [DoaController::class, 'index'])->name('doa.index');
-    // route tipe dapatkan, jika user dirahkan ke url /doa lalu tangkap dan kirimkan doa_id ke parameter method show milik DoaController, name nya adalah doa.show
-    Route::get('/doa/{doa}', [DoaController::class, 'show'])->name('doa.show');
+    // route tipe dapatkan, jika user dirahkan ke url /doa lalu tangkap dan kirimkan doa_id ke DoaController, method show, name nya adalah doa.show
+    Route::get('/doa/{doa_id}', [DoaController::class, 'show'])->name('doa.show');
 
     // route tipe dapatkan, jika user dirahkan ke url /kategori maka arahkan ke KategoriController, method index, name nya adalah kategori.index
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
