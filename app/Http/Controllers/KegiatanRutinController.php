@@ -100,8 +100,8 @@ class KegiatanRutinController extends Controller
         // validasi semua inout yang punya attribute name
         // berisi validator dibuat untuk semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
-            'nama_kegiatan' => 'required|max:255',
+            // value input name nama_kegiatan harus wajib, unik atau tidak boleh sama dan maksimal nya adalah 255
+            'nama_kegiatan' => 'required|unique:kegiatan_rutin|max:255',
             // value input name jam_mulai harus wajib
             'jam_mulai' => 'required',
             // value input name jam_selesai harus wajib
@@ -182,14 +182,25 @@ class KegiatanRutinController extends Controller
     public function update(Request $request, $kegiatan_rutin_id)
     {
         // ambil detail kegiatan berdasarkan kegiatan_rutin_id
-        // berisi Kegiatan dimana value column kegiatan_rutin_id sama dengan kegiatan_rutin_id, yang pertama saja
+        // berisi KegiatanRutin dimana value column kegiatan_rutin_id sama dengan paramter $kegiatan_rutin_id, ambil data baris pertama saja
         $detail_kegiatan = KegiatanRutin::where('kegiatan_rutin_id', $kegiatan_rutin_id)->first();
+
+        // jika value input name="nama_kegiatan" sama dengan value detail_kegiatan, column nama_kegiatan berarti user tidak mengubah nama_kegiatan nya maka
+        if ($request->nama_kegiatan === $detail_kegiatan->nama_kegiatan) {
+            // value input name="nama_kegiatan" harus diisi, maksimal nya 255
+            $validasi_nama_kegiatan = 'required|max:255';
+        }
+        // lain jika value input name="nama_kegiatan" tidak sama dengan value detail_kegiatan, column nama_kegiatan berarti user mengubah nama_kegiatan nya
+        else if ($request->nama_kegiatan !== $detail_kegiatan->nama_kegiatan) {
+            // value input name="nama_kegiatan" harus diisi, unik atau tidak boleh sama, maksimal nya 255
+            $validasi_nama_kegiatan = "required|unique:kegiatan_rutin|max:255";
+        };
 
         // validasi input yang punya attribute name
         // berisi validator buat semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name nama_kegiatan harus wajib dan maksimal nya adalah 255
-            'nama_kegiatan' => 'required|max:255',
+            // value input name="nama_kegiatan" harus mengikuti aturan dari variable 
+            'nama_kegiatan' => $validasi_nama_kegiatan,
             // value input name jam_mulai harus wajib
             'jam_mulai' => 'required',
             // value input name jam_selesai harus wajib
@@ -269,14 +280,24 @@ class KegiatanRutinController extends Controller
     }
 
     // Hapus beberapa kegiatan_rutin yang di centang
-    // $request berisi beberapa value input name="kegiatan_rutin_ids[]" yang dibuat di KegiatanRutinController, method read, anggaplah berisi ["1", "2"]
+    // parameter $request berisi beberapa value input name="kegiatan_rutin_ids[]" yang dibuat di KegiatanRutinController, method read, anggaplah berisi ["1", "2"]
     public function destroy(Request $request)
     {
         // berisi $permintaan->kegiatan_rutin_ids atau value input name="kegiatan_rutin_ids[]", anggaplah berisi ["1", "2"]
         $kegiatan_rutin_ids = $request->kegiatan_rutin_ids;
-        // hapus beberapa kegiatan_rutin berdasarkan beberapa kegiatan_rutin_id yang di kirimkan
-        // KegiatanRutin dimana dalam column kegiatan_rutin_id berisi value yang sama dengan $kegiatan_rutin_ids maka hapus
-        KegiatanRutin::whereIn('kegiatan_rutin_id', $kegiatan_rutin_ids)->delete();
+
+        // looping $kegiatan_rutin_ids agar mengambil setiap baris kegiatan_rutin yang sesuai
+        foreach ($kegiatan_rutin_ids as $kegiatan_rutin_id) {
+            // anggaplah di baris 1 pengulangan ada "1", di baris 2 pengulangan ada "2"
+            // berisi ambil detail_kegiatan_rutin dimana value column kegiatan_rutin_id sama dengan variable $kegiatan_rutin_id, ambil data baris pertama
+            $detail_kegiatan_rutin = KegiatanRutin::where('kegiatan_rutin_id', $kegiatan_rutin_id)->first();
+            // hapus gambar_kegiatan_rutin
+            // Penyimpanan::hapus('/public/gambar_kegiatan_rutin/' digabung value detail_kegiatan_rutin, column gambar_kegiatan
+            Storage::delete('public/gambar_kegiatan_rutin/' . $detail_kegiatan_rutin->gambar_kegiatan);
+
+            // hapus detail_kegiatan_rutin
+            $detail_kegiatan_rutin->delete();
+        };
 
         // kembalikkan tanggapan berupa json
         return response()->json([

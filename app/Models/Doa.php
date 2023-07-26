@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+// gunakan UUID sebagai column primary key
+// use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Doa extends Model
 {
     use HasFactory;
+    // gunakan UUID sebagai column primary key
+    // use HasUuids;
 
     // nama table bawaan nya adalah jamak versi inggris maka nya aku mengubah nya
     // lindungi $meja = 'doa';

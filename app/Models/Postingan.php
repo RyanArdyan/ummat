@@ -22,7 +22,7 @@ class Postingan extends Model
     // lindungi $penjaga = [];
     protected $guarded = [];
 
-    // Misalnya, saat Commentmodel diperbarui, Anda mungkin ingin secara otomatis "menyentuh" updated_at​​stempel waktu kepemilikan Postsehingga diatur ke tanggal dan waktu saat ini. 
+    // Misalnya, saat Commentmodel diperbarui, Anda mungkin ingin secara otomatis "menyentuh" updated_at ​​stempel waktu kepemilikan Post sehingga diatur ke tanggal dan waktu saat ini. 
     protected $touches = ["kategori"];
 
     // relasi banyak ke banyak atau many to many
@@ -51,5 +51,14 @@ class Postingan extends Model
         // argumen kedua adalah foreign key di table postingan
         // argumen ketiga adalah primary key di table user
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    // 1 postingan punya banyak komentar
+    public function komentar()
+    {
+        // 1 postingan punya banyak komentar dimana value column parent_id sama dengan kosong berarti hanya mengambil baris table postingan yang column parent_id nya kosong dan jika column parent_id nya ada isi nya maka tidak akan diambil 
+        // argument pertama adalah berelasi dengan model komentar
+        // argument kedua adalah foreign key di table komentar,
+        return $this->hasMany(Komentar::class, 'postingan_id')->whereNull('parent_id')->orderBy('updated_at', 'desc');
     }
 }

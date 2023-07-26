@@ -25,10 +25,5 @@ https://www.iankumu.com/blog/laravel-many-to-many-relationship/
 https://www.iankumu.com/blog/page/3/?s=laravel
 
 
-
 Tugas
-Aku click card misalnya "doa sebelum tidur" maka pindah ke route doa.show lalu mengirim id nya atau url /doa/1, di route aku harus menangkap kemudian kirim id, lalu ke DoaController, method show, parameter tangkap id nya menggunakan doa_id, ambil detail baris data berdasarkan id lalu kirimkan ke tampilan views/admin/doa/detail mengunakan array dan key dan value. lalu di detail.blade aku bisa mencetak detail_doa lalu columnya misalnya nama_doa.
-
-
-
-aku tidak butuh @push css, tidak butuh looping, tidak butuh @push script.
+Keinginanku di fitur donasi adalah user memasukkan jumlah uang yang ingin di donasikan lalu tekan tombol donasi maka muncul notifikasi "Berhasil melakukan donasi". lalu formulir nya ke reset.

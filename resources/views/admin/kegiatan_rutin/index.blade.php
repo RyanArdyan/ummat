@@ -180,7 +180,7 @@ $("#tombol_hapus").on("click", function() {
                         // notifkasi menggunakan sweetalert
                         Swal.fire(
                             'Dihapus!',
-                            'Berhasil menghapus kegiatan_rutin yang dipilih.',
+                            'Berhasil menghapus kegiatan rutin yang dipilih.',
                             'success'
                         );
                         // reload ajax table

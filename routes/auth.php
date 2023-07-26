@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
     // route tipe letakkan, jika user diarahkan ke url password maka arahkan ke PasswordPengendali, method perbarui, name nya adalah password.perbarui
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-    // route tipe kirim, jika user diarahkan ke url logout maka arahkan ke AutentikasiPengendali, method keluar, name nya adalah keluar
+    // route tipe post, jika user diarahkan ke url logout maka arahkan ke AutentikasiPengendali, method keluar, name nya adalah keluar
     Route::post('logout', [AutentikasiController::class, 'logout'])
                 ->name('logout');
 });

@@ -15,22 +15,25 @@
     @php
         // gunakan carbon untuk mengubah 2023-06-25 menjadi Sunday, 25 June 2023
         use Carbon\Carbon;
+        // aku butuh str agar misalnya ada 100 karakter akan menjadi 50 karakter dan diakhir ada ..., misalnya hahaha...
+        use Illuminate\Support\Str;
     @endphp
 
     {{-- looping sebanyak jumlah semua_postingan --}}
     {{-- untukSetiap ($semua_postingan sebagai $postingan) --}}
     @foreach ($semua_postingan as $postingan)
-        {{-- panggil route postingan.show, lalu kirimkan data berupa array, key slug_postingan berisi value detail_ppstingan, column slug_postingan --}}
-        <a href="{{ route('postingan.show', [$postingan->slug_postingan]) }}">
-            {{-- berarti di satu baris, ada 3 column --}}
-            <div class="col-sm-4">
+        {{-- berarti di satu baris, ada 3 column --}}
+        <div class="col-sm-4">
+            {{-- panggil route postingan.show, lalu kirimkan data berupa array, berisi value detail_ppstingan, column slug_postingan --}}
+            <a href="{{ route('postingan.show', [$postingan->slug_postingan]) }}">
                 <!-- Simple card -->
-                <div class="card">
+                <div class="card" style="height: 300px;">
                     {{-- cetak asset() berarti panggil folder public --}}
-                    <img class="card-img-top img-fluid" src='{{ asset("storage/gambar_postingan/uji.jpg") }}' alt="{{ $postingan->judul_postingan }}">
+                    <img class="card-img-top img-fluid" src='{{ asset("storage/gambar_postingan/$postingan->gambar_postingan") }}' alt="{{ $postingan->judul_postingan }}">
                     <div class="card-body">
+                        {{-- limit atau batas berarti karakter 65 dan seterusnya akan terpotong kemudian diganti ... --}}
                         {{-- cetak setiap detail_postingan, column judul_postingan --}}
-                        <h4 class="card-title mb-2">{{ $postingan->judul_postingan }}</h4>
+                        <h4 class="card-title mb-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ $postingan->judul_postingan }}">{{ Str::limit($postingan->judul_postingan, 65) }}</h4>
 
                         {{-- untuk mencetak misalnya postingan ini ditulis 1 hari yang lalu --}}
                         @php 
@@ -47,8 +50,8 @@
                         <p class="card-text">{{ $postingan->user->name }}</p>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
     @endforeach
 </div>
 @endsection

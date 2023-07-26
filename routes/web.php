@@ -9,13 +9,17 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PostinganController;
 use App\Http\Controllers\PenceramahController;
 
-
 // panggil routes/auth.php
 // membutuhkan directori yang sma digabung auth.php
 require __DIR__.'/auth.php';
 
 // route tipe alihkan, jika user di url awal maka arahkan ke url /login
 Route::redirect('/', '/login');
+
+// route tipe dapatkan, jika user dirahkan ke url /doa/simpan-data-doa-dari-api-external maka arahkan ke DoaController, method simpan_data_doa_dari_api_external, nama nya adalah doa.simpan_data_doa_dari_api_external
+Route::get('/doa/simpan-data-doa-dari-api-external', [DoaController::class, 'simpan_data_doa_dari_api_external'])->name('doa.simpan_data_doa_dari_api_external');
+// route tipe dapatkan, jika user diarahkan ke url /postingan/detail-komentar-terbaru lalu kirimkan value detail_postingan, column postingan_id lalu arahkan ke PostinganController, method detail_komentar_terbaru, namenya adalah postingan.detail_komentar_terbaru
+Route::get('/postingan/detail-komentar-terbaru/{postingan_id}', [PostinganController::class, 'detail_komentar_terbaru'])->name('postingan.detail_komentar_terbaru');
 
 // middleware untuk admin yang sudah login dan sudah verifikasi di column email_verified_at
 // auth di dapatkan dari App/Http/Kernel.php
@@ -74,12 +78,14 @@ Route::middleware(['can:is_admin', 'auth', 'verified'])->group(function() {
     // route tipe kirim, jika user dirahkan ke url /kategori/hancurkan maka arahkan ke KategoriController, method hancurkan, name nya adalah kategori.hancurkan
     Route::post('/kategori/destroy', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 
+    // route tipe dapatkan, jika user dirahkan ke url /postingan/baca maka arahkan ke PostinganController, method baca, nama nya adalah postingan.baca
+    Route::get('/postingan/read', [PostinganController::class, 'read'])->name('postingan.read');
     // route tipe dapatkan, jika user dirahkan ke url /postingan/create maka arahkan ke PostinganController, method create, name nya adalah postingan.create
     Route::get('/postingan/create', [PostinganController::class, 'create'])->name('postingan.create');
     // route tipe kirim, jika user dirahkan ke url /postingan/simpan maka arahkan ke PostinganController, method simpan, name nya adalah postingan.simpan
     Route::post('/postingan/store', [PostinganController::class, 'store'])->name('postingan.store');
-    // route tipe dapatkan, jika user dirahkan ke url /postingan/baca maka arahkan ke PostinganController, method baca, nama nya adalah postingan.baca
-    Route::get('/postingan/read', [PostinganController::class, 'read'])->name('postingan.read');
+    // // route tipe dapatkan, jika user dirahkan ke url /postingan/baca maka arahkan ke PostinganController, method baca, nama nya adalah postingan.baca
+    // Route::get('/postingan/read', [PostinganController::class, 'read'])->name('postingan.read');
     // route tipe dapatkan, jika user dirahkan ke url /postingan/edit maka kirimknan value postingan_id pake {postingan}, aku mengunakan fitur pengikatan route model agar aku bisa mengambil detail postingan berdasarkan postingan_id arahkan ke PostinganController, method edit, nama nya adalah postingan.edit
     Route::get('/postingan/edit/{postingan}', [PostinganController::class, 'edit'])->name('postingan.edit');
     // route tipe letakkan, jika user dirahkan ke url /postingan/ maka kirimkan value postingan_id nya agar aku bisa memperbarui detail postingan berdasarkan postingan_id menggunakan fitur pengikatan route model lalu arahkan ke PostinganController, method update, nama nya adalah postingan.update
@@ -130,8 +136,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
     
     // route tipe dapatkan, jika user dirahkan ke url /doa maka arahkan ke DoaController, method index, name nya adalah doa.index
     Route::get('/doa', [DoaController::class, 'index'])->name('doa.index');
-    // route tipe dapatkan, jika user dirahkan ke url /doa lalu tangkap dan kirimkan doa_id ke DoaController, method show, name nya adalah doa.show
-    Route::get('/doa/{doa_id}', [DoaController::class, 'show'])->name('doa.show');
+    // route tipe dapatkan, jika user dirahkan ke url /doa lalu tangkap dan kirimkan doa_id lalu gunakan fitur pengikatan route model lalu ke DoaController, method show, name nya adalah doa.show
+    Route::get('/doa/{doa}', [DoaController::class, 'show'])->name('doa.show');
 
     // route tipe dapatkan, jika user dirahkan ke url /kategori maka arahkan ke KategoriController, method index, name nya adalah kategori.index
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
@@ -143,6 +149,16 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
     // route tipe dapatkan, jika user dirahkan ke url /penceramah maka arahkan ke PenceramahController, method index, name nya adalah penceramah.index
     Route::get('/penceramah', [PenceramahController::class, 'index'])->name('penceramah.index');
+
+    // rute tipe kirim jika user diarahkan ke url /postingan/komentar maka arahkan ke PostinganController, method simpan_komentar, name nya adalah postingan.simpan_komentar
+    Route::post('/postingan/komentar', [PostinganController::class, 'simpan_komentar'])->name('postingan.simpan_komentar');
+
+    // route tipe dapatkan, jika user diarahkan ke url /postingan/halaman-semua-komentar lalu kirimkan value detail_postingan, column postingan_id lalu gunakan fitur pengkatan route model agar aku bisa mengambil detail_postingan lalu arahkan ke PostinganController, method halaman_semua_komentar, namenya adalah postingan.halaman_semua_komentar
+     Route::get('/postingan/halaman-semua-komentar/{postingan}', [PostinganController::class, 'halaman_semua_komentar'])->name('postingan.halaman_semua_komentar');
+
+
+    // route tipe dapatkan, jika user diarahkan ke url /postingan/read-semua-komentar lalu kirimkan value detail_postingan, column postingan_id lalu gunakan fitur pengikatan route model untuk mengambil detail_postingan maka arahkan ke PostinganController, method read_semua_komentar, namenya adalah postingan.read_semua_komentar
+    Route::get('/postingan/read-semua-komentar/{postingan}', [PostinganController::class, 'read_semua_komentar'])->name('postingan.read_semua_komentar');
 });
 
 

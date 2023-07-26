@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
         // validasi untuk semua input yang punya attribute name
 		$validator = Validator::make($request->all(), [
             // value input name="name" harus mengikut aturan berikut
-            'name' => ['required', 'string', 'min:3', 'max:50'],
+            'name' => ['required', 'unique:users', 'string', 'min:3', 'max:50'],
             // unique berarti tidak boleh sama
             // new GmailRule berarti user hanya boleh memasukkan akun gmail
             'email' => ['required', new GmailRule, 'string', 'email', 'max:255', 'unique:'.User::class],

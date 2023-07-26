@@ -78,18 +78,6 @@
                                 {{-- panggil route penceramah.index --}}
                                 <a href="{{ route('penceramah.index') }}">Penceramah</a>
                             </li>
-
-
-                            {{-- form ketika dikirim panggil route tipe kirim, pangil route yang bernama logout --}}
-                            <form action="{{ route('logout') }}" method="POST">
-                                {{-- laravel mewajibkan csrf untuk keamanan dari serangan csrf --}}
-                                @csrf
-                                <!-- item-->
-                                <button type="submit" class="dropdown-item notify-item">
-                                    <i class="fe-log-out"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
                         </ul>
                     </li>
             </ul>

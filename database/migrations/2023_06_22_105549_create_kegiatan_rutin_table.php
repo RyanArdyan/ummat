@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('kegiatan_rutin', function (Blueprint $table) {
             // buat tipe data big integer yang auto increment dan primary key atau kunci utama
             $table->bigIncrements('kegiatan_rutin_id');
-            // tipe string, column nama_kegiatan
-            $table->string('nama_kegiatan');
+            // tipe string, column nama_kegiatan, value nya harus unique atau tidak boleh sama
+            $table->string('nama_kegiatan')->unique();
             // tipe string, column gambar_kegiatan
             $table->string('gambar_kegiatan');
             // tipe enum di mysql adalah nilai data yang akan digunakan ketika penginputan data, sehingga ketika ada value yang tidak sesuai dengan nilai yang sudah didefinisikan sebelumnya, maka akan menghasilkan error.

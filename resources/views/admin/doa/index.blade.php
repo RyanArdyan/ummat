@@ -8,7 +8,7 @@
 @push('css')
 @endpush
 
-{{-- kirimkan value @bagian('konten') lalu nanti ditangkap @stack(j'konten')  --}}
+{{-- kirimkan value @bagian('konten') lalu nanti ditangkap @stack('konten')  --}}
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
@@ -26,7 +26,7 @@
             <form id="form_doa">
                 <!-- laravel mewajibkan keamanan dari serangan csrf -->
                 @csrf
-                <table class="table table-striped table-sm">
+                <table id="table_doa" class="table table-striped table-sm">
                     <thead class="bg-primary">
                         <tr>
                             <!-- Pilih atau kotak centang -->
@@ -37,9 +37,11 @@
                             <th scope="col" width="5%">No</th>
                             <th scope="col">Nama Doa</th>
                             <th scope="col">Action</th>
+
                         </tr>
                     </thead>
                 </table>
+                
             </form>
         </div>
 
@@ -184,13 +186,16 @@ $(document).on("click", ".tombol_detail_doa", function() {
     let doa_id = $(this).data("doa-id");
     // jquery lakukan ajax untuk mengambil detail_doa
     $.ajax({
-        // url panggil url /doa lalu kirimkan value variable doa_id
+        // panggil url /doa lalu kirimkan value variable doa_id
         // tanda backtiq (``) bisa mencetak value variable di dalam string menggunakan ${}
         url: `/doa/${doa_id}`,
+        // panggil route tipe get
         type: 'GET',
     })
     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
     .done(function(resp) {
+        // cetak value resp.detail_doa
+        console.log(resp.detail_doa);
         // panggil #nama_doa lalu text nya diisi tanggapan.detaiL_doa.nama_doa
         $("#nama_doa").text(resp.detail_doa.nama_doa);
         // panggil #bacaan_arab lalu text nya diisi tanggapan.detaiL_doa.bacaan_arab

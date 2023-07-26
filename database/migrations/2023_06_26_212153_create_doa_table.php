@@ -15,14 +15,18 @@ return new class extends Migration
         Schema::create('doa', function (Blueprint $table) {
             // buat tipe data big integer yang auto increment dan primary key atau kunci utama
             $table->bigIncrements('doa_id');
+
+            // // metode uuid membuat kolom uuid
+            // // $meja, tipe uuid, column doa_id, merupakan primary key
+            // $table->uuid("doa_id")->primary();
             // tipe string, column nama_doa, harus unique()
             $table->string('nama_doa')->unique();
             // tipe string, column bacaan_arab, harus unique()
-            $table->string('bacaan_arab')->unique();
+            $table->text('bacaan_arab')->unique();
             // tipe string, column bacaan_latin, harus unique()
-            $table->string('bacaan_latin')->unique();
-            // tipe string, column arti_doanya, harus unique()
-            $table->string('arti_doanya')->unique();
+            $table->text('bacaan_latin')->unique();
+            // tipe text, column arti_doanya
+            $table->text('arti_doanya');
             $table->timestamps();
         });
     }

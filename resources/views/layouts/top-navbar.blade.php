@@ -17,7 +17,7 @@
                 <span class="pro-user-name ml-1 nama_user">
                     {{-- cetak value detail user yang login, column name --}}
                     {{-- cetak autentikasi()->pengguna()->nama --}}
-                    {{ auth()->user()->name }} <i class="mdi mdi-chevron-down"></i> 
+                    {{ auth()->user()->name }}
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right profile-dropdown ">

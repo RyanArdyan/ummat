@@ -13,31 +13,63 @@ use App\Models\Doa;
 
 class DoaController extends Controller
 {
+    // panggil method ini jika data ada table doa itu kosong, jadi jika aku php artisan migrate:fresh --seed, aku harus panggil route untuk memanggil method ini
+    // aku mengambil data doa dari api external yaitu https://github.com/farizdotid/ lalu aku menyimpan ke database
+    public function simpan_data_doa_dari_api_external()
+    {
+        // berisi mengambil data doa dari api external, aku dapat dari https://github.com/farizdotid/DAFTAR-API-LOKAL-INDONESIA
+        // berisi http dapatkan data dari url berikut, lalu ubah data nya menjadi json
+        $semua_doa = Http::get('https://doa-doa-api-ahmadramadhan.fly.dev/api')->json();
+
+
+        // looping semua doa
+        // untukSetiap $semua_doa sebagai $doa
+        foreach ($semua_doa as $doa) {
+            // lakukan penyimpan data terhadap semua doa misalnya 32
+            Doa::create([
+                'nama_doa' => $doa["doa"],
+                "bacaan_arab" => $doa["ayat"],
+                "bacaan_latin" => $doa["latin"],
+                "arti_doanya" => $doa["artinya"]
+            ]);
+        };
+
+        // berisi mengambil semua data doa dari table doa
+        // berisi model doa, ambil semua data
+        $semua_doa_dari_table_doa = Doa::all();
+
+        // kembalikkan tanggapan berupa json lalu kirimkan value data berupa array
+        return response()->json([
+            // key message berisi value string berikut
+            'message' => 'Berhasil menyimpan data doa dari api external',
+            // key semua_doa berisi value variable berikut
+            'semua_doa' => $semua_doa_dari_table_doa
+        ]);
+    }
+
+    // Jika yang login adalah admin maka menampilkan halaman doa saja dan jika yg login adalah jamaah maka maka akan menapilkan halaman doa dan mengirimkan semua data doa
     public function index() {
         // berisi ambil value detail user yang autetikasi atau login, column is_admin
         $is_admin = Auth::user()->is_admin;
 
+        // mengambil semua data doa, data terbaru akan tampil di paling atas
+        // berisi Doa dipesan oleh column diperbarui_pada, menurun, dapatkan semua datanya
+        $semua_doa = Doa::orderBy('updated_at', 'desc')->get();
+
+        // mengambil data semua doa dari table doa
+
         // jika yang login adalah admin maka 
         // jika value variable is_admin nya sama dengan "1"
         if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.doa.index
+            // kembalikkan ke tampilan admin.doa.index lalu kirimkan data berupa array
             return view('admin.doa.index');
         }
-        // lain jika yang login adalah jamaah maka
+        // lain jika yang login adalah jamaah atau value variable is_admin sama dengan 0 maka
         else if ($is_admin === "0") {
-            // ambil semua doa , ambil data terbaru
-            // berisi Doa, pilih semua value column doa_id dan nama_doa, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            // $semua_doa = Doa::select('doa_id', 'nama_doa')->orderBy('updated_at', 'desc')->get();
-
-            // berisi mengambil data doa dari api external, aku dapat dari https://github.com/farizdotid/DAFTAR-API-LOKAL-INDONESIA
-            $semua_doa = Http::get('https://doa-doa-api-ahmadramadhan.fly.dev/api');
-
-            // return response()->json($semua_doa->json());
-
             // kembalikkan ke tampilan jamaah.doa.index, kirimkan data berupa array, 
             return view('jamaah.doa.index', [
                 // key semua_doa berisi value $semua_doa
-                'semua_doa' => $semua_doa->json()
+                'semua_doa' => $semua_doa
             ]);
         };
     }
@@ -59,20 +91,20 @@ class DoaController extends Controller
             ->addColumn('select', function(Doa $doa) {
                 // return element html
                 // name="doa_ids[]" karena name akan menyimpan array yang berisi beberapa doa_id, contohnya ["1", "2"]
-                // attribute value digunakan untuk memanggil setiap value column doa_id
+                // attribute value digunakan untuk memanggil setiap value detail_doa, column doa_id
                 return '
                         <input name="doa_ids[]" value="' . $doa->doa_id . '" class="pilih select form-check-input mx-auto" type="checkbox">
                 ';
             })
             // buat tombol edit
-            // tambahKolom('aksi', fungsi(doa $doa))
+            // tambahKolom('aksi', fungsi(doa $doa)), variable $doa berisi setiap value doa.
             ->addColumn('action', function(Doa $doa) {
-                // panggil url /doa/edit/ lalu kirimkan value doa_id nya agar aku bisa mengambil detail doa berdasarkan doa_id
                 // jika ingin membuat attribute maka gunakan data-nama-attribute, data-doa-id berisi setiap value detail_doa, column doa_id
                 return  "
                     <button type='button' class='tombol_detail_doa btn btn-sm btn-success mt-1' data-doa-id='$doa->doa_id' data-toggle='modal' data-target='.modal_detail_doa'>
                         <i class='mdi mdi-eye'></i>
                     </button>
+
                     <a href='/doa/edit/$doa->doa_id' class='btn btn-warning btn-sm mt-1'>
                         <i class='fas fa-pencil-alt'></i>
                     </a>
@@ -85,17 +117,11 @@ class DoaController extends Controller
         ->make(true);
     }
 
-    // method show untuk menampilkan detail_doa
-    // parameter doa_id berisi daa_id misalnya 1 yang dikirim oleh script
-    public function show($doa_id) {
-        // berisi panggil api external lalu kirimkan value parameter $doa_id lalu ubah data ke json, lalu ambil data index 0
-        // bersi Http dapatkan value detail baris data dari url berikut lalu kirimkan doa_id sebagai argument, lalu ubah ke json, lalu ambil data index 0
-        $detail_doa = Http::get("http://doa-doa-api-ahmadramadhan.fly.dev/api/$doa_id")->json()[0];
-
-        // kembalikkan ke tampilan jamaah.doa.detail lalu kirimkan data berupa array
-        return view('jamaah.doa.detail', [
-            // key detail_doa berisi value variable $detail_doa, ubah ke json   
-            'detail_doa' => $detail_doa
+    // method show untuk menampilkan detail_doa berdasarkan doa_id
+    // parameter doa berisi value detail_doa, aku menggunkana fitur pengikatan route model
+    public function show(Doa $doa) {
+        return response()->json([
+            'detail_doa' => $doa
         ]);
     }
     
@@ -107,20 +133,20 @@ class DoaController extends Controller
         return view('admin.doa.formulir_create');
     }
 
-    // parameter $permintaan berisi semua value attribute name
+    // parameter $permintaan berisi semua value input, attribute name
     public function store(Request $request)
     {
         // validasi semua inout yang punya attribute name
         // berisi validator buat untuk semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name nama_doa harus wajib, minimal 3 dan maksimal nya adalah 255
-            'nama_doa' => 'required|min:3|max:255',
-            // value input name bacaan_arab harus wajib dan maksimal nya adalah 255
-            'bacaan_arab' => 'required|max:255',
-            // value input name bacaan_latin harus wajib dan maksimal nya adalah 255
-            'bacaan_latin' => 'required|max:255',
+            // value input name nama_doa harus wajib, minimal 3 dan maksimal nya adalah 255 dan harus unik atau value nya tidak boleh sama
+            'nama_doa' => 'required|min:3|max:255|unique:doa',
+            // value input name bacaan_arab harus wajib dan harus unique
+            'bacaan_arab' => 'required|unique:doa',
+            // value input name bacaan_latin harus wajib dan harus unique
+            'bacaan_latin' => 'required|unique:doa',
             // value input name arti_doanya harus wajib dan maksimal nya adalah 255
-            'arti_doanya' => 'required|max:255',
+            'arti_doanya' => 'required',
         ]);
 
         // buat validasi
@@ -138,6 +164,37 @@ class DoaController extends Controller
         }
         // jika validasi berhasil
         else {
+            // berisi mengambil data doa dari api external, aku dapat dari https://github.com/farizdotid/DAFTAR-API-LOKAL-INDONESIA
+            // berisi http dapatkan data dari url berikut, lalu ubah data nya menjadi json
+            $semua_doa = Http::get('https://doa-doa-api-ahmadramadhan.fly.dev/api')->json();
+
+            // array ini digunakan untuk menampung setiap value detail_doa, column doa dari api external
+            $array_doa = [];
+
+            // looping semua_doa dari api external agar aku tidak bisa menambahkan doa yang sudah add di api external
+            // untukSetiap $semua_doa sebagai $doa
+            foreach($semua_doa as $doa) {
+                // mengubah value detail_doa, column doa menjadi huruf kecil semua misalnya "Doa sebelum tidur" menjadi "doa sebelum tidur"
+                // berisi mengubah setiap detail_doa, column oda menjadi huruf kecil semua
+                $doa = strtolower($doa["doa"]);
+
+                // dorong setiap value variable $doa ke dalam array $array_doa
+                // array_
+                // array_push($array_doa, $doa);
+
+                // ubah string di value input name="nama_doa" menjadi huruf kecil semua misalnya "Doa Makan" menjadi "doa makan"
+                // berisi string ke bawah dari value input name="nama_doa"
+                $value_input_nama_doa = strtolower($request->nama_doa);
+
+                // jika value variable doa sama dengan value variable $value_input_nama_doa
+                if ($doa === $value_input_nama_doa) {
+                    // kembalikkan tanggapana berupa json lalu kirimkan data berupa array
+                    return response()->json([
+                        "pesan" => "Doa itu sudah ada"
+                    ]);
+                };
+            };
+
             // Simpan doa ke table doa
             // Doa buat
             Doa::create([
@@ -152,7 +209,7 @@ class DoaController extends Controller
             return response()->json([
                 // key status berisi 200
                 'status' => 200,
-                // key pesan berisi "doa PT Bisa berhasil disimpan."
+                // key pesan berisi "doa abc Bisa berhasil disimpan."
                 'pesan' => "$request->nama_doa berhasil disimpan.",
             ]);
         };
@@ -185,35 +242,24 @@ class DoaController extends Controller
 
         // jika nilai input bacaan_arab sama dengan nilai column bacaan_arab dari detail $doa berarti user tidak mengubah bacaan_arabnya nya
         if ($request->bacaan_arab === $doa->bacaan_arab) {
-            // bacaan_arab harus wajib, string dan maksimal 255
-            $validasi_bacaan_arab = 'required|string|max:255';
+            // bacaan_arab harus wajib, string
+            $validasi_bacaan_arab = 'required|string';
         }
         // lain jika input bacaan_arab tidak sama dengan detail_doa column bacaan_arab berarti user mengubah nama nya
         else if ($request->bacaan_arab !== $doa->bacaan_arab) {
-            // validasi bacaan_arab wajib, string, min 3, max 255  dan harus unik dari detail doa
-            $validasi_bacaan_arab = 'required|string|max:255|unique:doa';
+            // validasi bacaan_arab wajib, string, min 3, dan harus unik dari detail doa
+            $validasi_bacaan_arab = 'required|string|unique:doa';
         };
 
         // jika nilai input bacaan_latin sama dengan nilai column bacaan_latin dari detail $doa berarti user tidak mengubah bacaan_latinnya nya
         if ($request->bacaan_latin === $doa->bacaan_latin) {
-            // bacaan_latin harus wajib, string dan maksimal 255
-            $validasi_bacaan_latin = 'required|string|max:255';
+            // bacaan_latin harus wajib, string
+            $validasi_bacaan_latin = 'required|string';
         }
         // lain jika input bacaan_latin tidak sama dengan detail_doa column bacaan_latin berarti user mengubah nama nya
         else if ($request->bacaan_latin !== $doa->bacaan_latin) {
-            // validasi bacaan_latin wajib, string, min 3, max 255  dan harus unik dari detail doa
-            $validasi_bacaan_latin = 'required|string|max:255|unique:doa';
-        };
-
-        // jika nilai input arti_doanya sama dengan nilai column arti_doanya dari detail $doa berarti user tidak mengubah arti_doanyanya nya
-        if ($request->arti_doanya === $doa->arti_doanya) {
-            // arti_doanya harus wajib, string dan maksimal 255
-            $validasi_arti_doanya = 'required|string|max:255';
-        }
-        // lain jika input arti_doanya tidak sama dengan detail_doa column arti_doanya berarti user mengubah nama nya
-        else if ($request->arti_doanya !== $doa->arti_doanya) {
-            // validasi arti_doanya wajib, string, min 3, max 255  dan harus unik dari detail doa
-            $validasi_arti_doanya = 'required|string|max:255|unique:doa';
+            // validasi bacaan_latin wajib, string, min 3, dan harus unik dari detail doa
+            $validasi_bacaan_latin = 'required|string|unique:doa';
         };
 
         // validasi input yang punya attribute name
@@ -225,8 +271,8 @@ class DoaController extends Controller
             'bacaan_arab' => $validasi_bacaan_arab,
             // value input name bacaan_latin harus mengikuti aturan dari value variable $validasi_bacaan_latin
             'bacaan_latin' => $validasi_bacaan_latin,
-            // value input name arti_doanya harus mengikuti aturan dari value variable $validasi_arti_doanya
-            'arti_doanya' => $validasi_arti_doanya,
+            // value input name arti_doanya harus mengikuti aturan diisi
+            'arti_doanya' => "required",
         ]);
 
         // jika validasi gagal

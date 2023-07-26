@@ -15,7 +15,9 @@ use Image;
 use DataTables;
 use App\Models\Postingan;
 use App\Models\Kategori;
-use App\Models\PostinganKategori;
+use App\Models\Komentar;
+use App\Models\User;
+use App\Http\Controllers\Controller;
 
 class PostinganController extends Controller
 {
@@ -61,9 +63,13 @@ class PostinganController extends Controller
     // menampilkan semua data table postingan
     public function read()
     {
-        // jadi ambil semua_postingan lalu data terbaru akan tampil yang pertama
-        // berisi postingan dipesanOleh column diperbarui_pada, menurun, dapatkan semua data
-        $semua_postingan = Postingan::orderBy("updated_at", "desc")->get();
+        // berisi ambil value detail user yang autetikasi atau login,
+        $detail_user_yg_login = Auth::user();
+
+        // ambil semua postingan yg ditulis oleh user yg login
+        // berisi ambil value detail_user_yg_login yg berelasi dengan postingan lewat Models/user, method postingan, dipesanOleh column diperbarui_pada, menurun, dapatkan semua data
+        $semua_postingan = $detail_user_yg_login->postingan;
+
 
         // syntax punya yajra
         // kembalikkan datatables dari semua_postingan
@@ -226,8 +232,17 @@ class PostinganController extends Controller
     // method show, parameter $postingan itu fitur Pengikatan Model Rute jadi parameter $postingan berisi detail_postingan berdasarkan slug_postingan yang dikirimkan
     public function show(Postingan $postingan)
     {
-        // kembalikkkan ke tampilan jamaah.postingan.detail_postingan, lalu kirimkan array yang berisi key detail_postingan berisi value variable $detail_postingan
-        return view('jamaah.postingan.detail_postingan', ['detail_postingan' => $postingan]);
+        // ambil detail komentar baru dari postingan yg sesuai
+        // berisi komentar dimana value column postingan_id sama dengan value detail_postingan, column postingan_id, dipesan oleh column dibuat_pada, menurun, ambil data baris pertama
+        $detail_komentar_terbaru = Komentar::where('postingan_id', $postingan->postingan_id)->orderBy('created_at', 'desc')->first();
+
+        // kembalikkkan ke tampilan jamaah.postingan.detail_postingan, lalu kirimkan array
+        return view('jamaah.postingan.detail_postingan', [
+            // key detail_postingan berisi value variable $detail_postingan
+            'detail_postingan' => $postingan,
+            // key detail_komentar_terbaru berisi value variable $detail_komentar_terbaru
+            'detail_komentar_terbaru' => $detail_komentar_terbaru
+        ]);
     }
 
     // method edit, parameter $postingan itu fitur Pengikatan Model Rute jadi parameter $postingan_id berisi detail_postingan berdasarkan postingan_id yang dikirimkan
@@ -396,5 +411,130 @@ class PostinganController extends Controller
             'status' => 200,
             'pesan' => 'Berhasil menghapus postingan  yang dipilih.'
         ]);
+    }
+
+    // // parameter $request berisi semua value input name=""
+    // public function simpan_komentar(Request $request)
+    // {
+    //     // validasi input name="komentarnya"
+    //     $request->validate([
+    //         // value input name="komentarnya" harus diisi
+    //         'komentarnya' => 'required',
+    //     ]);
+        
+    //     // simpan komentar
+    //     Komentar::create([
+    //         // column user_id diisi value column user_id yang login
+    //         'user_id' => Auth::user()->user_id,
+    //         // column postingan_id diisi value input name="postingan_id"
+    //         'postingan_id' => $request->postingan_id,
+    //         // column komentarnya diisi value input name="komentarnya"
+    //         'komentarnya' => $request->komentarnya,
+    //         // column parent_id diisi value input name="parent_id, jika ada
+    //         'parent_id' => $request->parent_id
+    //     ]);
+    //     // kembalikkan ke url sebelum nya
+    //     return back();
+    // }
+
+    // parameter $permintaan berisi semua value attribute name
+    public function simpan_komentar(Request $request)
+    {
+        // validasi semua input yang punya attribute name
+        // berisi validator buat untuk semua permintaan
+        $validator = Validator::make($request->all(), [
+            // value input name komentarnya harus wajib dan maksimal nya adalah 255
+            'komentarnya' => 'required',
+        ]);
+
+        // buat validasi
+        // jika validator gagal
+        if ($validator->fails()) {
+            // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
+            return response()->json([
+                // key status berisi value 0
+                'status' => 0,
+                // key pesan berisi pesan berikut
+                'pesan' => 'Validasi Menemukan Error'
+            ]);
+        }
+        // jika validasi berhasil
+        else {
+            // berisi menangkap value input nama kategori atau input name="komentarnya"
+            $komentarnya = $request->komentarnya;
+            // kategori buat
+            Komentar::create([
+                // column user_id diisi value column user_id yang login
+                'user_id' => Auth::user()->user_id,
+                // column postingan_id diisi value input name="postingan_id"
+                'postingan_id' => $request->postingan_id,
+                // column komentarnya diisi value variable $komentarnya
+                'komentarnya' => $komentarnya,
+                // column parent_id diisi value input name="parent_id, jika ada
+                'parent_id' => $request->parent_id
+            ]);
+
+            // kembalikkan tanggapan berupa json
+            return response()->json([
+                // key status berisi 200
+                'status' => 200,
+                // key pesan berisi string berikut
+                'pesan' => "Komentar berhasil disimpan.",
+            ]);
+        };
+    }
+
+    // menampilkan halaman semua komentar
+    // parameter $postingan berisi value detail_postingan
+    public function halaman_semua_komentar(Postingan $postingan)
+    {
+        // kembalikkan ke tampilan jamaah.postingan.semua_komentar lalu kirimkan data berupa array
+        return view('jamaah.postingan.semua_komentar', [
+            // key detail_postingan berisi value parameter $postingan
+            'detail_postingan' => $postingan
+        ]);
+    }
+
+    // parameter $postingan berisi detail_postingan karena aku menggunakan fitur pengikatan route model
+    public function read_semua_komentar(postingan $postingan)
+    {
+        // ambil semua komentar terkait di suatu postingan
+        // berisi value detail_postingan yang berelasi dengan komentar
+        $semua_komentar = $postingan->komentar;
+
+        // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
+        return response()->json([
+            // key pesan berisi string berikut
+            'message' => 'Berhasil mengambil semua komentar',
+            // key semua_komentar berisi value variable semua_komentar
+            'semua_komentar' => $semua_komentar
+        ]);
+    }
+
+    // method show, parameter $postingan_id berisi value postingan_id misalnya 1
+    public function detail_komentar_terbaru($postingan_id)
+    {
+        // ambil detail komentar baru dari postingan yg sesuai
+        // berisi komentar dimana value column postingan_id sama dengan value detail_postingan, column postingan_id atau parameter $postingan_id, dipesan oleh column dibuat_pada, menurun, ambil data baris pertama
+        $detail_komentar_terbaru = Komentar::where('postingan_id', $postingan_id)->orderBy('created_at', 'desc')->first();
+
+        // Jika tidak ada value di variable detail_komentar_terbaru
+        if (!$detail_komentar_terbaru) {
+            // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
+            return response()->json([
+                // key pesan berisi string berikut
+                'message' => 'Belum ada komentar'
+            ]);
+        }
+        // lain jika ada value di variable detail_komentar_terbaru
+        else if ($detail_komentar_terbaru) {
+            // kembalikkkan tanggapan berupa json lalu kirimkan data berupa array
+            return response()->json([
+                // key pesan berisi string berikut
+                'message' => "Berhasil mengambil detail komentar terbaru beserta relasi nya",
+                // key detail_komentar_terbaru berisi value variable $detail_komentar_terbaru
+                'detail_komentar_terbaru' => $detail_komentar_terbaru
+            ]);
+        };
     }
 }

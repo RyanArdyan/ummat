@@ -134,6 +134,13 @@
                         $(`.${key}_error`).text(value[0]);
                     });
                 }
+                // lain jika value resp.pesan sama dengan "Doa itu sudah ada" maka
+                else if (resp.pesan === "Doa itu sudah ada") {
+                    // panggil #nama_doa lalu tambah class is-invalid
+                    $("#nama_doa").addClass("is-invalid");
+                    // panggil .nama_doa_error lalu text nya diisi value resp.pesan
+                    $(".nama_doa_error").text(resp.pesan);
+                }
                 // jika berhasil menyimpan doa sekali
                 // lain jika resp.status sama dengan 200
                 else if (resp.status === 200) {
