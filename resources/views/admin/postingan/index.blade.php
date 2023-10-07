@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
 @section('title', 'Postingan')
@@ -8,12 +8,15 @@
 @push('css')
 @endpush
 
+
+
+
 {{-- kirimkan value @bagian('konten') ke dalam @yield('konten')  --}}
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
         {{-- jika aku click tombol tambah Postingan maka pindah url dan halaman dengan cara cetak panggil route postingan.create --}}
-        <a href="{{ route('postingan.create') }}" class="btn btn-purple btn-sm mb-3">
+        <a href="{{ route('admin.postingan.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah Postingan
         </a>
@@ -69,7 +72,7 @@ let table = $("table").DataTable({
     // sisi server: benar
     serverSide: true,
     // lakukan ajax, ke route postingan.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('postingan.read') }}",
+    ajax: "{{ route('admin.postingan.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table postingan    
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -144,6 +147,9 @@ $("#select_all").on("click", function() {
 });
 
 
+// berarti lain jika resp.errors.kategori_id sama dengan "Input kategori id harus diisi."
+
+
 // Delete atau hapus
 // jika #tombol_hapus di click maka jalankan fungsi berikut
 $("#tombol_hapus").on("click", function() {
@@ -178,7 +184,7 @@ $("#tombol_hapus").on("click", function() {
                 // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
                 // sebenarnya aku mengirim beberapa value input name="postingan_ids" yang di centang
                 // jquery lakukan ajax tipe kirim, panggil route postingan.destroy, panggil #form_postingan, kirimkan value input
-                $.post("{{ route('postingan.destroy') }}", $("#form_postingan").serialize())
+                $.post("{{ route('admin.postingan.destroy') }}", $("#form_postingan").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert

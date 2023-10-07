@@ -46,19 +46,32 @@ class User extends Authenticatable
     // models user berelasi dengn model/komentar
     public function komentar()
     {   
-        // 1 user dapat memiliki atau menulis banyak komentar, $this berarti memanggil Models/User
         // argument pertama adalah relasi nya dengan models/komentar
         // argument kedua pada hasMany adalah foreign key di table child atau table yg punya column foreign key yaitu table komentar, colunn user_id
-        return $this->hasMany(Komentar::class, 'user_id');
+        // 1 user dapat memiliki atau menulis banyak komentar, $this berarti memanggil Models/User, komentar terbaru akan tampil sebagai urutnan pertama
+        // kembalikkan $ini->memilikiBanyak(Komentar::class, 'user_id')->dipesanOleh('diperbarui_pada', 'menurun')
+        return $this->hasMany(Komentar::class, 'user_id')->orderBy('updated_at', 'desc');
+    }
+
+    // 1 user dapat melakukan banyak donasi
+    // models user berelasi dengn model/donasi
+    public function donasi()
+    {   
+        // argument pertama adalah relasi nya dengan models/donasi
+        // argument kedua pada hasMany adalah foreign key di table child atau table yg punya column foreign key yaitu table donasi, column user_id
+        // 1 user dapat memiliki atau melakukan banyak donasi dan donasi terbaru akan muncul dipaling atas, $this berarti memanggil Models/User
+        // kembalikkan $ini->memilikiBanyak(donasi::class, 'user_id')->dipesanOleh('diperbarui_pada', menurun)
+        return $this->hasMany(Donasi::class, 'user_id')->orderBy('updated_at', 'desc');
     }
 
     // 1 user dapat menulis banyak postingan
     // models user berelasi dengn model/postingan
     public function postingan()
     {   
-        // 1 user dapat memiliki atau menulis banyak postingan dan postingan terbaru akan muncul dipaling atas, $this berarti memanggil Models/User
         // argument pertama adalah relasi nya dengan models/postingan
-        // argument kedua pada hasMany adalah foreign key di table child atau table yg punya column foreign key yaitu table postingan, column user_id, dipesan oleh column diperbarui_pada, menurun di table postingan
+        // argument kedua pada hasMany adalah foreign key di table child atau table yg punya column foreign key yaitu table postingan, column user_id
+        // 1 user dapat memiliki atau menulis banyak postingan dan postingan terbaru akan muncul dipaling atas, $this berarti memanggil Models/User
+        // kembalikkan $ini->memilikiBanyak(Postingan::class, 'user_id')->dipesanOleh('diperbarui_pada', menurun)
         return $this->hasMany(Postingan::class, 'user_id')->orderBy('updated_at', 'desc');
     }
 }

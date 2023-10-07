@@ -24,8 +24,33 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $jadwal, perintah, panggil property protected $signature milik HapusKegiatanSekali, setiap hari pada tengah malam
-        $schedule->command('app:hapus-kegiatan-sekali')->daily();
-    }
+        // $schedule->command('app:hapus-kegiatan-sekali')->daily();
+
+
+
+        // Jalankah php artisan schedule:run agar perintah ini dijalankan
+        $schedule->call(function() {
+            // tanggal hari ini misalnya: "2023-07-02
+            // berisi tanggal("tahun-bulan-tanggal")
+            $tanggal_hari_ini = date("Y-m-d");
+            // ambil beberapa baris kegiatan sekali yang tanggal nya dibawah tanggal hari ini misalnya ada kegiatan yg tanggal nya 2023-06-20
+            // berisi KegiatanSekali, dimana value column tanggal, value nya di bawah hari ini, dapatkan beberapa data nya
+            $beberapa_kegiatan_sekali = KegiatanSekali::where('tanggal', '<', $tanggal_hari_ini)->get();
+            // lakukan pengulangan pake foreach untuk mengambil setiap kegiatan_sekali
+            // untuksetiap, $beberapa_kegiatan_sekali sebagai $kegiatan_sekali
+            foreach ($beberapa_kegiatan_sekali as $kegiatan_sekali) {
+                // hapus gambar
+                // Penyimpanan::hapus('/public/gambar_kegiatan_sekali/' digabung value detail_kegiatan, column gambar_kegiatan
+                Storage::delete('public/gambar_kegiatan_sekali/' . $kegiatan_sekali->gambar_kegiatan);
+                // hapus setiap kegiatan_sekali
+                // panggil setiap $kegiatan_sekali lalu dihapus
+                $kegiatan_sekali->delete();
+            };
+        })
+        // jadi tugas terjadwal diatas akan dijalankan setiap hari pada tengah malam
+        ->everyMinute();
+    }   
+
 
     /**
      * Registrasikan perintah untuk aplikasi

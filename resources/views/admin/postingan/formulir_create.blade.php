@@ -1,7 +1,7 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'postingan')
 
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
@@ -58,10 +58,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="konten_postingan">Konten<span class="text-danger"> *</span></label>
-                    <input id="konten_postingan" type="hidden" name="konten_postingan" value="" />
-                    {{-- pake package trix editor, jangan mengubah .trix-content, biarkan default --}}
-                    <trix-editor input="konten_postingan" class="trix-content"></trix-editor>
+                    <label for="konten_postingan"><span class="text-danger"> *</span></label>
+                    {{-- Aku tidak bisa bersihkan texrarea nya, mungkin emang dari sana nya ada bug dari ckeditor --}}
+                    <textarea id="konten_postingan" class="ckeditor form-control" name="konten_postingan"></textarea>
                     <span class="konten_postingan_error pesan_error text-danger"></span>
                 </div>
 
@@ -93,8 +92,8 @@
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
-                {{-- cetak panggil route postingan.index --}}
-                <a href="{{ route('postingan.index') }}" class="btn btn-sm btn-danger">
+                {{-- cetak panggil route admin.postingan.index --}}
+                <a href="{{ route('admin.postingan.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi mdi-arrow-left">
                         Kembali
                     </i>
@@ -108,11 +107,45 @@
 
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
-    {{-- Untuk mengggunakan trix editor --}}
-    {{-- cetak asset('') berarti panggil folder public --}}
-    <script src="{{ asset('trix_editor/js/trix_2.0.0.umd.min.js') }}"></script>
+    {{-- CKEditor adalah editor teks kaya WYSIWYG yang memungkinkan penulisan konten langsung di dalam halaman web atau aplikasi online.  --}}
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
 
     <script>
+        // Mengecek apakah ada kategori, jika tidak ada kategori maka arahakn ke url /postingan/create
+        // Jika document siap maka jalankan fungsi berikut
+        $(document).ready(function() {
+            // jquery lakukan ajax
+            $.ajax({
+                // url panggil route admin.postingan.cek_apakah_ada_kategori
+                "url": "{{ route('admin.postingan.cek_apakah_ada_kategori') }}",
+                // panggil route tipe kirim
+                "type": "GET"
+            })
+            // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
+            .done(function(resp) {
+                // jika value resp sama dengan "Anda harus membuat setidaknya satu kategori terlebih dahulu."
+                if (resp === "Anda harus membuat setidaknya satu kategori terlebih dahulu.") {
+                    // tampilkan notifikasi menggunakan package sweetalert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        // berisi value parameter resp
+                        text: resp,
+                    })
+                    // kemudian hasilnya maka jalankan fungsi berikut dan ambil hasil nya
+                    .then((result) => {
+                        // jika aku click oke pada pop up sweetalert maka
+                        // jika hasilnya dikonfirmasi maka
+                        if (result.isConfirmed) {
+                            // pindahkan ke route admin.kategori.buat
+                            // jendela.lokasi.href
+                            window.location.href = "{{ route('admin.kategori.create') }}"
+                        };
+                    });
+                };
+            });
+        });
+
         // tampilkan pratinjau gambar ketika user mengubah gambar
         // jika #pilih_gambar_postingan diubah maka jalankan fungsi berikut
         $("#pilih_gambar_postingan").on("change", function() {
@@ -139,8 +172,8 @@
             e.preventDefault();
             // jquery, lakukan ajax
             $.ajax({
-                // url ke route postingan.store
-                url: "{{ route('postingan.store') }}",
+                // url ke route admin.postingan.store
+                url: "{{ route('admin.postingan.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}

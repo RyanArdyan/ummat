@@ -1,7 +1,7 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian('nama') ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian('nama') ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Edit penceramah')
 
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
@@ -57,8 +57,8 @@
                     <i class="mdi mdi-content-save"></i>
                     Perbarui
                 </button>
-                {{-- panggil route penceramah.index --}}
-                <a href="{{ route('penceramah.index') }}" class="btn btn-sm btn-danger">
+                {{-- panggil route admin.penceramah.index --}}
+                <a href="{{ route('admin.penceramah.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi mdi-arrow-left"></i>
                     Kembali
                 </a>
@@ -100,8 +100,8 @@
             // jquery lakukan ajax
             $.ajax({
                 // ke method update
-                // panggil url /penceramah/ lalu kirimkan value variable penceramah_id
-                url: `/penceramah/${penceramah_id}`,
+                // panggil url /admin/penceramah/ lalu kirimkan value variable penceramah_id
+                url: `/admin/penceramah/${penceramah_id}`,
                 // panggil route tipe PUT karena sudah aku paksa ubah di formulir edit
                 type: "POST",
                 // kirimkan formulir data atau value input2x dari #form_edit
@@ -146,7 +146,7 @@
                     // setelah 2 detik 500 milidetik maka jalankan fungsi berikt
                     setTimeout(function() {
                         // panggil route penceramah_.index
-                        window.location.href = "{{ route('penceramah.index') }}";
+                        window.location.href = "{{ route('admin.penceramah.index') }}";
                     }, 2500);
                 };
             });

@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
 @section('title', 'Penceramah')
@@ -12,8 +12,8 @@
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah penceramah maka pindah url dan halaman dengan cara cetak panggil route penceramah.create --}}
-        <a href="{{ route('penceramah.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah penceramah maka pindah url dan halaman dengan cara cetak panggil route admin.penceramah.create --}}
+        <a href="{{ route('admin.penceramah.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah penceramah
         </a>
@@ -52,6 +52,11 @@
 </div>
 @endsection
 
+
+
+
+
+
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
 <script>
@@ -66,7 +71,7 @@ let table = $("table").DataTable({
     // sisi server: benar
     serverSide: true,
     // lakukan ajax, ke route penceramah.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('penceramah.read') }}",
+    ajax: "{{ route('admin.penceramah.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table penceramah    
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -164,7 +169,7 @@ $("#tombol_hapus").on("click", function() {
                 // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
                 // sebenarnya aku mengirim beberapa value input name="penceramah_ids" yang di centang
                 // jquery lakukan ajax tipe kirim, panggil route penceramah.destroy, panggil #form_penceramah, kirimkan value input
-                $.post("{{ route('penceramah.destroy') }}", $("#form_penceramah").serialize())
+                $.post("{{ route('admin.penceramah.destroy') }}", $("#form_penceramah").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
@@ -182,4 +187,4 @@ $("#tombol_hapus").on("click", function() {
     };
 });
 </script>
-@endpush
+@endpush    

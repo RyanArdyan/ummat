@@ -21,32 +21,8 @@ class PenceramahController extends Controller
     // publik fungsi index
     public function index()
     {
-        // berisi ambil value detail user yang autetikasi atau login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-
-        // jika yang login adalah admin maka 
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // // kembalikkan ke tampilan admin.penceramah.index, kirimkan data berupa array
-            return view('admin.penceramah.index');
-
-            // return response()->json($semua_penceramah);
-        }
-        // lain jika yang login adalah jamaah maka
-        else if ($is_admin === "0") {
-            // ambil semua penceramah, ambil data terbaru
-            // berisi penceramah, pilih column user_id agar relasi nya terpanggil nama_penceramah, slug_penceramah, foto_penceramah, dipublikasi_pada di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_penceramah = Penceramah::select("nama_penceramah", 'foto_penceramah', )->orderBy('updated_at', 'desc')->get();
-
-            // kembalikkan tanggapna berupa json lalu kirimkan value $semua_penceramah
-            // return response()->json($semua_penceramah);
-
-            // kembalikkan ke tampilan jamaah.penceramah.index, kirimkan data berupa array, 
-            return view('jamaah.penceramah.index', [
-                // key semua_penceramah berisi value $semua_penceramah
-                'semua_penceramah' => $semua_penceramah
-            ]);
-        };
+        // // kembalikkan ke tampilan admin.penceramah.index, kirimkan data berupa array
+        return view('admin.penceramah.index');
     }
 
     // menampilkan semua data table penceramah
@@ -83,7 +59,7 @@ class PenceramahController extends Controller
             ->addColumn('action', function(Penceramah $penceramah) {
                 // panggil url /penceramah/edit/ lalu kirimkan value detail_penceramah, column penceramah_id nya agar aku bisa mengambil detail penceramah berdasarkan penceramah_id, aku akan gunakan fitur pengingakatan route model
                 return  "
-                    <a href='/penceramah/edit/$penceramah->penceramah_id' class='btn btn-warning btn-sm'>
+                    <a href='/admin/penceramah/edit/$penceramah->penceramah_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";
@@ -169,7 +145,7 @@ class PenceramahController extends Controller
                 // key status berisi 200
                 'status' => 200,
                 // key pesan berisi "penceramah wawan Bisa berhasil disimpan."
-                'pesan' => "penceramah $request->nama_penceramah berhasil disimpan.",
+                'pesan' => "penceramah $penceramah->nama_penceramah berhasil disimpan.",
             ]);
         };
     }

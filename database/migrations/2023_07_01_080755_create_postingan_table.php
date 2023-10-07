@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('postingan', function (Blueprint $table) {
             // buat tipe data big integer yang auto increment dan primary key atau kunci utama
             $table->bigIncrements('postingan_id');
-            // foreign key atau kunci asing, relasinya adalah 1 produk milik 1 user dan 1 user memiliki banyak produk
-            // buat foreign k
+            // foreign key atau kunci asing, relasinya adalah 1 postingan milik 1 user dan 1 user memiliki banyak postingan
             // foreign artinya asing, constrained artinya dibatasi
             $table->foreignId('user_id')->constrained('users')
                 // referensi column user_id milik table users
                 ->references('user_id')
-                ->onUpdate('cascade')
                 // ketika di hapus mengalir
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             // tipe varchar, column judul_postingan harus unique
             $table->string('judul_postingan')->unique();
             $table->string('slug_postingan');

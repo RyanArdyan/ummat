@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('titile') --}}
 @section('title', 'Kegiatan Rutin')
@@ -12,8 +12,8 @@
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah kegiatan maka pindah halaman dengan cara panggil route kegiatan_rutin.create --}}
-        <a href="{{ route('kegiatan_rutin.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah kegiatan maka pindah halaman dengan cara panggil route admin.kegiatan_rutin.create --}}
+        <a href="{{ route('admin.kegiatan_rutin.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah Kegiatan
         </a>
@@ -65,8 +65,8 @@ let table = $("table").DataTable({
     // serverSide digunakan agar ketika data sudah lebih dari 10.000 maka web masih lancar
     // sisi server: benar
     serverSide: true,
-    // lakukan ajax, ke route kegiatan_rutin.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('kegiatan_rutin.read') }}",
+    // lakukan ajax, ke route admin.kegiatan_rutin.read yang tipe nya adalah dapatkan
+    ajax: "{{ route('admin.kegiatan_rutin.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table kegiatan, dimana value column tipe_kegiatan nya sama dengan 'Kegiatan Rutin'
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -173,8 +173,8 @@ $("#tombol_hapus").on("click", function() {
             if (result.isConfirmed) {
                 // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
                 // sebenarnya aku mengirim beberapa value input name="pengeluaran_ids" yang di centang
-                // jquery lakukan ajax tipe kirim, panggil route kegiatan_rutin.destroy, panggil #form_kegiatan_rutin, kirimkan value input
-                $.post("{{ route('kegiatan_rutin.destroy') }}", $("#form_kegiatan_rutin").serialize())
+                // jquery lakukan ajax tipe kirim, panggil route admin.kegiatan_rutin.destroy, panggil #form_kegiatan_rutin, kirimkan value input
+                $.post("{{ route('admin.kegiatan_rutin.destroy') }}", $("#form_kegiatan_rutin").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
@@ -187,6 +187,8 @@ $("#tombol_hapus").on("click", function() {
                         table.ajax.reload();
                     });
             };
+
+            // Untung aku baca method index, yg login pasti admin aku hapus saja pengkondisian
         });
     };
 });

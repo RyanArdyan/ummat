@@ -1,7 +1,7 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Edit kategori')
 
 {{-- kirimkan value @bagian('konten') ke @yield('konten')  --}}
@@ -35,6 +35,11 @@
                     <i class="mdi mdi-content-save"></i>
                     Perbarui
                 </button>
+                {{-- panggil route admin.kategori.index --}}
+                <a href="{{ route('admin.kategori.index') }}" class="btn btn-danger">
+                    <i class="mdi mdi-arrow-left"></i> 
+                    Kembali
+                </a>
             </form>
         </div>
     </div>
@@ -53,8 +58,8 @@
             // jquery lakukan ajax
             $.ajax({
                 // ke method update
-                // panggil url /kategori/ yang tipe nya PUT lalu kirimkan value variable kategori_id
-                url: `/kategori/${kategori_id}`,
+                // panggil url /admin/kategori/ yang tipe nya PUT lalu kirimkan value variable kategori_id
+                url: `/admin/kategori/${kategori_id}`,
                 // panggil route tipe PUT karena sudah aku paksa ubah di modal edit
                 type: "POST",
                 // kirimkan formulir data atau value input2x dari #form_edit
@@ -98,8 +103,8 @@
                     });
                     // setelah 2 detik 500 milidetik maka jalankan fungsi berikut
                     setTimeout(function() {
-                        // panggil route kategori.index
-                        window.location.href = "{{ route('kategori.index') }}";
+                        // panggil route berikut
+                        window.location.href = "{{ route('admin.kategori.index') }}";
                     }, 2500);
                 };
             });

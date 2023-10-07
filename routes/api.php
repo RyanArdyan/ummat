@@ -8,3 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Kalau disimpan disini maka aku tidak perlu membuat csrf token
+// route setelah user selesai melakukan pembayaran
+// route tipe kirim, jika user diarahkan ke url /midtrans-panggilanBalik, panggil OrderPengendali, method panggilanBalik
+Route::post('/order/midtrans-callback', [OrderController::class, 'callback']);
+

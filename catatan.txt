@@ -26,4 +26,41 @@ https://www.iankumu.com/blog/page/3/?s=laravel
 
 
 Tugas
-Keinginanku di fitur donasi adalah user memasukkan jumlah uang yang ingin di donasikan lalu tekan tombol donasi maka muncul notifikasi "Berhasil melakukan donasi". lalu formulir nya ke reset.
+Keinginanku di fitur donasi adalah user memasukkan jumlah uang yang ingin di donasikan lalu tekan tombol donasi maka muncul banyak metode pembayaran setelah user melakukan pembayaran maka muncul notifikasi "Berhasil melakukan donasi". lalu kembali ke url donasi atau halaman donasi.index lalu tampilkan nama nya.
+
+Aku akan menampilkan daftar nama pendonasi agar mereka berlomba-lomba untuk berdonasi.
+Bikin chart penting sih, excel nya.
+
+Bikin fitur:
+1. Lihat daftar pendonasi
+2. Tombol "Ayo Donasi" jika di click maka akan tampil formulir donasi
+3. Cetak daftar donasi pake excel, misalkan user memilih mencetak donasi bulan januari, lalu dibulan februari.
+4. bikin chart dari tanggal 1 sampai tanggal 31
+
+JANGAN Dihapus: 
+buat file history.
+
+
+
+
+
+
+
+
+
+Karena payment gateway midtrans belum bisa maka aku pake fitur manual saja. merancang dulu ya ,
+1. Jadi gua buat table donasi_tanpa_payment_gateway
+1.5 Column donasi_manual_id -> copy saja.
+2. column user_id -> user yg melakukan donasi.
+3. column foto -> ada bukti screenshot
+4. status -> "Belum cek" : "Benar" : "Nipu", admin akan ngecek dulu jika status "Belum Cek" maka  kalau benar berarti foto nya di cek kemudian benar dia melakukan donasi maka status nya diubah menjadi benar, kalau nipu maka foto nya nipu (tapi bisa di edit), jadi admin cek dulu foto nya, misal nipu maka bisa kasi status "Nipu".
+5. tipe_pembayaran -> gopay, bank bni.
+
+
+Dari gopay bisa transfer kemana misal Banks, E-wallet dan GoPay. tapi kalau aplikasi ku bearrti aku harus sediakan bank misalnya bank BNI, lalu gopay saja.
+
+
+
+
+
+Boleh di hapus:

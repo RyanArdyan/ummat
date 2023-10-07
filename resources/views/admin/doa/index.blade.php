@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
 @section('title', 'Doa')
@@ -12,8 +12,8 @@
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah Doa maka pindah url dan halaman dengan cara panggil route doa.create --}}
-        <a href="{{ route('doa.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah Doa maka pindah url dan halaman dengan cara panggil route admin.doa.create --}}
+        <a href="{{ route('admin.doa.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah Doa
         </a>
@@ -37,7 +37,6 @@
                             <th scope="col" width="5%">No</th>
                             <th scope="col">Nama Doa</th>
                             <th scope="col">Action</th>
-
                         </tr>
                     </thead>
                 </table>
@@ -69,7 +68,7 @@ let table = $("table").DataTable({
     // sisi server: benar
     serverSide: true,
     // lakukan ajax, ke route doa.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('doa.read') }}",
+    ajax: "{{ route('admin.doa.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table doa
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -160,7 +159,7 @@ $("#tombol_hapus").on("click", function() {
             if (result.isConfirmed) { 
                 // .serialize() berarti aku mengirim beberapa value input name="pengeluaran_ids" yang di centang karena aku menyimpan table dan data nya di dalam form
                 // jquery lakukan ajax tipe kirim, panggil route doa.destroy, panggil #form_doa, kirimkan value input
-                $.post("{{ route('doa.destroy') }}", $("#form_doa").serialize())
+                $.post("{{ route('admin.doa.destroy') }}", $("#form_doa").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
@@ -178,15 +177,17 @@ $("#tombol_hapus").on("click", function() {
     };
 });
 
+
+
 // jika .tombol_detail_doa di click maka jalankan fungsi
 // alasan pake $(document) adalah karena tombol detail dibuat oleh controller atau lebih tepat nya script
 $(document).on("click", ".tombol_detail_doa", function() {
     // ambil value attribute data-doa-id
-    // panggil .tombol_detail_doa, lalu cetak value attribute data-doa-id
+    // panggil .tombol_detail_doa, lalu panggil value attribute data-doa-id
     let doa_id = $(this).data("doa-id");
     // jquery lakukan ajax untuk mengambil detail_doa
     $.ajax({
-        // panggil url /doa lalu kirimkan value variable doa_id
+        // panggil url berikut lalu kirimkan value variable doa_id
         // tanda backtiq (``) bisa mencetak value variable di dalam string menggunakan ${}
         url: `/doa/${doa_id}`,
         // panggil route tipe get
@@ -194,8 +195,6 @@ $(document).on("click", ".tombol_detail_doa", function() {
     })
     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
     .done(function(resp) {
-        // cetak value resp.detail_doa
-        console.log(resp.detail_doa);
         // panggil #nama_doa lalu text nya diisi tanggapan.detaiL_doa.nama_doa
         $("#nama_doa").text(resp.detail_doa.nama_doa);
         // panggil #bacaan_arab lalu text nya diisi tanggapan.detaiL_doa.bacaan_arab

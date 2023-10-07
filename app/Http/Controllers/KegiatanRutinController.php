@@ -20,34 +20,25 @@ class KegiatanRutinController extends Controller
     // publik fungsi index
     public function index()
     {
-        // berisi ambil value detail user yang login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-        // jika yang login adalah admin maka 
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // kembalikkan ke admin.kegiatan_rutin.index
-            return view('admin.kegiatan_rutin.index');
-        }
-        // lain jika yang login adalah jamaah maka
-        else if ($is_admin === "0") {
-            // ambil semua kegiatan rutin, ambil data terbaru
-            // berisi KegiatanRutin, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_kegiatan_rutin = KegiatanRutin::orderBy('updated_at', 'desc')->get();
-
-            // kembalikkan ke jamaah.kegiatan_rutin.index, kirimkan data berupa array, 
-            return view('jamaah.kegiatan_rutin.index', [
-                // key semua_kegiatan_rutin berisi value $semua_kegiatan_rutin
-                'semua_kegiatan_rutin' => $semua_kegiatan_rutin
-            ]);
-        };
+        // kembalikkan ke admin.kegiatan_rutin.index
+        return view('admin.kegiatan_rutin.index');
     }
 
-    // menampilkan semua data table kegiatan_rutin, yang column tipe_kegiatan nya berisi "Kegiatan Rutin".
+    // menampilkan semua data di table kegiatan_rutin
     public function read()
     {
-        // ambil semua value dari column kegiatan_rutin_id, nama_kegiatan dan lain-lain dimana value column tipe_kegiatan sama dengan "Kegiatan Rutin", dapatkan semua data nya
+        // ambil semua value dari column kegiatan_rutin_id dan lain-lain, data terbaru akan tampil di urutan pertama
         // beriisi KegiatanRutin::pilih('kegiatan_rutin_id', 'nama_kegiatan', 'dan-lain-lain') dimana value column tipe_kegiatan sama dengan value 'Kegiatan Rutin', dapatkan()
-        $semua_kegiatan = KegiatanRutin::select('kegiatan_rutin_id', 'nama_kegiatan', 'gambar_kegiatan', 'hari', 'jam_mulai', 'jam_selesai')->get();
+        $semua_kegiatan = KegiatanRutin::select('kegiatan_rutin_id', 'nama_kegiatan', 'gambar_kegiatan', 'hari', 'jam_mulai', 'jam_selesai')
+            // jadi senin akan tampil pertama, setelah itu barulah selasa dan seterus nya
+            // dipesanOlehMentah, bidang, column hari, value senin, selasa dan seterus nya
+            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\"at', 'Sabtu', 'Minggu')")
+            // jadi misalnya ada 2 kegiatan dari hari senin lalu ada jam 18.00 dan jam 19.00 maka jam 18.00 akan tampil diatas jam 19.00
+            // dipesanOleh column jam_mulai, ascending atau naik
+            ->orderBy('jam_mulai', 'ASC')
+            // dapatkan semua data nya
+            ->get();
+
         // syntax punya yajra
         // kembalikkan datatables dari semua_kegiatan
         return DataTables::of($semua_kegiatan)
@@ -74,7 +65,7 @@ class KegiatanRutinController extends Controller
             ->addColumn('action', function(KegiatanRutin $kegiatan) {
                 // panggil url /kegiatan-rutin/edit/ lalu kirimkan value kegiatan_rutin_id nya agar aku bisa mengambil detail kegiatan_rutin berdasarkan kegiatan_rutin_id
                 return  "
-                    <a href='/kegiatan-rutin/edit/$kegiatan->kegiatan_rutin_id' class='btn btn-warning btn-sm'>
+                    <a href='/admin/kegiatan-rutin/edit/$kegiatan->kegiatan_rutin_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";

@@ -13,7 +13,7 @@ use App\Models\Doa;
 
 class DoaController extends Controller
 {
-    // panggil method ini jika data ada table doa itu kosong, jadi jika aku php artisan migrate:fresh --seed, aku harus panggil route untuk memanggil method ini
+    // panggil method ini jika data pada table doa itu kosong atau sedikit, jadi jika aku php artisan migrate:fresh --seed, aku harus panggil route untuk memanggil method ini
     // aku mengambil data doa dari api external yaitu https://github.com/farizdotid/ lalu aku menyimpan ke database
     public function simpan_data_doa_dari_api_external()
     {
@@ -21,12 +21,12 @@ class DoaController extends Controller
         // berisi http dapatkan data dari url berikut, lalu ubah data nya menjadi json
         $semua_doa = Http::get('https://doa-doa-api-ahmadramadhan.fly.dev/api')->json();
 
-
         // looping semua doa
         // untukSetiap $semua_doa sebagai $doa
         foreach ($semua_doa as $doa) {
-            // lakukan penyimpan data terhadap semua doa misalnya 32
+            // lakukan penyimpan data terhadap semua doa
             Doa::create([
+                // column nama_doa berisi setiap value detail_doa, column doa
                 'nama_doa' => $doa["doa"],
                 "bacaan_arab" => $doa["ayat"],
                 "bacaan_latin" => $doa["latin"],
@@ -34,52 +34,26 @@ class DoaController extends Controller
             ]);
         };
 
-        // berisi mengambil semua data doa dari table doa
-        // berisi model doa, ambil semua data
-        $semua_doa_dari_table_doa = Doa::all();
-
         // kembalikkan tanggapan berupa json lalu kirimkan value data berupa array
         return response()->json([
             // key message berisi value string berikut
-            'message' => 'Berhasil menyimpan data doa dari api external',
-            // key semua_doa berisi value variable berikut
-            'semua_doa' => $semua_doa_dari_table_doa
+            'message' => 'Berhasil menyimpan semua doa dari api external'
         ]);
     }
 
     // Jika yang login adalah admin maka menampilkan halaman doa saja dan jika yg login adalah jamaah maka maka akan menapilkan halaman doa dan mengirimkan semua data doa
     public function index() {
-        // berisi ambil value detail user yang autetikasi atau login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-
-        // mengambil semua data doa, data terbaru akan tampil di paling atas
-        // berisi Doa dipesan oleh column diperbarui_pada, menurun, dapatkan semua datanya
-        $semua_doa = Doa::orderBy('updated_at', 'desc')->get();
-
-        // mengambil data semua doa dari table doa
-
-        // jika yang login adalah admin maka 
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.doa.index lalu kirimkan data berupa array
-            return view('admin.doa.index');
-        }
-        // lain jika yang login adalah jamaah atau value variable is_admin sama dengan 0 maka
-        else if ($is_admin === "0") {
-            // kembalikkan ke tampilan jamaah.doa.index, kirimkan data berupa array, 
-            return view('jamaah.doa.index', [
-                // key semua_doa berisi value $semua_doa
-                'semua_doa' => $semua_doa
-            ]);
-        };
+        // kembalikkan ke tampilan admin.doa.index lalu kirimkan data berupa array
+        return view('admin.doa.index');
     }
 
     // menampilkan semua data table doa
     public function read()
     {
-        // ambil semua value dari column doa_id dan nama_doa
-        // berisi Doa::pilih('doa_id', 'nama_doa', 'dan-lain-lain'), dipesan oleh column updated_at, dari z ke a jadi data terbaru dulu yang tampil, dapatkan semua data nya
+        // ambil semua value dari column doa_id dan nama_doa, jadi baris doa terbaru akan tampil di paling atas
+        // berisi Doa::pilih('doa_id', 'dan-lain-lain'), dipesan oleh column updated_at, dari z ke a jadi data terbaru dulu yang tampil, dapatkan semua data nya
         $semua_doa = Doa::select('doa_id', 'nama_doa')->orderBy('updated_at', 'desc')->get();
+
         // syntax punya yajra
         // kembalikkan datatables dari semua_doa
         return DataTables::of($semua_doa)
@@ -105,7 +79,7 @@ class DoaController extends Controller
                         <i class='mdi mdi-eye'></i>
                     </button>
 
-                    <a href='/doa/edit/$doa->doa_id' class='btn btn-warning btn-sm mt-1'>
+                    <a href='/admin/doa/edit/$doa->doa_id' class='btn btn-warning btn-sm mt-1'>
                         <i class='fas fa-pencil-alt'></i>
                     </a>
                 ";
@@ -118,9 +92,11 @@ class DoaController extends Controller
     }
 
     // method show untuk menampilkan detail_doa berdasarkan doa_id
-    // parameter doa berisi value detail_doa, aku menggunkana fitur pengikatan route model
+    // parameter doa berisi value detail_doa, aku menggunakan fitur pengikatan route model
     public function show(Doa $doa) {
+        // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
         return response()->json([
+            // key detail_doa berisi value parametere doa
             'detail_doa' => $doa
         ]);
     }
@@ -215,11 +191,12 @@ class DoaController extends Controller
         };
     }
 
-     // method edit, $doa itu fitur Pengikatan Model Rute jadi parameter $doa berisi detail_doa_id berdasarkan id yang dikirimkan
+     // method edit, $doa itu fitur Pengikatan Model Rute jadi parameter $doa berisi detail_doa_id berdasarkan id yang dikirimkan, parameter nya harus $doa karena di route nya tertulis {doa}
      public function edit(Doa $doa)
      {
-         // kembalikkkan ke tampilan admin.doa.formulir_edit, lalu kirimkan array yang berisi key detail_doa berisi value variable $doa yang berisi detail_doa
+         // kembalikkkan ke tampilan admin.doa.formulir_edit, lalu kirimkan array
          return view('admin.doa.formulir_edit', [
+            // key detail_doa berisi value variable $doa yang berisi detail_doa
             'detail_doa' => $doa
         ]);
      }

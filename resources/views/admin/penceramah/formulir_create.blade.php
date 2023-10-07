@@ -1,12 +1,13 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Penceramah')
 
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
 @push('css')
 @endpush
+
 
 {{-- kirimkan value @bagian('konten') ke @yield('konten') --}}
 @section('konten')
@@ -47,8 +48,8 @@
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
-                {{-- cetak panggil route penceramah.index --}}
-                <a href="{{ route('penceramah.index') }}" class="btn btn-sm btn-danger">
+                {{-- cetak panggil route admin.penceramah.index --}}
+                <a href="{{ route('admin.penceramah.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi mdi-arrow-left">
                         Kembali
                     </i>
@@ -89,8 +90,8 @@
             e.preventDefault();
             // jquery, lakukan ajax
             $.ajax({
-                // url ke route penceramah.store
-                url: "{{ route('penceramah.store') }}",
+                // url ke route admin.penceramah.store
+                url: "{{ route('admin.penceramah.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}

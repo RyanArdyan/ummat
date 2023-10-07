@@ -1,7 +1,7 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Edit Doa')
 
 {{-- kirimkan value @bagian('konten') ke @yield('konten')  --}}
@@ -87,8 +87,8 @@
             // jquery lakukan ajax
             $.ajax({
                 // ke method update
-                // panggil url /doa/ lalu kirimkan value variable doa_id
-                url: `/doa/${doa_id}`,
+                // panggil url /admin/doa/ lalu kirimkan value variable doa_id
+                url: `/admin/doa/${doa_id}`,
                 // panggil route tipe PUT karena sudah aku paksa ubah di modal edit
                 type: "POST",
                 // kirimkan formulir data atau value input2x dari #form_edit
@@ -122,8 +122,9 @@
                         // contohnya panggil .nama_doa_error lalu isi textnya dengan paramter value misalnya nama doa harus diisi
                         $(`.${key}_error`).text(value);
                     });
-                    // jika validasi berhasil
-                } else if (resp.status === 200) {
+                } 
+                // jika validasi berhasil
+                else if (resp.status === 200) {
                     // berikan notifikasi menggunakan package sweetalert
                     Swal.fire({
                         title: 'Sukses',
@@ -132,11 +133,12 @@
                     });
                     // setelah 2 detik 500 milidetik maka jalankan fungsi berikt
                     setTimeout(function() {
-                        // panggil route doa.index
-                        window.location.href = "{{ route('doa.index') }}";
+                        // panggil route yang bernama admin.doa.index
+                        window.location.href = "{{ route('admin.doa.index') }}";
                     }, 2500);
                 };
             });
         });
+
     </script>
 @endpush

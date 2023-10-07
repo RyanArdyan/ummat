@@ -4,38 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 // gunakan atau import
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 // package laravel datatables
 use DataTables;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Str;
 use App\Models\Kategori;
 
 class KategoriController extends Controller
 {
     public function index() {
-        // berisi ambil value detail user yang autetikasi atau login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-
-        // jika yang login adalah admin maka  
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.kategori.index
-            return view('admin.kategori.index');
-        }
-        // lain jika yang login adalah jamaah maka
-        else if ($is_admin === "0") {
-            // kembalikkan ke tampilan jamaah.kategori.index
-            return view('jamaah.kategori.index');
-        };
+        // kembalikkan ke tampilan admin.kategori.index
+        return view('admin.kategori.index');
     }
 
     // menampilkan semua data table kategori
     public function read()
     {
-        // ambil semua value dari column kategori_id dan nama_kategori
-        // berisi Kategori::pilih('kategori_id', 'nama_kategori', 'dan-lain-lain'), dipesan oleh column updated_at, dari z ke a jadi data terbaru dulu yang tampil, dapatkan semua data nya
+        // ambil semua value dari column kategori_id dan lain-lain, data terbaru akan tampil dipaling atas
+        // berisi Kategori::pilih('kategori_id', 'dan-lain-lain'), dipesan oleh column updated_at, dari z ke a jadi data terbaru dulu yang tampil, dapatkan semua data nya
         $semua_kategori = Kategori::select('kategori_id', 'nama_kategori', 'slug_kategori')->orderBy('updated_at', 'desc')->get();
         // syntax punya yajra
         // kembalikkan datatables dari semua_kategori
@@ -57,10 +43,10 @@ class KategoriController extends Controller
             // buat tombol edit
             // tambahKolom('aksi', fungsi(kategori $kategori))
             ->addColumn('action', function(kategori $kategori) {
-                // panggil url /kategori/edit/ lalu kirimkan value slug_kategori nya agar aku bisa mengambil detail kategori berdasarkan slug_kategori
-                // jika ingin membuat attribute maka gunakan data-nama-attribute, data-kategori-id berisi setiap value detail_kategori, column slug_kategori
+                // panggil url berikut lalu kirimkan value detail_kategori, column slug_kategori
+                // jika ingin membuat attribute maka gunakan data-nama-attribute
                 return  "
-                    <a href='/kategori/edit/$kategori->slug_kategori' class='btn btn-warning btn-sm mt-1'>
+                    <a href='/admin/kategori/edit/$kategori->slug_kategori' class='btn btn-warning btn-sm mt-1'>
                         <i class='fas fa-pencil-alt'></i>
                     </a>
                 ";
@@ -80,14 +66,16 @@ class KategoriController extends Controller
         return view('admin.kategori.formulir_create');
     }
 
+    // Coba perbarui
+
     // parameter $permintaan berisi semua value attribute name
     public function store(Request $request)
     {
         // validasi semua inout yang punya attribute name
         // berisi validator buat untuk semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name nama_kategori harus wajib dan maksimal nya adalah 255
-            'nama_kategori' => 'required|max:255',
+            // value input name nama_kategori harus wajib, maksimal nya adalah 255 dan harus unique
+            'nama_kategori' => 'required|max:255|unique:kategori',
         ]);
 
         // buat validasi
@@ -126,12 +114,12 @@ class KategoriController extends Controller
         };
     }
 
-     // method edit, paramter $kategori itu fitur Pengikatan Model Rute jadi parameter $kategori berisi detail_kategori_id berdasarkan id yang dikirimkan
+     // method edit, parameter $kategori itu fitur Pengikatan Model Rute jadi parameter $kategori berisi detail_kategori_id berdasarkan id yang dikirimkan
      public function edit(kategori $kategori)
      {
-         // kembalikkkan ke tampilan admin.kategori.formulir_edit, lalu kirimkan 
+         // kembalikkkan ke tampilan admin.kategori.formulir_edit, lalu kirimkan data berupa array
          return view('admin.kategori.formulir_edit', [
-            // key detail_kategori berisi value variable $kategori yang berisi detail_kategori
+            // key detail_kategori berisi value parameter $kategori yang berisi detail_kategori
             'detail_kategori' => $kategori
         ]);
      }

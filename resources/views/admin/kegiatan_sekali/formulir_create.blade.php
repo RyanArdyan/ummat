@@ -1,10 +1,10 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Kegiatan Sekali')
 
-{{-- kirimkan  --}}
+{{-- kirimkan value bagian konten  --}}
 @section('konten')
     <div class="row">
         <div class="col-sm-12">
@@ -74,7 +74,7 @@
                     Simpan
                 </button>
                 {{-- panggil route kegiatan_sekali.index --}}
-                <a href="{{ route('kegiatan_sekali.index') }}" class="btn btn-sm btn-danger">
+                <a href="{{ route('admin.kegiatan_sekali.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi md-arrow-left"></i>
                     Kembali
                 </a>
@@ -112,8 +112,8 @@
             e.preventDefault();
             // jquery, lakukan ajax
             $.ajax({
-                // url ke route kegiatan_sekali.store
-                url: "{{ route('kegiatan_sekali.store') }}",
+                // url ke route admin.kegiatan_sekali.store
+                url: "{{ route('admin.kegiatan_sekali.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}

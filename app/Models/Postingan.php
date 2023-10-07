@@ -25,8 +25,12 @@ class Postingan extends Model
     // Misalnya, saat Commentmodel diperbarui, Anda mungkin ingin secara otomatis "menyentuh" updated_at ​​stempel waktu kepemilikan Post sehingga diatur ke tanggal dan waktu saat ini. 
     protected $touches = ["kategori"];
 
+    // eager loading mencegah kueri N+1, bersemangat memuat secara bawaan, ini penting untuk membuat api, jadi ketika aku mengambil setiap postingan maka detail_user juga ikut terbawa, jadi aku hanya akan mengambil value column user_id dan name
+    // lindungi $dengan relasi user
+    protected $with = ["user:user_id,name"];
+
     // relasi banyak ke banyak atau many to many
-    // 1 postingan punya banyak kategori
+    // 1 postingan punya banyak kategori dan 1 kategori punya banyak postingan, misalnya Postingan tentang "Anime Demon Slayer" berkategori "Anime" dan "Japanese" lalu kategori anime ada banyak postingan seperti "Demon Slayer" dan "Naruto"
     public function kategori(): BelongsToMany
     {
         // argument pertama yang diteruskan ke method ini adalah nama kelas model terkait
@@ -38,13 +42,8 @@ class Postingan extends Model
         ->withTimestamps();
     }
 
-
-    // eager loading mencegah kueri N+1, bersemangat memuat secara bawaan, ini penting untuk membuat api, jadi ketika aku mengambil setiap postingan maka detail_user juga ikut terbawa, jadi aku hanya akan mengambil value column user_id dan name
-    // lindungi $dengan relasi user dan penyuplai
-    protected $with = ["user:user_id,name"];
-
     // relasi
-    // belongs to / satu postingan milik 1 user
+    // belongs to / satu postingan milik atau ditulis oleh 1 user
     public function user() :BelongsTo
     {
         // argumen pertama adalah berelasi dengan models/user

@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
 @section('title', 'Kategori')
@@ -12,8 +12,8 @@
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
-        {{-- jika aku click tombol tambah kategori maka pindah url dan halaman dengan cara panggil route kategori.create --}}
-        <a href="{{ route('kategori.create') }}" class="btn btn-purple btn-sm mb-3">
+        {{-- jika aku click tombol tambah kategori maka pindah url dan halaman dengan cara panggil route admin.kategori.create --}}
+        <a href="{{ route('admin.kategori.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah kategori
         </a>
@@ -61,8 +61,8 @@ let table = $("table").DataTable({
     // serverSide digunakan agar ketika data sudah lebih dari 10.000 maka web masih lancar
     // sisi server: benar
     serverSide: true,
-    // lakukan ajax, cetak ke route kategori.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('kategori.read') }}",
+    // lakukan ajax, cetak ke route admin.kategori.read yang tipe nya adalah dapatkan
+    ajax: "{{ route('admin.kategori.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table kategori
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -154,7 +154,7 @@ $("#tombol_hapus").on("click", function() {
             if (result.isConfirmed) { 
                 // .serialize() berarti aku mengirim beberapa value input name="kategori_ids" yang di centang karena aku menyimpan table dan data nya di dalam form
                 // jquery lakukan ajax tipe kirim, panggil route kategori.destroy, panggil #form_kategori, kirimkan value input name="kategori_ids" atau #form_kategori, membuat cerita bersambung
-                $.post("{{ route('kategori.destroy') }}", $("#form_kategori").serialize())
+                $.post("{{ route('admin.kategori.destroy') }}", $("#form_kategori").serialize())
                     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
                     .done(function(resp) {
                         // notifkasi menggunakan sweetalert
@@ -177,32 +177,6 @@ $("#tombol_hapus").on("click", function() {
             };
         });
     };
-});
-
-// jika .tombol_detail_kategori di click maka jalankan fungsi
-// alasan pake $(document) adalah karena tombol detail dibuat oleh controller atau lebih tepat nya script
-$(document).on("click", ".tombol_detail_kategori", function() {
-    // ambil value attribute data-kategori-id
-    // panggil .tombol_detail_kategori, lalu cetak value attribute data- xkategori-id
-    let kategori_id = $(this).data("kategori-id");
-    // jquery lakukan ajax untuk mengambil detail_kategori
-    $.ajax({
-        // url panggil url /kategori lalu kirimkan value variable kategori_id
-        // tanda backtiq (``) bisa mencetak value variable di dalam string menggunakan ${}
-        url: `/kategori/${kategori_id}`,
-        type: 'GET',
-    })
-    // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
-    .done(function(resp) {
-        // panggil #nama_kategori lalu text nya diisi tanggapan.detaiL_kategori.nama_kategori
-        $("#nama_kategori").text(resp.detail_kategori.nama_kategori);
-        // panggil #bacaan_arab lalu text nya diisi tanggapan.detaiL_kategori.bacaan_arab
-        $("#bacaan_arab").text(resp.detail_kategori.bacaan_arab);
-        // panggil #bacaan_latin lalu text nya diisi tanggapan.detaiL_kategori.bacaan_latin
-        $("#bacaan_latin").text(resp.detail_kategori.bacaan_latin);
-        // panggil #arti_kategorinya lalu text nya diisi tanggapan.detaiL_kategori.arti_kategorinya
-        $("#arti_kategorinya").text(`Artinya: ${resp.detail_kategori.arti_kategorinya}`);
-    });
 });
 </script>
 @endpush

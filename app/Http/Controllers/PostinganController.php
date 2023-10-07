@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 // gunakan atau import
+// perluas kelas dasar
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -16,8 +18,7 @@ use DataTables;
 use App\Models\Postingan;
 use App\Models\Kategori;
 use App\Models\Komentar;
-use App\Models\User;
-use App\Http\Controllers\Controller;
+
 
 class PostinganController extends Controller
 {
@@ -25,39 +26,8 @@ class PostinganController extends Controller
     // publik fungsi index
     public function index()
     {
-        // berisi ambil value detail user yang autetikasi atau login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-
-        // jika yang login adalah admin maka 
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // // ambil semua data postingan, Data terbaru akan tampil paling atas
-            // // berisi Postinngan pilih columns, dipesan oleh column diperbarui_pada, descending, dapatkan
-            // $semua_postingan = Postingan::select("user_id",   "judul_postingan", "slug_postingan", "gambar_postingan",  "dipublikasi_pada")->orderBy('updated_at', 'desc')->get();
-
-            // $semua_postingan = Postingan::orderBy("updated_at", "desc")->get();
-
-
-            // // kembalikkan ke tampilan admin.postingan.index, kirimkan data berupa array
-            return view('admin.postingan.index');
-
-            // return response()->json($semua_postingan);
-        }
-        // lain jika yang login adalah jamaah maka
-        else if ($is_admin === "0") {
-            // ambil semua postingan, ambil data terbaru
-            // berisi Postingan, pilih column user_id agar relasi nya terpanggil judul_postingan, slug_postingan, gambar_postingan, dipublikasi_pada di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_postingan = Postingan::select("user_id", "judul_postingan", 'slug_postingan', 'gambar_postingan', 'dipublikasi_pada')->orderBy('updated_at', 'desc')->get();
-
-            // kembalikkan tanggapna berupa json lalu kirimkan value $semua_postingan
-            // return response()->json($semua_postingan);
-
-            // kembalikkan ke tampilan jamaah.postingan.index, kirimkan data berupa array, 
-            return view('jamaah.postingan.index', [
-                // key semua_postingan berisi value $semua_postingan
-                'semua_postingan' => $semua_postingan
-            ]);
-        };
+        // kembalikkan ke tampilan admin.postingan.index
+        return view('admin.postingan.index');
     }
 
     // menampilkan semua data table postingan
@@ -116,9 +86,9 @@ class PostinganController extends Controller
             // buat tombol edit
             // tambahKolom('aksi', fungsi(postingan $postingan)) parameter $postingan berisi setiap value detail_postingan
             ->addColumn('action', function(Postingan $postingan) {
-                // panggil url /postingan/edit/ lalu kirimkan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id, aku akan gunakan fitur pengingakatan route model
+                // panggil url /admin/postingan/edit/ lalu kirimkan value postingan_id nya agar aku bisa mengambil detail postingan berdasarkan postingan_id, aku akan gunakan fitur pengingakatan route model
                 return  "
-                    <a href='/postingan/edit/$postingan->postingan_id' class='btn btn-warning btn-sm'>
+                    <a href='/admin/postingan/edit/$postingan->postingan_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";
@@ -129,6 +99,7 @@ class PostinganController extends Controller
         // buat benar
         ->make(true);
     }
+
 
     // method buat untuk menampilkan formulir tambah postingan
     // publik fungsi buat()
@@ -143,13 +114,28 @@ class PostinganController extends Controller
         ]);
     }
 
+    // method untuk mengecek apakah admin sudah membuat kategori sebelum dia ke halaman postingan/formulir_create
+    public function cek_apakah_ada_kategori()
+    {
+        // ambil jumlah baris kategori
+        // berisi kategori::jumlah()
+        $jumlah_baris_kategori = Kategori::count();
+
+        // jika value variable jumlah_baris_kategori sama dengan 0 maka
+        if ($jumlah_baris_kategori === 0) {
+            // kembalikkan tanggapan berupa json lalu kirimkan string berikut
+            return response()->json("Anda harus membuat setidaknya satu kategori terlebih dahulu.");
+        };
+    }
+
+
     // parameter $permintaan berisi semua value attribute name
     public function store(Request $request)
     {
         // validasi semua input yang punya attribute name
         // berisi validator buat untuk semua permintaan
         $validator = Validator::make($request->all(), [
-            // value input name judul_postingan harus wajib dan maksimal nya adalah 255
+            // value input name judul_postingan harus wajib, harus unik dan maksimal nya adalah 255
             'judul_postingan' => 'required|unique:postingan|max:255',
             // value input name kategori_id harus wajib
             'kategori_id' => 'required',
@@ -413,30 +399,6 @@ class PostinganController extends Controller
         ]);
     }
 
-    // // parameter $request berisi semua value input name=""
-    // public function simpan_komentar(Request $request)
-    // {
-    //     // validasi input name="komentarnya"
-    //     $request->validate([
-    //         // value input name="komentarnya" harus diisi
-    //         'komentarnya' => 'required',
-    //     ]);
-        
-    //     // simpan komentar
-    //     Komentar::create([
-    //         // column user_id diisi value column user_id yang login
-    //         'user_id' => Auth::user()->user_id,
-    //         // column postingan_id diisi value input name="postingan_id"
-    //         'postingan_id' => $request->postingan_id,
-    //         // column komentarnya diisi value input name="komentarnya"
-    //         'komentarnya' => $request->komentarnya,
-    //         // column parent_id diisi value input name="parent_id, jika ada
-    //         'parent_id' => $request->parent_id
-    //     ]);
-    //     // kembalikkan ke url sebelum nya
-    //     return back();
-    // }
-
     // parameter $permintaan berisi semua value attribute name
     public function simpan_komentar(Request $request)
     {
@@ -493,48 +455,5 @@ class PostinganController extends Controller
             // key detail_postingan berisi value parameter $postingan
             'detail_postingan' => $postingan
         ]);
-    }
-
-    // parameter $postingan berisi detail_postingan karena aku menggunakan fitur pengikatan route model
-    public function read_semua_komentar(postingan $postingan)
-    {
-        // ambil semua komentar terkait di suatu postingan
-        // berisi value detail_postingan yang berelasi dengan komentar
-        $semua_komentar = $postingan->komentar;
-
-        // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
-        return response()->json([
-            // key pesan berisi string berikut
-            'message' => 'Berhasil mengambil semua komentar',
-            // key semua_komentar berisi value variable semua_komentar
-            'semua_komentar' => $semua_komentar
-        ]);
-    }
-
-    // method show, parameter $postingan_id berisi value postingan_id misalnya 1
-    public function detail_komentar_terbaru($postingan_id)
-    {
-        // ambil detail komentar baru dari postingan yg sesuai
-        // berisi komentar dimana value column postingan_id sama dengan value detail_postingan, column postingan_id atau parameter $postingan_id, dipesan oleh column dibuat_pada, menurun, ambil data baris pertama
-        $detail_komentar_terbaru = Komentar::where('postingan_id', $postingan_id)->orderBy('created_at', 'desc')->first();
-
-        // Jika tidak ada value di variable detail_komentar_terbaru
-        if (!$detail_komentar_terbaru) {
-            // kembalikkan tanggapan berupa json lalu kirimkan data berupa array
-            return response()->json([
-                // key pesan berisi string berikut
-                'message' => 'Belum ada komentar'
-            ]);
-        }
-        // lain jika ada value di variable detail_komentar_terbaru
-        else if ($detail_komentar_terbaru) {
-            // kembalikkkan tanggapan berupa json lalu kirimkan data berupa array
-            return response()->json([
-                // key pesan berisi string berikut
-                'message' => "Berhasil mengambil detail komentar terbaru beserta relasi nya",
-                // key detail_komentar_terbaru berisi value variable $detail_komentar_terbaru
-                'detail_komentar_terbaru' => $detail_komentar_terbaru
-            ]);
-        };
     }
 }

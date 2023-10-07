@@ -7,9 +7,9 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
-     * The application's global HTTP middleware stack.
+     * Tumpukkan perangkat tengah http global aplikasi
      *
-     * These middleware are run during every request to your application.
+     * perangkat tengah ini dijalankan di setiap permintan ke aplikasi anda
      *
      * @var array<int, class-string|string>
      */
@@ -24,7 +24,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware groups.
+     * group perangkat tengah route aplikasi
      *
      * @var array<string, array<int, class-string|string>>
      */
@@ -63,5 +63,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        // perangkat tengah untuk mengecek apakah profile pengguna yang login sudah lengkap
+        // berisi panggil Middleware\ProfileSudahLengkap::class
+        'profile_sudah_lengkap' => \App\Http\Middleware\ProfileSudahLengkap::class
     ];
 }

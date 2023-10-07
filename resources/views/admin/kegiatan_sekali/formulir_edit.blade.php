@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
 @section('title', 'Edit Kegiatan Sekali')
@@ -84,6 +84,11 @@
                     <i class="mdi mdi-content-save"></i>
                     Perbarui
                 </button>
+                {{-- cetak, panggil route admin.kegiatan_sekali.index --}}
+                <a href="{{ route('admin.kegiatan_sekali.index') }}" class="btn btn-danger">
+                    <i class="mdi mdi-arrow-left"></i> 
+                    Kembali
+                </a>
             </form>
         </div>
     </div>
@@ -122,8 +127,8 @@
             // jquery lakukan ajax
             $.ajax({
                 // ke method update
-                // panggil url /kegiatan-sekali/ lalu kirimkan kegiatan_sekali_id
-                url: `/kegiatan-sekali/${kegiatan_sekali_id}`,
+                // panggil url /admin/kegiatan-sekali/ lalu kirimkan kegiatan_sekali_id
+                url: `/admin/kegiatan-sekali/${kegiatan_sekali_id}`,
                 // panggil route tipe PUT karena sudah aku paksa ubah di modal edit
                 type: "POST",
                 // kirimkan formulir data atau value input2x dari #form_edit
@@ -166,11 +171,14 @@
                     });
                     // setelah 2 detik 500 milidetik maka jalankan fungsi berikt
                     setTimeout(function() {
-                        // panggil route kegiatan_sekali.index
-                        window.location.href = "{{ route('kegiatan_sekali.index') }}";
+                        // panggil route admin.kegiatan_sekali.index
+                        window.location.href = "{{ route('admin.kegiatan_sekali.index') }}";
                     }, 2500);
                 };
             });
         });
     </script>
 @endpush
+
+
+{{-- Tambah tombol kembali disebelah kanan tombol perbarui, arahkan ke route admin.kegiatan_sekali.index --}}

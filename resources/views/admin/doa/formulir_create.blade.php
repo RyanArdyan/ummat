@@ -1,7 +1,7 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
-{{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
+{{-- kirimkan value @bagian title ke parent nya yaitu admin.layouts.app --}}
 @section('title', 'Doa')
 
 {{-- kirimkan  --}}
@@ -60,7 +60,7 @@
                     <i class="mdi mdi-content-save"></i>
                     Simpan
                 </button>
-                <a href="{{ route('doa.index') }}" class="btn btn-sm btn-danger">
+                <a href="{{ route('admin.doa.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi mdi-arrow-left"></i>
                     Kembali
                 </a>
@@ -99,7 +99,7 @@
             // jquery, lakukan ajax
             $.ajax({
                 // url ke route doa.store
-                url: "{{ route('doa.store') }}",
+                url: "{{ route('admin.doa.store') }}",
                 // panggil route kirim
                 type: "POST",
                 // kirimkan data dari #form_data, otomatis membuat objek atau {}

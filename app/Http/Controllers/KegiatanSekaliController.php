@@ -13,6 +13,7 @@ use Image;
 // package laravel datatables
 use DataTables;
 use App\Models\KegiatanSekali;
+use Carbon\Carbon;
 
 class KegiatanSekaliController extends Controller
 {
@@ -20,35 +21,37 @@ class KegiatanSekaliController extends Controller
     // publik fungsi index
     public function index()
     {
-        // berisi ambil value detail user yang autetikasi atau login, column is_admin
-        $is_admin = Auth::user()->is_admin;
-
-        // jika yang login adalah admin maka 
-        // jika value variable is_admin nya sama dengan "1"
-        if ($is_admin === "1") {
-            // kembalikkan ke tampilan admin.kegiatan_sekali.index
-            return view('admin.kegiatan_sekali.index');
-        }
-        // lain jika yang login adalah jamaah maka
-        else if ($is_admin === "0") {
-            // ambil semua kegiatan sekali, ambil data terbaru
-            // berisi KegiatanSekali, di pesan oleh value column updated_at, data yang paling baru, dapatkan semua data nya
-            $semua_kegiatan_sekali = KegiatanSekali::orderBy('updated_at', 'desc')->get();
-
-            // kembalikkan ke tampilan jamaah.kegiatan_sekali.index, kirimkan data berupa array, 
-            return view('jamaah.kegiatan_sekali.index', [
-                // key semua_kegiatan_sekali berisi value $semua_kegiatan_sekali
-                'semua_kegiatan_sekali' => $semua_kegiatan_sekali
-            ]);
+         // Komentarkan kode ini jika sudah di hosting karena sudah menggunakan fitur "penjadwalalan tugas"
+        // tanggal hari ini misalnya: "2023-08-29
+        // berisi tanggal("tahun-bulan-tanggal")
+        $tanggal_hari_ini = date("Y-m-d");
+        // ambil beberapa baris kegiatan sekali yang tanggal nya dibawah tanggal hari ini misalnya ada kegiatan yg tanggal nya 2023-06-20
+        // berisi KegiatanSekali, dimana value column tanggal, value nya di bawah hari ini, dapatkan beberapa data nya
+        $beberapa_kegiatan_sekali = KegiatanSekali::where('tanggal', '<', $tanggal_hari_ini)->get();
+        // lakukan pengulangan pake foreach untuk mengambil setiap kegiatan_sekali
+        // untuksetiap, $beberapa_kegiatan_sekali sebagai $kegiatan_sekali
+        foreach ($beberapa_kegiatan_sekali as $kegiatan_sekali) {
+            // hapus gambar
+            // Penyimpanan::hapus('/public/gambar_kegiatan_sekali/' digabung value detail_kegiatan, column gambar_kegiatan
+            Storage::delete('public/gambar_kegiatan_sekali/' . $kegiatan_sekali->gambar_kegiatan);
+            // hapus setiap kegiatan_sekali
+            // panggil setiap $kegiatan_sekali lalu dihapus
+            $kegiatan_sekali->delete();
         };
+        // akhir Komentarkan kode ini jika sudah di hosting karena sudah menggunakan fitur "penjadwalalan tugas"
+
+        // kembalikkan ke tampilan admin.kegiatan_sekali.index
+        return view('admin.kegiatan_sekali.index');
     }
+
+
 
     // menampilkan semua data table kegiatan_sekali, yang column tipe_kegiatan nya berisi "Kegiatan sekali".
     public function read()
     {
-        // ambil semua value dari column kegiatan_sekali_id, nama_kegiatan dan lain-lain dimana value column tipe_kegiatan sama dengan "Kegiatan sekali", dapatkan semua data nya
-        // beriisi KegiatanSekali::pilih('kegiatan_sekali_id', 'nama_kegiatan', 'dan-lain-lain') dimana value column tipe_kegiatan sama dengan value 'Kegiatan sekali', dapatkan()
-        $semua_kegiatan = KegiatanSekali::select('kegiatan_sekali_id', 'nama_kegiatan', 'gambar_kegiatan', 'tanggal', 'jam_mulai', 'jam_selesai')->get();
+        // ambil semua value dari column kegiatan_sekali_id dan lain-lain, jadi tanggal awal duluan yg paling atas, dan jam_mulai duluan yg paling atas, dapatkan semua data nya
+        // beriisi KegiatanSekali::pilih('kegiatan_sekali_id', 'dan-lain-lain'), dapatkan()
+        $semua_kegiatan = KegiatanSekali::select('kegiatan_sekali_id', 'nama_kegiatan', 'gambar_kegiatan', 'tanggal', 'jam_mulai', 'jam_selesai')->orderBy('tanggal', 'ASC')->orderBy('jam_mulai', 'ASC')->get();
         // syntax punya yajra
         // kembalikkan datatables dari semua_kegiatan
         return DataTables::of($semua_kegiatan)
@@ -70,19 +73,30 @@ class KegiatanSekaliController extends Controller
                 return "<img src='/storage/gambar_kegiatan_sekali/$kegiatan->gambar_kegiatan' width='50px' height='50px'>";
 
             })
+            // tambahKolom('tanggal', fungsi(KegiatanSekali $kegiatan))
+            ->addColumn('tanggal', function(KegiatanSekali $kegiatan) {
+                // berisi setiap value detaiL_kegiatan, column tanggal
+                $tanggal = $kegiatan->tanggal;
+                // mengubah misalnya  "2023-08-29" menjadi "Selasa, 29 Agustus 2023"
+                $tanggal_diformat = Carbon::createFromFormat('Y-m-d', $tanggal)->isoFormat('dddd, D MMMM YYYY');
+                // kembalikkan element p yg di dalam nya berisi value variable $tanggal_diformat
+                return  "
+                    <p>$tanggal_diformat</p>
+                ";
+            })
             // buat tombol edit
             // tambahKolom('aksi', fungsi(Kegiatan $kegiatan))
             ->addColumn('action', function(KegiatanSekali $kegiatan) {
-                // panggil url /kegiatan-sekali/edit/ lalu kirimkan value kegiatan_sekali_id nya agar aku bisa mengambil detail kegiatan_sekali berdasarkan kegiatan_sekali_id
+                // panggil url /admin/kegiatan-sekali/edit/ lalu kirimkan setiap value detail_kegiatan_sekali, column kegiatan_sekali_id nya agar aku bisa mengambil detail kegiatan_sekali berdasarkan kegiatan_sekali_id
                 return  "
-                    <a href='/kegiatan-sekali/edit/$kegiatan->kegiatan_sekali_id' class='btn btn-warning btn-sm'>
+                    <a href='/admin/kegiatan-sekali/edit/$kegiatan->kegiatan_sekali_id' class='btn btn-warning btn-sm'>
                         <i class='fas fa-pencil-alt'></i> Edit
                     </a>
                 ";
             })
         // jika sebuah column berisi relasi antar table, memanggil helpers dan membuat elemnt html maka harus dimasukkan ke dalam mentahColumn2x
         // mentahKolom2x select dan lain-lain
-        ->rawColumns(['select', 'gambar_kegiatan', 'action'])
+        ->rawColumns(['select', 'gambar_kegiatan', 'tanggal', 'action'])
         // buat benar
         ->make(true);
     }
@@ -171,6 +185,9 @@ class KegiatanSekaliController extends Controller
             ]);
         };
     }
+
+
+
 
     // method edit, $kegiatan_sekali_id itu fitur Pengikatan Model Rute jadi parameter $kegiatan_sekali_id berisi detail_kegiatan_id berdasarkan id yang dikirimkan
     public function edit(KegiatanSekali $kegiatan_sekali_id)

@@ -22,9 +22,9 @@ return new class extends Migration
             // tipe string, column nama_doa, harus unique()
             $table->string('nama_doa')->unique();
             // tipe string, column bacaan_arab, harus unique()
-            $table->text('bacaan_arab')->unique();
+            $table->text('bacaan_arab');
             // tipe string, column bacaan_latin, harus unique()
-            $table->text('bacaan_latin')->unique();
+            $table->text('bacaan_latin');
             // tipe text, column arti_doanya
             $table->text('arti_doanya');
             $table->timestamps();

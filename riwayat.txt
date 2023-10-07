@@ -1,0 +1,7 @@
+File: FrontendDonasiManual
+line: 90
+
+Tugas:
+hapus baris 89 sampai 90, aktifkan baris 94 sampai 119 dan cek apakah gambar sudah di upload dan data sudah disimpan di table donasi_manual.
+
+

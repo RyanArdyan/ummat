@@ -32,7 +32,8 @@
     {{-- nomor_wa --}}
     <div class="form-group">
         <label for="nomor_wa">Nomor Whatsapp</label>
-        <input name="nomor_wa" type="number" class="input input_nomor_wa form-control" id="nomor_wa"
+        {{-- ketika keyboard ditekan maka kembalikkan, lalu panggil fungsi number lalu kirimkan acara sebagai argument --}}
+        <input name="nomor_wa" type="text" class="input input_nomor_wa form-control" id="nomor_wa"
             placeholder="Edit Nomor Whatsapp" value="{{ $detail_user_yang_login->nomor_wa }}" autocomplete="off">
         {{-- pesan error --}}
         <span class="error error_nomor_wa text-danger"></span>

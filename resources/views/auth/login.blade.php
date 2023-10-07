@@ -41,6 +41,12 @@
                                 <h4 class="text-uppercase mt-0">Login Ummat</h4>
                             </div>
 
+                            {{-- Jika ada sesi status yang dikirim oleh middleware auth karena user belum login maka cetak div class alert --}}
+                            @if (session('status'))
+                                {{-- cetak sesi status --}}
+                                <div class="alert alert-danger" role="alert">{{ session('status') }}</div>
+                            @endif
+
                             <form id="form_login">
                                 {{-- untuk keamanan --}}
                                 @csrf
@@ -202,31 +208,35 @@
                 } 
                 // lain Jika user berhasil login
                 else {
-                    // notifikasi menggunakan package web sweetalert2
-                    Swal.fire(
-                        'Login Berhasil',
-                        'Tolong tunggu, Halaman akan dimuat ulang.',
-                        'success'
-                    );
                     // berisi value tanggapan.is_admin yang dikirim dari controller
                     let is_admin = response.is_admin;
-                    
-                    // setelah 2 detik maka jalankan fungsi berikut
-                    setTimeout(() => {
-                        // jika yang login adalah jamaah
-                        // jika value variable is_admin sama dengan "0" maka dia adalah jamaah maka arahkan ke url / atau halaman home.
-                        if (is_admin === "0") {
-                            // arahkan ke url awal
-                            // lokasi.href ke url awal
-                            location.href = '/';
-                        }
-                        // lain jika yang login adalah admin
-                        else if (is_admin === "1") {
-                            // panggil route login
-                            // lokasi.href berisi panggil rute login
-                            location.href = `{{ route('login.index') }}`;
+
+                    // tampilkan notifikasi menggunakan package sweetalert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Bagus',
+                        text: 'Anda berhasil login.',
+                    })
+                    // kemudian hasilnya maka jalankan fungsi berikut dan ambil hasil nya
+                    .then((result) => {
+                        // jika aku click oke pada pop up sweetalert maka
+                        // jika hasilnya dikonfirmasi maka
+                        if (result.isConfirmed) {
+                            // jika yang login adalah jamaah
+                            // jika value variable is_admin sama dengan "0" maka dia adalah jamaah maka arahkan ke url /frontend atau halaman home.
+                            if (is_admin === "0") {
+                                // arahkan ke url /frotend
+                                location.href = '/frontend';
+                            }
+                            // lain jika yang login adalah admin
+                            // lain jika value variable is_admin sama dengan "1" maka
+                            else if (is_admin === "1") {
+                                // panggil route login.index
+                                // lokasi.href berisi panggil rute login.index
+                                location.href = `{{ route('login.index') }}`;
+                            };
                         };
-                    }, 2000);
+                    });
                 }
             });
         });

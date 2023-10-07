@@ -112,6 +112,7 @@
     };
 
 
+
     // tambahkan kedua baris kode berikut agar bilah samping nya runtuh atau sidebar collapse atau agar left menu nya menjadi kecil
     // panggil element body, lalu tambahkan class="enlarged"
     $("body").addClass("enlarged");
@@ -216,57 +217,5 @@
             };
         });
     });
-
-    // $(document).on("submit", ".form_balas", function(e) {
-    //     // acara cegah bawaannya yaitu reload
-    //     e.preventDefault();
-    //     // jquery, lakukan ajax
-    //     $.ajax({
-    //         // url panggil route postingan.simpan_komentar
-    //         url: "{{ route('postingan.simpan_komentar') }}",
-    //         // panggil route kirim
-    //         type: "POST",
-    //         // kirimkan data dari #form_komentar, otomatis membuat objek atau {}
-    //         data: new FormData(this),
-    //         // aku butuh 3 baris kode berikut, kalau membuat objek secara manual maka tidak butuh 3 baris kode berikut
-    //         // prosesData: salah,
-    //         processData: false,
-    //         contentType: false,
-    //         cache: false,
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         // sebelum kirim, hapus validasi error dulu
-    //         // sebelum kirim, jalankan fungsi berikut
-    //         beforeSend: function() {
-    //             // panggil .input lalu hapus .is-invalid
-    //             $(".input").removeClass("is-invalid");
-    //             // panggil .pesan_error lalu kosongkan textnya
-    //             $(".pesan_error").text("");
-    //         }
-    //     })
-    //     // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapam nya
-    //     .done(function(resp) {
-    //         // jika validasi menemukan error
-    //         // jika resp.status sama dengan 0
-    //         if (resp.status === 0) {
-    //             Swal.fire("Anda belum menulis komentar.");
-    //         }
-    //         // jika berhasil menyimpan kategori sekali
-    //         // lain jika resp.status sama dengan 200
-    //         else if (resp.status === 200) {
-    //             // reset formulir
-    //             // panggil #form_tambah index ke 0 lalu atur ulang semua input
-    //             $(".form_balas")[0].reset();
-    //             // notifikasi
-    //             // panggil toastr tipe sukses dan tampilkan pesannya menggunakan value dari tanggapan.pesan
-    //             toastr.success(`${resp.pesan}.`);
-    //             // hapus semua anak dari #komentar_terbaru
-    //             $("#komentar_terbaru").empty();
-    //             // panggil fungsi read_komentar_terbaru
-    //             read_komentar_terbaru();
-    //         };
-    //     });
-    // });
 </script>
 @endpush

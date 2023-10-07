@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+// aku kustom atau membuat validasi formulir sendiri
+use App\Rules\ValidasiNomorWhatsapp;
 // package image intervention untuk kompress gambar, ubah lebar dan tinggi gambar dan lain-lain.
 // image adalah alias yang di daftarkan di config/app
 use Image;
-use App\Models\User;
 
 class EditProfileController extends Controller
 {
@@ -29,35 +30,90 @@ class EditProfileController extends Controller
         // ambil detail user yang login
         // autentikasi()->pengguna();
         $detail_user_yang_login = auth()->user();
+        $input_name = $request->name;
+        $input_nik = $request->nik;
 
-        // jika nilai input name sama dengan nilai column name dari $detail_user_yang_login berarti user tidak mengubah nama nya
-        if ($request->name === $detail_user_yang_login->name) {
+        // jika nilai input name sama dengan value detail_user_yg_login, column name berarti user tidak mengubah nama nya
+        if ($input_name === $detail_user_yang_login->name) {
             // name harus wajib, string, minimal 3 dan maksimal 50
-            $validasi_name = 'required|string|min:3|max:50';
+            $validasi_name = ['required', 'string', 'min:3', 'max:50'];
         }
         // lain jika input name tidak sama dengan detail_user column name berarti user mengubah nama nya
-        else if ($request->name !== $detail_user_yang_login->name) {
+        else if ($input_name !== $detail_user_yang_login->name) {
             // validasi name wajib, string, min 3, max 50  dan harus unik dari detail users
-            $validasi_name = 'required|string|min:3|max:50|unique:users';
+            $validasi_name = ['required', 'string', 'min:3', 'max:50', 'unique:users'];
         };
 
-        // validasi semua input 
-        // berisi validator::buat($permintaan->semua)
-        $validator = Validator::make($request->all(), [
+        // jika nilai input nik sama dengan value detail_user_yg_login, column nik berarti user tidak mengubah nama nya
+        if ($input_nik === $detail_user_yang_login->nik) {
+            // nik harus wajib, minimal 16 dan maksimal 18
+            $validasi_nik = ['required', 'min:16', 'max:18'];
+        }
+        // lain jika input nik tidak sama dengan detail_user column nik berarti user mengubah nama nya
+        else if ($input_nik !== $detail_user_yang_login->nik) {
+            // nik harus wajib, minimal 16 dan maksimal 18 dan harus unique
+            $validasi_nik = ['required', 'min:16', 'max:18', 'unique:users'];
+        };
+
+        // hapus spasi pada value input name="nomor_wa" misalnya berisi "62 887" maka akan menjadi "62887"
+        // berisi str_ganti('', '', $permintaan->nomor_wa)
+        $value_input_nomor_wa = str_replace(' ', '', $request->nomor_wa);
+
+        // jika nilai variable $value_input_nomor_wa sama dengan nilai $detail_user_yang_login, column nomor_wa berarti user tidak mengubah nomor_wa nya
+        if ($value_input_nomor_wa === $detail_user_yang_login->nomor_wa) {
+            // value input nomor_wa itu wajib dan harus dimulai dari 62, aku menambahkan validasi sendiri atau custom validasi menggunakan App/Rules/ValidasiNomorWhatsapp
+           $validasi_nomor_wa = ['required', new ValidasiNomorWhatsapp];
+        }
+        // lain jika value variable $value_input_nomor_wa tidak sama dengan value detail_user, column nomor_wa berarti user mengubah nomor_wa nya
+        else if ($value_input_nomor_wa !== $detail_user_yang_login->nomor_wa) {
+            // value input nomor_wa itu wajib dan harus dimulai dari 62, aku menambahkan validasi sendiri atau custom validasi menggunakan App/Rules/ValidasiNomorWhatsapp, value nya harus unik atau tidak boleh sama
+           $validasi_nomor_wa = ['required', 'unique:users', new ValidasiNomorWhatsapp];
+        };
+
+        // jadi aku mengatur apa-apa saja yang akan aku validasi, dan memodifikasi nya agar tidak hanya value attribute name yang aku validasi tapi value variable $value_input_nomor_wa juga aku validasi
+        // berisi ara
+        $input = [
+            
+            'name' => $input_name,
+            'nik' => $request->nik,
+            'nomor_wa' => $value_input_nomor_wa,
+            'tgl_lahir' => $request->tgl_lahir,
+            'foto' => $request->foto
+        ];
+
+        // jika user memiliki file foto atau jika user mengganti foto
+        // jika ($permintaan->memilikiFile('foto'))
+        if ($request->hasFile('foto')) {
+            // harus berupa gambar
+            $validasi_foto = 'image';
+        } 
+        // lain jika user tidak mengupload foto
+        // lain jika $permintaan tidka memiliki file foto
+        else if (!$request->hasFile('foto')) {
+            // berisi tanpa validasi
+            $validasi_foto = '';
+        };
+        // tanpa validasi
+
+        // validasi semua input yg aku modifikasi lewat variable $input_ya
+        // berisi validator::buat validasi dari value variable $input_nama
+        $validator = Validator::make($input, [
             // input attribute name yang berisi name harus menggunakan aturan dari $validasi_name
             'name' => $validasi_name,
-            // value nik harus wajib, panjang minimal nik adalah 16, maksimal nik adalah 18, 
-            'nik' => 'required|min:16|max:18',
-            // value input nomor_wa itu wajib
-            'nomor_wa' => 'required',
+            // value nik mengikut value dari variable $validasi_nik
+            'nik' => $validasi_nik,
+            // value input name="nomor_wa" harus mengikuti aturan dari variable $vl
+            'nomor_wa' => $validasi_nomor_wa,
             'tgl_lahir' => 'required',
             // input foto harus berisi gambar
-            'foto' => 'image'
+            'foto' => $validasi_foto
         ],
         // Terjamahan validasi 
         [
             // terjemahan untuk validasi name.unique
             'name.unique' => 'Orang lain sudah menggunakan nama itu.',
+            'nik.unique' => 'Orang lain sudah menggunakan nik itu.',
+            'nomor_wa' => 'Orang lain sudah menggunakan nomor wa itu.'
         ]);
 
         // jika validasi gagal
@@ -73,6 +129,12 @@ class EditProfileController extends Controller
         } 
         // jika validasi berhasil
         else {
+            // jika value input name="nomor_wa" yang dimasukkan tidak dimulai dari 62 maka
+            // if ()
+            // kembalikkan tanggapan berupa json
+            // key pesan "Value input nomor whatsapp harus dimulai dari 62"
+
+
             // jika user memiliki file foto atau jika user mengganti foto
             // jika ($permintaan->memilikiFile('foto'))
             if ($request->hasFile('foto')) {
@@ -137,11 +199,11 @@ class EditProfileController extends Controller
 
             // perbarui user
             // panggil value detail_user column name di table lalu isi dengan value input name
-            $detail_user_yang_login->name = $request->name;
+            $detail_user_yang_login->name = $input_name;
             // panggil value detail_user column nik di table lalu isi dengan value input nik
             $detail_user_yang_login->nik = $request->nik;
-            // panggil value detail_user column nomor_wa di table lalu isi dengan value input nomor_wa
-            $detail_user_yang_login->nomor_wa = $request->nomor_wa;
+            // panggil value detail_user column nomor_wa di table lalu isi dengan value variable $value_input_nomor_wa
+            $detail_user_yang_login->nomor_wa = $value_input_nomor_wa;
             // panggil value detail_user column tgl_lahir di table lalu isi dengan value input tgl_lahir
             $detail_user_yang_login->tgl_lahir = $request->tgl_lahir;
             // panggil value detail_user column jenis_kelamin di table lalu isi dengan value input jenis_kelamin

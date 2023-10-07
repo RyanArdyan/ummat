@@ -1,7 +1,7 @@
-{{-- memperluas parentnya --}}
+{{-- memperluas parentnya yaitu layouts.app --}}
 @extends('layouts.app')
 
-{{-- kirimkna valuenya ke @yield('title') --}}
+{{-- kirimkan valuenya ke @yield('title') --}}
 @section('title', 'Edit Profile')
 
 {{-- kirimkan valuenya ke @yield('konten') --}}
@@ -9,6 +9,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-box">
+                {{-- Jika ada value dari session status yg dikirimkan dari Middleware/ProfileSudahLengkap.php --}}
+                @if (session('status'))
+                    {{-- cetak value session('status') --}}
+                    <div class="alert alert-danger">{{ session('status') }}</div>
+                @endif
+
                 {{-- @termasuk formulir edit data --}}
                 @include('edit_profile.form_edit')
                 {{-- modal edit password --}}
@@ -21,6 +27,18 @@
 
 @push('script')
 <script>
+    // jika #nomor_wa di masukkan karakter maka jalankan fungsi
+    $("#nomor_wa").on("input", function() {
+        /// Mengganti semua karakter kecuali angka dan spasi dengan string kosong
+        var sanitizedInput = $(this).val().replace(/[^0-9\s]/g, '');
+
+        // Memastikan tidak ada spasi berulang
+        var formattedInput = sanitizedInput.replace(/\s+/g, ' ');
+
+        // Mengatur nilai input dengan hasil format
+        $(this).val(formattedInput);
+    });
+
     // tampilkan pratinjau foto ketika user mengubah foto
     // jika #pilih_foto diubah maka jalankan fungsi berikut
     $("#pilih_foto").on("change", function() {
@@ -96,6 +114,8 @@
                     'Profile Berhasil Diperbarui',
                     'success'
                 );
+                // panggil .alert-danger lalu hapus
+                $(".alert-danger").remove();
             };
         });
     });

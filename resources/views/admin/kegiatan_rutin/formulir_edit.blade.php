@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title ke parent nya yaitu layouts.app --}}
 @section('title', 'Edit Kegiatan Rutin')
@@ -20,6 +20,7 @@
                     <input id="kegiatan_rutin_id" name="kegiatan_rutin_id" class="form-control" type="text" readonly value="{{ $detail_kegiatan->kegiatan_rutin_id }}">
                 </div>
 
+
                 {{-- is-invalid --}}
                 {{-- nama_kegiatan --}}
                 <div class="form-group">
@@ -38,17 +39,11 @@
                     <select name="hari" class="form-control">
                         {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Senin" maka cetak attribute selected kalau bukan maka kasi string kosong --}}
                         <option {{ ($detail_kegiatan->hari === 'Senin') ? 'selected' : '' }} value="Senin">Senin</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Selasa" maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Selasa') ? 'selected' : '' }} value="Selasa">Selasa</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Rabu" maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Rabu') ? 'selected' : '' }} value="Rabu">Rabu</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Kamis" maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Kamis') ? 'selected' : '' }} value="Kamis">Kamis</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan 'Jum"at' maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Jum"at') ? 'selected' : '' }} value='Jum"at'>Jum'at</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Sabtu" maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Sabtu') ? 'selected' : '' }} value="Sabtu">Sabtu</option>
-                        {{-- Jika value detail_kegiatan_rutin, column hari sama dengan "Minggu" maka cetak attribute selected --}}
                         <option {{ ($detail_kegiatan->hari === 'Minggu') ? 'selected' : '' }} value="Minggu">Minggu</option>
                     </select>
                 </div>
@@ -94,8 +89,8 @@
                     <i class="mdi mdi-content-save"></i>
                     Perbarui
                 </button>
-                {{-- panggil route kegiatan_rutin.index --}}
-                <a href="{{ route('kegiatan_rutin.index') }}" class="btn btn-sm btn-danger">
+                {{-- panggil route admin.kegiatan_rutin.index --}}
+                <a href="{{ route('admin.kegiatan_rutin.index') }}" class="btn btn-sm btn-danger">
                     <i class="mdi mdi-arrow-left"></i>
                     Kembali
                 </a>
@@ -137,8 +132,8 @@
             // jquery lakukan ajax
             $.ajax({
                 // ke method update
-                // panggil url /kegiatan/ lalu kirimkan kegiatan_rutin_id
-                url: `/kegiatan-rutin/${kegiatan_rutin_id}`,
+                // panggil url berikut lalu kirimkan kegiatan_rutin_id
+                url: `/admin/kegiatan-rutin/${kegiatan_rutin_id}`,
                 // panggil route tipe PUT karena sudah aku paksa ubah di modal edit
                 type: "POST",
                 // kirimkan formulir data atau value input2x dari #form_edit
@@ -171,8 +166,10 @@
                         // contohnya panggil .nama_kegiatan_error lalu isi textnya dengan paramter value
                         $(`.${key}_error`).text(value);
                     });
-                    // jika validasi berhasil
-                } else if (resp.status === 200) {
+                } 
+                // jika validasi berhasil
+                // lain jika value tanggapan.status sama dengan 200
+                else if (resp.status === 200) {
                     // berikan notifikasi menggunakan package sweetalert
                     Swal.fire({
                         title: 'Sukses',
@@ -181,8 +178,8 @@
                     });
                     // setelah 2 detik 500 milidetik maka jalankan fungsi berikt
                     setTimeout(function() {
-                        // panggil route kegiatan_rutin.index
-                        window.location.href = "{{ route('kegiatan_rutin.index') }}";
+                        // panggil route admin.kegiatan_rutin.index
+                        window.location.href = "{{ route('admin.kegiatan_rutin.index') }}";
                     }, 2500);
                 };
             });

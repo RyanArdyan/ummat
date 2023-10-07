@@ -1,5 +1,5 @@
-{{-- memperluas parent nya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- memperluas parent nya yaitu admin.layouts.app --}}
+@extends('admin.layouts.app')
 
 {{-- kirimkan value @bagian title lalu ditangkap oleh @yield('title') --}}
 @section('title', 'Kegiatan Sekali')
@@ -8,15 +8,21 @@
 @push('css')
 @endpush
 
+{{-- @php agar bisa menulis kode php di .blade --}}
+@php
+    
+@endphp
+
 {{-- kirimkan  --}}
 @section('konten')
 <div class="row">
     <div class="col-sm-12">
         {{-- jika aku click tombol tambah kegiatan maka pindah halaman dengan cara panggil route kegiatan_sekali.create --}}
-        <a href="{{ route('kegiatan_sekali.create') }}" class="btn btn-purple btn-sm mb-3">
+        <a href="{{ route('admin.kegiatan_sekali.create') }}" class="btn btn-purple btn-sm mb-3">
             <i class="mdi mdi-plus"></i>
             Tambah Kegiatan
         </a>
+
 
         <div class="table-responsive">
             {{-- aku membungkus table ke dalam form agar aku bisa mengambil value column kegiatan_sekali_id yang disimpan ke dalam input type="checkbox" --}}
@@ -35,9 +41,11 @@
                             <th scope="col" width="22%">Gambar</th>
                             <th scope="col">Nama Kegiatan</th>
                             <th scope="col">Tanggal</th>
-                            <th scope="col">Jam Mulai</th>
-                            <th scope="col">Jam Selesai</th>
+                            <th scope="col">Mulai (WIB)</th>
+                            <th scope="col">Selesai (WIB)</th>
                             <th scope="col">Action</th>
+
+                            {{-- HAPUS SAJA JAM NYA AGAR TIDAK LEBIH DAN EFISIEN --}}
                         </tr>
                     </thead>
                 </table>
@@ -69,7 +77,7 @@ let table = $("table").DataTable({
     // sisi server: benar
     serverSide: true,
     // lakukan ajax, ke route kegiatan_sekali.read yang tipe nya adalah dapatkan
-    ajax: "{{ route('kegiatan_sekali.read') }}",
+    ajax: "{{ route('admin.kegiatan_sekali.read') }}",
     // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table kegiatan, dimana value column tipe_kegiatan nya sama dengan 'Kegiatan sekali'
     // kolom-kolom berisi array, di dalamnya ada object
     columns: [
@@ -180,22 +188,26 @@ $("#tombol_hapus").on("click", function() {
                 // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
                 // sebenarnya aku mengirim beberapa value input name="pengeluaran_ids" yang di centang
                 // jquery lakukan ajax tipe kirim, panggil route kegiatan_sekali.destroy, panggil #form_kegiatan_sekali, kirimkan value input
-                $.post("{{ route('kegiatan_sekali.destroy') }}", $("#form_kegiatan_sekali").serialize())
-                    // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
-                    .done(function(resp) {
-                        // notifkasi menggunakan sweetalert
-                        Swal.fire(
-                            'Dihapus!',
-                            'Berhasil menghapus kegiatan sekali yang dipilih.',
-                            'success'
-                        );
-                        // reload ajax table
-                        // panggil value variable table, lalu ajax nya di muat ulang
-                        table.ajax.reload();
-                    });
+                $.post("{{ route('admin.kegiatan_sekali.destroy') }}", $("#form_kegiatan_sekali").serialize())
+                // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
+                .done(function(resp) {
+                    // notifkasi menggunakan sweetalert
+                    Swal.fire(
+                        'Dihapus!',
+                        'Berhasil menghapus kegiatan sekali yang dipilih.',
+                        'success'
+                    );
+                    // reload ajax table
+                    // panggil value variable table, lalu ajax nya di muat ulang
+                    table.ajax.reload();
+                });
             };
         });
     };
 });
 </script>
 @endpush
+
+
+
+{{-- Aku ingin mengubah admin/kegiatan_sekali/index, th jam_mulai, jam_selesai aku tambah (WIB) --}}

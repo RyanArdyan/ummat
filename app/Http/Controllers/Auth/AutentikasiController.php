@@ -110,16 +110,16 @@ class AutentikasiController extends Controller
         ]);
 	}
 
-    // Logout akan mengarahkan user ke url login
+    // Logout akan mengarahkan user ke halaman frontend.home.index
     public function logout()
 	{
-		// keluarkan auth
+		// autentikasi, keluar
 		Auth::logout();
-		// batalkan session
+		// sesi, batalkan
 		session()->invalidate();
-		// buat ulang token
+		// sesi, buat ulang token
 		session()->regenerateToken();
-        // kembali alihkan ke route login.index
-		return redirect()->route('login.index');
+        // kembali alihkan ke route frontend.index
+		return redirect()->route('frontend.index');
 	}
 }
