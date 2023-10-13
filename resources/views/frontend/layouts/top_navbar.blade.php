@@ -89,7 +89,7 @@
 
                     {{-- cetak, jika permintaan adalah route berikut maka tambahkan class active, kalau bukan maka kasi string kosong, --}}
                     {{-- cetak, panggil route donasi.menunggu_pembayaran --}}
-                    <a class="{{ Request()->routeIs('donasi.menunggu_pembayaran') ? 'active' : '' }} nav-link" href="{{ route('donasi.menunggu_pembayaran') }}">menunggu_pembayaran</a>
+                    <a  style="pointer-events: none; color: #999; text-decoration: none;" class="{{ Request()->routeIs('donasi.menunggu_pembayaran') ? 'active' : '' }} nav-link" href="{{ route('donasi.menunggu_pembayaran') }}">menunggu_pembayaran</a>
                 @endauth
 
 

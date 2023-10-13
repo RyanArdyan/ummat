@@ -25,7 +25,7 @@
                 {{-- is-invalid --}}
                 {{-- tanggal --}}
                 <div class="form-group">
-                    <label for="tanggal">Tanggal<span class="text-danger"> *</span></label>
+                    <label for="tanggal">Tanggal (bulan/tanggal/tahun)<span class="text-danger"> *</span></label>
                     {{-- value input akan masuk ke value atttribute name yaitu tanggal --}}
                     <input id="tanggal" name="tanggal" class="tanggal_input input form-control" type="date"
                         autocomplete="off" style="width: 150px">

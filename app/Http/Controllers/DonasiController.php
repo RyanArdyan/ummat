@@ -366,7 +366,7 @@ class DonasiController extends Controller
                 // key message berisi pesan berikut
                 'message' => 'Ada donasi yang harus dibayar',
                 // key beberapa_menunggu_pembayaran berisi value variable berikut
-                'beberapa_menunggu_pembayaran' => $beberapa_menunggu_pembayaranz
+                'beberapa_menunggu_pembayaran' => $beberapa_menunggu_pembayaran
             ]);
         };
     }

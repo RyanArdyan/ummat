@@ -15,18 +15,17 @@ aria-labelledby="label_latar_belakang_statis" aria-hidden="true">
             <div class="modal-body">
                 {{-- aku butuh .is-invalid untuk menampilkan efek validasi error --}}
                 {{-- tanggal_awal --}}
-                <div class="form-group">
-                    <label for="tanggal_awal">Tanggal awal<span class="text-danger"> *</span></label>
+                <div class="form-group mb-3">
+                    <label for="tanggal_awal">Tanggal awal (bulan/tanggal/tahun)<span class="text-danger"> *</span></label>
                     {{-- attribute value akan mencetak tanggal awal jika sebelumnya sudah pernah memilih tanggal atau sebelumnya aku sudah click tombol Ubah Periode di modal Ubah Periode --}}
-                    {{-- request('tanggal_awal') berarti ambil nilai variabel tanggal_awal dari url --}}
                     <input id="tanggal_awal" name="tanggal_awal" value="{{ $tanggal_awal }}" class="form-control"
                         type="date" required>
                 </div>
                 {{-- is-invalid --}}
                 {{-- tanggal akhir --}}
                 <div class="form-group">
-                    <label for="tanggal_akhir">Tanggal akhir<span class="text-danger"> *</span></label>
-                    {{-- kirimkan value input lewat name --}}
+                    <label for="tanggal_akhir">Tanggal akhir (bulan/tanggal/tahun)<span class="text-danger"> *</span></label>
+                    {{-- kirimkan value input lewat attribute name --}}
                     {{-- attribute value akan mencetak tanggal akhir jika sebelumnya sudah pernah memilih tanggal --}}
                     <input id="tanggal_akhir" name="tanggal_akhir" value="{{ $tanggal_hari_ini }}" class="form-control"
                         type="date" required>

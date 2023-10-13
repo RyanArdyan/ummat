@@ -1,7 +1,8 @@
-File: FrontendDonasiManual
-line: 90
+File: 
+line: lihat_foto_bukti
 
 Tugas:
-hapus baris 89 sampai 90, aktifkan baris 94 sampai 119 dan cek apakah gambar sudah di upload dan data sudah disimpan di table donasi_manual.
+jadi user click gambar maka pindah url dan tampilan, lalu ada tombol benar dan palsu, kalau click benar maka update value column status nya menjadi "benar" lalu pindah ke halaman index, kalau palsu maka langsung hapus lalu pindah url ke index. 
+
 
 

@@ -42,9 +42,6 @@
                         </a>
                     </li>
 
-
-
-
                     <li>
                         <a href="javascript: void(0);">
                             <i class="mdi mdi-calendar-account"></i>
@@ -94,7 +91,12 @@
                             {{-- cetak jika permintaan adalah route admin.donasi. dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
                             <li class="{{ (request()->routeIs('admin.donasi.*') ? 'active' : '') }}">
                                 {{-- panggil route admin.donasi.index --}}
-                                <a href="{{ route('admin.donasi.index') }}">Donasi</a>
+                                <a href="{{ route('admin.donasi.index') }}"  style="pointer-events: none; color: #999; text-decoration: none;"    >Donasi Menggunakan Payment Gateway</a>
+                            </li>
+                            {{-- cetak jika permintaan adalah route berikut dan * berarti apapun setelah nya maka aktifkan, kalau bukan maka kasi string kosong --}}
+                            <li class="{{ (request()->routeIs('admin.cek_kebenaran_donasi_manual.*') ? 'active' : '') }}">
+                                {{-- panggil route berikut --}}
+                                <a href="{{ route('admin.cek_kebenaran_donasi_manual.index') }}">Cek Kebenaran Donasi</a>
                             </li>
                         </ul>
                     </li>

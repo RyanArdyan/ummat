@@ -13,6 +13,11 @@
     <div class="container">
         <h1 class="mt-4 text-center">Formulir Donasi</h1>
 
+        <div class="alert alert-success">
+            <p>Nomor rekening BNI milik kami: <b>0123456789</b></p>
+            <p>Nomor Gopay milik kami: <b>0887123456789</b></p>
+        </div>
+
         {{-- cetak panggil route donasi_manual.store --}}
         <form action="{{ route('donasi_manual.store') }}" method="POST" enctype="multipart/form-data">
             {{-- laravel mewajibkan keamanan dari serangan csrf --}}

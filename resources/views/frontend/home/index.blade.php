@@ -1,4 +1,4 @@
-{{-- @memperluas('frontend/home/index') --}}
+{{-- @memperluas('frontend/layouts/index') --}}
 @extends('frontend.layouts.app')
 
 {{-- kirimkan value @bagian konten ke @yield konten --}}
@@ -13,10 +13,10 @@
         {{-- Jadwal Adzan --}}
         <h5 class="text-center mt-5 mb-4 text-normal"><u>Ayo Berdonasi Hari Ini</u></h5>
 
-        {{-- arahkan ke route frontend.donasi.create  --}}
-        <a href="/frontend/donasi/create" class="btn btn-primary btn-sm mb-3">Saya Akan Berdonasi</a>
+        {{-- arahkan ke route donasi-manual/create  --}}
+        <a href="/donasi-manual/create" class="btn btn-primary btn-sm mb-3">Saya Akan Berdonasi</a>
 
-        {{-- @termasukJika frontend.home.ubah_periode_donasi  --}}
+        {{-- @termasukJika dipanggil frontend.home.ubah_periode_donasi  --}}
         @includeIf('frontend.home.ubah_periode_donasi')
 
         {{-- Jika tombol Ubah Periode di click maka panggil modal ubah periode --}}
@@ -40,7 +40,6 @@
                 </table>
             </div>
         </div>
-        
     </section>
 
     {{-- Jadwal Adzan Di Kota Pontianak --}}
@@ -60,6 +59,7 @@
             </thead>
             <tbody>
                 <tr>
+                    {{-- cetak array jadwal_adzan, index ke 0 yang didalamnya ada index subuh --}}
                     <td>{{ $jadwal_adzan[0]['subuh'] }}</td>
                     <td>{{ $jadwal_adzan[0]['dzuhur'] }}</td>
                     <td>{{ $jadwal_adzan[0]['ashar'] }}</td>
@@ -77,7 +77,7 @@
 {{-- dorong value @dorong('script') ke @stack('script') --}}
 @push('script')
 <script>
-    // read daftar donasi
+    // read daftar donasi_manual
     // berisi panggil table donasi, gunakan datatable
     let table = $("#table_donasi").DataTable({
         // ketika data masih di muat, tampilkan animasi processing
@@ -86,8 +86,8 @@
         // serverSide digunakan agar ketika data sudah lebih dari 10.000 maka web masih lancar
         // sisi server: benar
         serverSide: true,
-        // lakukan ajax, ke route admin.donasi.read yang tipe nya adalah dapatkan
-        ajax: "/admin/donasi/read",
+        // lakukan ajax, ke url berikut yang tipe nya adalah dapatkan
+        ajax: "/donasi-manual/read",
         // jika berhasil maka buat element <tbody>, <tr> dan <td> lalu isi td nya dengan data table donasi    
         // kolom-kolom berisi array, di dalamnya ada object
         columns: [
@@ -136,9 +136,11 @@
         // panggil .table-responsive lalu hapus element dan anak2x nya
         $('.table-responsive').empty();
 
-        // panggil #tanggal_awal, ambil value nya
+        // panggil #tanggal_awal, ambil value nya, pastinya dimulai pada tanggal 1, contohnya 10/01/2023
         let tanggal_awal = $("#tanggal_awal").val();
+        // panggil #tanggal_akhir, ambil value nya, berisi tanggal hari ini
         let tanggal_akhir = $("#tanggal_akhir").val();
+        // berisi element table sampai th
         let table_baru = `
             <div class="table-responsive">
                 <table id="table_donasi" class="table table-striped table-sm table-bordered">
@@ -168,12 +170,15 @@
             // lakukan ajax, ke route donasi.ubah_periode yang tipe nya adalah kirim
             ajax: {
                 // berisi panggil url berikut
-                url: "/donasi/ubah-periode",
+                url: "/donasi-manual/ubah-periode",
                 // panggil route tipe kirim
                 type: "POST",
-                // kirimkan data dari #form_data, otomatis membuat objek atau {}
+                // kirimkan data berupa object, aku tidak perlu menulis processData dan kawan-kawan
                 data: {
+                    // laravel mewajibkan keamanan dari serangan CSRF
+                    // kunci _token berisi cetak csrf_token
                     "_token": "{{ csrf_token() }}",
+                    // key tanggal_awal berisi value variable tanggal_awal
                     "tanggal_awal": tanggal_awal,
                     "tanggal_akhir": tanggal_akhir
                 }
@@ -182,7 +187,7 @@
             // kolom-kolom berisi array, di dalamnya ada object
             columns: [
                 // lakukan pengulangan nomor
-                // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari donasiController, method index, AddIndexColumn
+                // DT_RowIndex di dapatkan dari laravel datatable atau di dapatkan dari Controller
                 {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -214,6 +219,7 @@
         // lalu panggil #modal_ubah_periode lalu modal nya gua tutup
         $("#modal_ubah_periode").modal("hide");
     });
+
 
 </script>
 @endpush

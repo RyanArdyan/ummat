@@ -10,6 +10,7 @@ use App\Http\Controllers\PostinganController;
 use App\Http\Controllers\PenceramahController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\JadwalAdzanController;
+use App\Http\Controllers\CekKebenaranDonasiController;
 use App\Http\Controllers\Frontend\FrontendHomeController;
 use App\Http\Controllers\Frontend\FrontendKegiatanController;
 use App\Http\Controllers\Frontend\FrontendDoaController;
@@ -128,7 +129,23 @@ Route::middleware(['can:is_admin', 'profile_sudah_lengkap', 'auth', 'verified'])
 
     // route tipe kirim, jika user diarahkan ke url berikut maka tangkap dan kirim argument lalu arahkan ke DonasiController, method ekspor_pdf, name nya adalah admin.donasi.ekspor_pdf
     Route::post('/admin/donasi/ekspor_pdf/{tanggal_awal}/{tanggal_akhir}', [DonasiController::class, 'ekspor_pdf'])->name('admin.donasi.ekspor_pdf');
+
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke pengendali berikut, method index, name nya adalah sebagai berikut
+    Route::get('cek-kebenaran-donasi-manual', [CekKebenaranDonasiController::class, 'index'])->name('admin.cek_kebenaran_donasi_manual.index');
+
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke pengendali berikut, method read, name nya adalah sebagai berikut
+    Route::get('cek-kebenaran-donasi-manual/read', [CekKebenaranDonasiController::class, 'read'])->name('admin.cek_kebenaran_donasi_manual.read');
+
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke pengendali berikut, method lihat_foto_bukti, name nya adalah sebagai berikut
+    Route::get('cek-kebenaran-donasi-manual/lihat-foto-bukti/{donasi_manual_id}', [CekKebenaranDonasiController::class, 'lihat_foto_bukti'])->name('admin.cek_kebenaran_donasi_manual.lihat_foto_bukti');
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke pengendali berikut, method read, name nya adalah sebagai berikut
+    Route::post('/cek-kebenaran-donasi-manual/proses-pengecekan-status', [CekKebenaranDonasiController::class, 'proses_pengecekan_status'])->name('admin.cek_kebenaran_donasi_manual.proses_pengecekan_status');
+
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka tangkap dan kirimkan argument lalu arahkan ke pengendali berikut, method tampilkan_notifikasi, name nya adalah sebagai berikut
+    Route::get('cek-kebenaran-donasi-manual/tampilkan-notifikasi/{status_donasi}', [CekKebenaranDonasiController::class, 'tampilkan_notifikasi'])->name('admin.cek_kebenaran_donasi_manual.tampilkan_notifikasi');
 });
+
+
 
 // auth di dapatkan dari Kernel.php
 // hanya yang sudah login, profile nya sudah lengkap di detail_user nya dan verifikasi di column email_verified_at yang bisa mengakses url atau route berikut
@@ -169,8 +186,12 @@ Route::middleware(['auth', 'profile_sudah_lengkap', 'verified'])->group(function
     // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke DonasiController, method menunggu_pembayaran, name nya adalah donasi.menunggu_pembayaran
     Route::get('donasi/menunggu-pembayaran', [DonasiController::class, 'menunggu_pembayaran'])->name('donasi.menunggu_pembayaran');
 
+    // route tipe dapatkan, jika user dirahkan ke url berikut maka arahkan ke DonasiManualController, method read, name nya adalah donasi_manual.read
+    Route::get('donasi-manual/read', [FrontendDonasiManualController::class, 'read'])->name('donasi_manual.read');
     // route tipe dapatkan, jika user dirahkan ke url donasi-manual/create maka arahkan ke DonasiManualController, method create, name nya adalah donasi_manual.create
     Route::get('donasi-manual/create', [FrontendDonasiManualController::class, 'create'])->name('donasi_manual.create');
+    // route tipe dapatkan, jika user dirahkan ke url donasi-manual/selesai maka arahkan ke DonasiManualController, method selesai, name nya adalah donasi_manual.selesai
+    Route::get('donasi-manual/selesai', [FrontendDonasiManualController::class, 'selesai'])->name('donasi_manual.selesai');
 
     // route tipe kirim, jika user dirahkan ke url berikut maka arahkan ke FrontendDonasiManualController, method simpan, name nya adalah donasi_manual.simpan
     Route::post('donasi-manual/store', [FrontendDonasiManualController::class, 'store'])->name('donasi_manual.store');
@@ -221,7 +242,8 @@ Route::get('/admin/donasi/read', [DonasiController::class, 'read'])->name('admin
 Route::get('/frontend/donasi/create', [FrontendDonasiController::class, 'create'])->name('donasi.create');
 // route tipe kirim, jika user diarahkan ke url donasi/ubah-periode, arahkan ke DonasiController, method ubah_periode, name nya adalah admin/donasi.ubah_periode
 Route::post('donasi/ubah-periode', [DonasiController::class, 'ubah_periode'])->name('admin.donasi.ubah_periode');
-
+// route tipe kirim, jika user diarahkan ke url berikut, arahkan ke FrontendHomeController, method ubah_periode, name nya adalah donasi_manual.ubah_periode
+Route::post('donasi-manual/ubah-periode', [FrontendHomeController::class, 'ubah_periode'])->name('donasi_manual.ubah_periode');
 
 // route tipe dapatkan, jika user dirahkan ke url berikut lalu tangkap dan kirimkan doa_id lalu gunakan fitur pengikatan route model lalu ke DoaController, method show, name nya adalah berikut
 Route::get('doa/{doa}', [DoaController::class, 'show'])->name('doa.show');

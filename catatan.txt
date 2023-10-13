@@ -38,7 +38,7 @@ Bikin fitur:
 4. bikin chart dari tanggal 1 sampai tanggal 31
 
 JANGAN Dihapus: 
-buat file history.
+tinggal aku push dengan pesan selesai
 
 
 
@@ -48,19 +48,16 @@ buat file history.
 
 
 
-Karena payment gateway midtrans belum bisa maka aku pake fitur manual saja. merancang dulu ya ,
-1. Jadi gua buat table donasi_tanpa_payment_gateway
-1.5 Column donasi_manual_id -> copy saja.
-2. column user_id -> user yg melakukan donasi.
-3. column foto -> ada bukti screenshot
-4. status -> "Belum cek" : "Benar" : "Nipu", admin akan ngecek dulu jika status "Belum Cek" maka  kalau benar berarti foto nya di cek kemudian benar dia melakukan donasi maka status nya diubah menjadi benar, kalau nipu maka foto nya nipu (tapi bisa di edit), jadi admin cek dulu foto nya, misal nipu maka bisa kasi status "Nipu".
-5. tipe_pembayaran -> gopay, bank bni.
+
+admin akan ngecek dulu jika status "Belum Cek" maka  kalau benar berarti foto nya di cek kemudian jika benar dia melakukan donasi maka status nya diubah menjadi benar, jika nipu maka foto nya nipu (tapi bisa di edit), jadi admin cek dulu foto nya, misal nipu maka bisa kasi status "Nipu".
 
 
-Dari gopay bisa transfer kemana misal Banks, E-wallet dan GoPay. tapi kalau aplikasi ku bearrti aku harus sediakan bank misalnya bank BNI, lalu gopay saja.
+buat route dan pengontrol, lalu buat tampilan views/frontend/donasi_baru/index, ada judul yg bertuliskan "Daftar donasi yang belum di cek kebenarannya" ada table, ada foto jika di click maka gambar nya kebuka zoom, aku click tombol benar dan ada tombol palsu. jika benar di click maka update detail donasi_manual nya, column status nya menjadi "Benar" maka datatables nya auto reload lalu detail nya otomatis hilang. DAN JIKA PALSU MAKA LANGSUNG HAPUS DETAIL DONASI NYA.
 
 
 
 
 
-Boleh di hapus:
+
+boleh dihapus:
+aku bisa panggil rute nya pake postman
