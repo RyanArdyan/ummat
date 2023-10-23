@@ -13,10 +13,10 @@
     <div class="container">
         <h1 class="mt-4 mb-3 text-center">Kegiatan Rutin</h1>
 
-        {{-- Jika tidak ada baris data di table kegiatan_rutin atau jika semua_kegiatan_rutin, adalah kosong --}}
+        {{-- Jika tidak ada baris data di table kegiatan_rutin atau jika semua_kegiatan_rutin, adalah kosong maka --}}
         @if($semua_kegiatan_rutin->isEmpty())
             <p class="text-center">Belum ada kegiatan rutin.</p>
-        {{-- Jika ada baris data di table kegiatan rutin atau jika semua_kegiatan_rutin tidak kosong --}}
+        {{-- llain Jika ada baris data di table kegiatan rutin atau lain aaaaa jika semua_kegiatan_rutin tidak kosong --}}
         @elseif (!$semua_kegiatan_rutin->isEmpty())
             {{-- Table Kegiatan Rutin --}}
             <table class="table table-sm table-bordered table-hover">

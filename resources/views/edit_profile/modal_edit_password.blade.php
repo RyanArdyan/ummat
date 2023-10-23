@@ -1,11 +1,11 @@
 <!--  Modal content for the above example -->
-<div class="modal fade bs-example-modal-lg" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true" id="modal_edit_password">
+<div class="modal fade" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-toggle="static" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" id="modal_edit_password">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Edit Password</h4>
+                <h4 class="modal-title" id="staticBackdropLabel">Edit Password</h4>
                 {{-- .e_tutup digunakan untuk menghapus validasi error setelah aku click tombol close atau tutup --}}
-                <button type="button" class="e_tutup close" data-dismiss="modal" aria-hidden="true">×</button>
+                <button type="button" class="e_tutup btn-close" data-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
                 <form id="form_edit_password">

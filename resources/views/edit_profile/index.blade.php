@@ -1,31 +1,37 @@
-{{-- memperluas parentnya yaitu layouts.app --}}
-@extends('layouts.app')
+{{-- @memperluas('frontend/layouts/app') --}}
+@extends('frontend.layouts.app')
 
-{{-- kirimkan valuenya ke @yield('title') --}}
-@section('title', 'Edit Profile')
+{{-- Kirimkan value @bagian('title') ke @yield('title') --}}
+@section('title', 'Kegiatan')
 
-{{-- kirimkan valuenya ke @yield('konten') --}}
+{{-- kirimkan value @bagian('konten') ke @yield('konten') --}}
 @section('konten')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card-box">
-                {{-- Jika ada value dari session status yg dikirimkan dari Middleware/ProfileSudahLengkap.php --}}
-                @if (session('status'))
-                    {{-- cetak value session('status') --}}
-                    <div class="alert alert-danger">{{ session('status') }}</div>
-                @endif
-
-                {{-- @termasuk formulir edit data --}}
-                @include('edit_profile.form_edit')
-                {{-- modal edit password --}}
-                @include('edit_profile.modal_edit_password')
+    <!-- carousel -->
+    {{-- @termasuk view berikut --}}
+    @include('frontend.layouts.carousel')
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card-box">
+                    {{-- Jika ada value dari session status yg dikirimkan dari Middleware/ProfileSudahLengkap.php --}}
+                    @if (session('status'))
+                        {{-- cetak value session('status') --}}
+                        <div class="alert alert-danger">{{ session('status') }}</div>
+                    @endif
+    
+                    {{-- @termasuk formulir edit data --}}
+                    @include('edit_profile.form_edit')
+                    {{-- modal edit password --}}
+                    @include('edit_profile.modal_edit_password')
+                </div>
             </div>
+            <!-- end col -->
         </div>
-        <!-- end col -->
-    </div>
+  
 @endsection
 
 @push('script')
+{{-- // import package sweetalert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // jika #nomor_wa di masukkan karakter maka jalankan fungsi
     $("#nomor_wa").on("input", function() {
@@ -221,6 +227,12 @@
                 );
             };
         });
+    });
+
+    // panggil #edit_password, lalu jika dia di click maka jalankan fungsi berikut
+    $("#edit_password").on("click", function() {
+        // panggil #modal_edit_password lalu tampilkan modal nya
+        $(".modallah").show();
     });
 
     // jika class e_tutup di click maka jalankan fungsi berikut untuk menghapus validasi error

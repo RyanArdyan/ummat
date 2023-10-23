@@ -1,55 +1,14 @@
-Real Projects
-1. Data Jamaah 
-	Daftar Dirinya
-	NIK KTP
-	No WA
-	Email 
-	Foto Diri
-2. Jadwal Kegiatan Jamaah
-3. Amalan atau Doa atau Zikir
-4. Donasi
-	Program Donasi
-	Rekening Bank
-	Data Donatur
-5. Tausiyah dan pembicara
 
-Algoritma
-1. User tidak perlu login untuk membuka web nya karena user bakal malas kalau dipaksa untuk registrasi dan login
-
-
-Catatan sementara:
-Contoh url: ummat/judul-postingan
-
-https://www.inews.id/lifestyle/muslim/dzikir-setelah-sholat-fardhu-lengkap-teks-arab-latin-arti-beserta-keutamaan
-https://www.iankumu.com/blog/laravel-many-to-many-relationship/
-https://www.iankumu.com/blog/page/3/?s=laravel
 
 
 Tugas
-Keinginanku di fitur donasi adalah user memasukkan jumlah uang yang ingin di donasikan lalu tekan tombol donasi maka muncul banyak metode pembayaran setelah user melakukan pembayaran maka muncul notifikasi "Berhasil melakukan donasi". lalu kembali ke url donasi atau halaman donasi.index lalu tampilkan nama nya.
 
-Aku akan menampilkan daftar nama pendonasi agar mereka berlomba-lomba untuk berdonasi.
-Bikin chart penting sih, excel nya.
 
-Bikin fitur:
-1. Lihat daftar pendonasi
-2. Tombol "Ayo Donasi" jika di click maka akan tampil formulir donasi
-3. Cetak daftar donasi pake excel, misalkan user memilih mencetak donasi bulan januari, lalu dibulan februari.
-4. bikin chart dari tanggal 1 sampai tanggal 31
 
 JANGAN Dihapus: 
-tinggal aku push dengan pesan selesai
+coba cek github
 
 
-
-
-
-
-
-
-
-
-admin akan ngecek dulu jika status "Belum Cek" maka  kalau benar berarti foto nya di cek kemudian jika benar dia melakukan donasi maka status nya diubah menjadi benar, jika nipu maka foto nya nipu (tapi bisa di edit), jadi admin cek dulu foto nya, misal nipu maka bisa kasi status "Nipu".
 
 
 buat route dan pengontrol, lalu buat tampilan views/frontend/donasi_baru/index, ada judul yg bertuliskan "Daftar donasi yang belum di cek kebenarannya" ada table, ada foto jika di click maka gambar nya kebuka zoom, aku click tombol benar dan ada tombol palsu. jika benar di click maka update detail donasi_manual nya, column status nya menjadi "Benar" maka datatables nya auto reload lalu detail nya otomatis hilang. DAN JIKA PALSU MAKA LANGSUNG HAPUS DETAIL DONASI NYA.
@@ -60,4 +19,7 @@ buat route dan pengontrol, lalu buat tampilan views/frontend/donasi_baru/index, 
 
 
 boleh dihapus:
-aku bisa panggil rute nya pake postman
+aku pake live server dari laragon saja, aktifkan laragon dulu. oou aku tidak perlu tombol close. aku ingin cek fitur lihat password.
+
+aku mau update dulu menjadi 
+ardyan1104 oou password lama adalah pontianak1104, harusnya password lamanya adalah ardyan1104, aku ubah lagi ke pontianak1104, mari aku push datanya
