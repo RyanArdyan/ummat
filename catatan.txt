@@ -1,25 +1,56 @@
-
-
-
 Tugas
+
+Strategi, aku ikuti dulu tutorial nya nanti aku baca dokumentasi nya karena ini sudah berkaitan dengan pemahaman dan lebih baik mempelajari dari studi kasus berbasis video.
 
 
 
 JANGAN Dihapus: 
-coba cek github
+aku menghapus postingan, jika di dalam detail_postingan, column konten_postingan terdapat <figure maka ambil teks dari 
+/ummat sampai .jpg, lalu hapus gambar nya. aku tidak akan menghapus data sampai file gambar nya terhapus.
+
+
+
+berarti yang harus aku lakukan ada melakukan looping untuk mengambil setiap postingan lalu mengecek apakah ada <figure
+
+
+berusaha dulu pake fitur hapus postingan jamak, kalau sudah mencoba tapi tetap tidak bisa maka barulah pake fitur hapus tunggal saja.
+
+mungkin jika ketemu maka kasi tanggapan berupa json "Berhasil menemukan <figure
+
+di artikel 1 kan ada gambar di column konten_postingan maka aku hapus saja nanti kan gambar nya hilang tapi cek dulu database dan table nya oou ambil ummat_time.jpg kan kan aku udah buat catatan nya
 
 
 
 
-buat route dan pengontrol, lalu buat tampilan views/frontend/donasi_baru/index, ada judul yg bertuliskan "Daftar donasi yang belum di cek kebenarannya" ada table, ada foto jika di click maka gambar nya kebuka zoom, aku click tombol benar dan ada tombol palsu. jika benar di click maka update detail donasi_manual nya, column status nya menjadi "Benar" maka datatables nya auto reload lalu detail nya otomatis hilang. DAN JIKA PALSU MAKA LANGSUNG HAPUS DETAIL DONASI NYA.
 
 
+
+
+
+
+TANTANGAN:
+JIKA AKU HAPUS DETAIL POSTINGAN DAN DI DALAM NYA TERDAPAT GAMBAR MAKA HAPUS JUGA GAMBAR NYA DI STORAGE 
+
+
+TUGAS:
+1. COBA HAPUS PACKAGE SPATIE LARAVEL KARENA SEPERTI NYA TIDAK AKU pake
+2. COBA DEBUGGING CONTROLLER NYA
 
 
 
 
 boleh dihapus:
-aku pake live server dari laragon saja, aktifkan laragon dulu. oou aku tidak perlu tombol close. aku ingin cek fitur lihat password.
+MENGANALISIS: 
+aku ingin pelajari cara agar dokumen ku online jadi aku bisa mengases nya diman saja. aku akan cadangkan folder tugas_UBSI DAN SLIDE_UBSI. KALAU AKU HAPUS FOLDER UNKNOWN_PROFILE MAKA MAKA APAKAH JUGA AKAN TERHAPUS. BENARAN TERHAPUS DIA.
 
-aku mau update dulu menjadi 
-ardyan1104 oou password lama adalah pontianak1104, harusnya password lamanya adalah ardyan1104, aku ubah lagi ke pontianak1104, mari aku push datanya
+
+kalau tidak salah gini lah aku kan mau menjalankan fitur hapus postingan lalu jika di dalam postingan nay terdapat gambar maka aku juga akan menghapus gambar nya. dengan cara mengecek apakah ada <figure? jika ada maka ambil ummat sampai .jpg misalnya ummat_234234.jpg"
+
+
+berarti karena ada isinya maka isi nya adalah sdff ummat_1313.jpg. coba aku kirim nama file nya. aku akan hapus semua data beserta gambar nya . aku sudah dapat nama file nya berarti jika tidak ada gambar maka aku tidak akan hapus gambar . jika sebuah kode bekerja maka jangan dihapus.
+
+koding pada tanggal 31 oktober 2023.
+coding on october, 31 
+jika tidak ada gambar maka jangan lakukan apapun berarti aku tidak perlu else nya berarti aku udah bisa jalankan fitur nya ya bentar aku cek jumlah data dan jumlah gambar nya dulu. 
+
+JIKA DIDALAM

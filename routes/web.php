@@ -18,7 +18,7 @@ use App\Http\Controllers\Frontend\FrontendArtikelController;
 use App\Http\Controllers\Frontend\FrontendPenceramahController;
 use App\Http\Controllers\Frontend\FrontendDonasiController;
 use App\Http\Controllers\Frontend\FrontendDonasiManualController;
-
+;
 // middleware untuk admin yang sudah login, sudah melengkapi profile nya berarti value detail_user nya sudah lengkap dan sudah verifikasi di column email_verified_at yang bisa mengakses url berikut
 // auth di dapatkan dari App/Http/Kernel.php
 // is_admin di dapatkan dari App/Providers/AuthServiceProvider.php, is_admin adalah fitur gate atau gerbang yang didapatkan dari security -> authorization, aku mengirim is_admin sebagai argument
@@ -102,11 +102,13 @@ Route::middleware(['can:is_admin', 'profile_sudah_lengkap', 'auth', 'verified'])
     Route::get('/admin/postingan/cek-apakah-ada-kategori', [PostinganController::class, 'cek_apakah_ada_kategori'])->name('admin.postingan.cek_apakah_ada_kategori');
     // route tipe kirim, jika user dirahkan ke url /admin/postingan/simpan maka arahkan ke PostinganController, method simpan, name nya adalah admin.postingan.simpan
     Route::post('/admin/postingan/store', [PostinganController::class, 'store'])->name('admin.postingan.store');
+    // post type route, if the user is redirected to the following url then redirect to PostingController, upload_image method, name is admin.postingan.upload_image
+    Route::post('/admin/postingan/upload-gambar', [PostinganController::class, 'upload_gambar'])->name('admin.postingan.upload_gambar');
     // route tipe dapatkan, jika user dirahkan ke url /admin/postingan/edit maka kirimknan value postingan_id pake {postingan}, aku mengunakan fitur pengikatan route model agar aku bisa mengambil detail postingan berdasarkan postingan_id arahkan ke PostinganController, method edit, nama nya adalah admin.postingan.edit
     Route::get('/admin/postingan/edit/{postingan}', [PostinganController::class, 'edit'])->name('admin.postingan.edit');
     // route tipe letakkan, jika user dirahkan ke url /admin/postingan/ maka kirimkan value postingan_id nya agar aku bisa memperbarui detail postingan berdasarkan postingan_id menggunakan fitur pengikatan route model lalu arahkan ke PostinganController, method update, nama nya adalah admin.postingan.update
     Route::put('/admin/postingan/{postingan}', [PostinganController::class, 'update'])->name('admin.postingan.update');
-    // route tipe kirim, jika user dirahkan ke url /admin/postingan/hancurkan maka arahkan ke PostinganController, method hancurkan, name nya adalah admin.postingan.hancurkan
+    // post type route, if the user is redirected to the following url then redirect to PostingController, destroy method, name is admin.postingan.destroy
     Route::post('/admin/postingan/destroy', [PostinganController::class, 'destroy'])->name('admin.postingan.destroy');
 
     // route tipe dapatkan, jika user dirahkan ke url /admin/penceramah/create maka arahkan ke PenceramahController, method create, name nya adalah admin.penceramah.create

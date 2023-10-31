@@ -19,7 +19,6 @@ use App\Models\Postingan;
 use App\Models\Kategori;
 use App\Models\Komentar;
 
-
 class PostinganController extends Controller
 {
     // Method index menampilkan halaman postingan
@@ -126,6 +125,53 @@ class PostinganController extends Controller
             // kembalikkan tanggapan berupa json lalu kirimkan string berikut
             return response()->json("Anda harus membuat setidaknya satu kategori terlebih dahulu.");
         };
+    }
+
+    // upload images using the CKEditor(ckeditor.com) and laravel Spatie (spatie.be) packages
+    public function upload_gambar(Request $request)
+    {
+        // // inisialisasi object model postingan agar bisa melakukan operasi database
+        // $postingan = new Postingan();
+        // // $postingan->postingan_id = 0;
+
+        // // 'upload' adalah file yang di upload menggunakan CKEditor, cek di script
+        // $images = $postingan->addMediaFromRequest('upload')->toMediaCollection('images');
+
+        // return response()->json([
+        //     'url' => $images->getUrl()
+        // ]);
+
+
+        // if the user uploads a file or image in ckeditor, assumed there is input name="upload"
+        // if there is $request->hasFile('upload')
+        // 'upload' is a file uploaded using CKEditor, check the script
+        if ($request->hasFile('upload')) {
+            // // contains the original name of the image, for example hello
+            // $originName = $request->file('upload')->getClientOriginalName();
+            // // contains information about image path
+            // $fileName = pathinfo($originName, PATHINFO_FILENAME);
+            // contains its original extension, for example jpg
+            // $extension = $request->file('upload')->getClientOriginalExtension();
+            $extension = 'jpg';
+            // contains 'ummat' combined with '-' then time then a dot then the extension for example is hello_123321.jpg
+            $fileName = 'ummat' . '_' . time() . '.' . $extension;
+            
+            // upload the image to the public/storage/gambar_konten_postingan folder
+            // $request, file, assume input name="upload" created by CKEditor, then move to the folder path storage/gambar_postingan, then change the name of the file or image to the value of the variable $fileName
+            $request->file('upload')->move(public_path('storage/gambar_konten_postingan'), $fileName);
+            
+            // for example contains http://127.0.0.1:8000/public/storage/gambar_postingan/hello_1343.jpg
+            $url = asset('storage/gambar_konten_postingan/' . $fileName);
+            // return the response in the form of json then send the data in the form of an array
+            return response()->json([
+                // filename key contains the variable value of $fileName
+                'fileName' => $fileName, 
+                // uploaded key contains 1 meaning true
+                'uploaded'=> 1, 
+                // The URL key contains the value variable $url
+                'url' => $url
+            ]);
+        }
     }
 
 
@@ -368,35 +414,53 @@ class PostinganController extends Controller
         };
     }
 
-    // Hapus beberapa postingan yang di centang
-    // $request berisi beberapa value input name="postingan_ids[]" yang dibuat di PostinganController, method read, anggaplah berisi ["1", "2"]
+    // Delete some checked posts
+    // $request contains several input values name="posting_ids[]" created in PostsController, read method, assume it contains ["1", "2"]
     public function destroy(Request $request)
     {
-        // berisi $permintaan->postingan_ids atau value input name="postingan_ids[]", anggaplah berisi ["1", "2"]
+        // contains $request->post_ids or input value name="post_ids[]", assume it contains ["1", "2"]
         $semua_postingan_id = $request->postingan_ids;
 
-        // pengulangan untuksetiap
-        // untukSetiap, $semua_postingan_id sebagai $postingan_id
+        // loop for each
+        // do repetitions to get each post_id
         foreach ($semua_postingan_id as $postingan_id) {
-            // ambil detail_postingan
-            // berisi model Postingan, dimana value column postingan_id sama dengan $postingan_id, ambil data baris pertama
+            // fetch post_details
+            // contains the Post model, where the column value of the post_id is the same as $post_id, take the first row of data
             $detail_postingan = Postingan::where('postingan_id', $postingan_id)->first();
 
-            // hapus gambar
-            // Penyimpanan::hapus('/public/gambar_postingan/' digabung value detail_postingan, column gambar_postingan
+            // strpos is used to search for a particular string within other stings 
+            // if in the detail post value, content_post column there is <figure or if detail post value, content post column there is figure
+            // the bad things is if the content text area only contains images and no text then he will not be able to delete the images
+            if (strpos($detail_postingan->konten_postingan, '<figure') !== false) {
+                // it defines a regular expression pattern (regex) that will be used to match string that containting image url with .jpg extension
+                $pattern = '/src="[^"]*\/([^"]*\.jpg)"/';
+
+                // it uses the preg_match function to match the regex patten with the content of $post_detail, post_content
+                // if there is match, $match will be populated with the measurement results
+                if (preg_match($pattern, $detail_postingan->konten_postingan, $matches)) {
+                    // berisi nama file gambar
+                    $nama_file_gambar = $matches[1];
+
+                    // storage, delete a file stored in the following folder
+                    Storage::delete('public/gambar_konten_postingan/' . $nama_file_gambar);
+                };
+            };
+
+            // delete image
+            // Storage::delete('/public/post_image/' combined value post_detail, column post_image
             Storage::delete('public/gambar_postingan/' . $detail_postingan->gambar_postingan);
 
-            // hapus postingan 
-            // panggil detail_postingan lalu hapus
+            // delete post details
+            // call post_details then delete
             $detail_postingan->delete();
         };
 
-        // kembalikkan tanggapan berupa json
-        return response()->json([
-            // key status berisi value 200
-            'status' => 200,
-            'pesan' => 'Berhasil menghapus postingan  yang dipilih.'
-        ]);
+        // // return the response in json
+        // return response()->json([
+        //     // key status contains value 200
+        //     'status' => 200,
+        //     'pesan' => 'Berhasil menghapus postingan  yang dipilih.'
+        // ]);
     }
 
     // parameter $permintaan berisi semua value attribute name

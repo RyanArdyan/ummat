@@ -48,7 +48,6 @@
         </div>
 
         
-
         {{-- Fitur hapus beberapa postingan berdasarkan kotak centang yang di checklist --}}
         <button id="tombol_hapus" type="button" class="btn btn-danger btn-flat btn-sm mt-3">
             <i class="mdi mdi-delete"></i>
@@ -150,51 +149,44 @@ $("#select_all").on("click", function() {
 // berarti lain jika resp.errors.kategori_id sama dengan "Input kategori id harus diisi."
 
 
-// Delete atau hapus
-// jika #tombol_hapus di click maka jalankan fungsi berikut
+// Delete data
+// if #delete_button is clicked then run the following function
 $("#tombol_hapus").on("click", function() {
-    // jika input .pilih yang di centang di PostinganController, method read, panjang nya sama dengan 0 maka
+    // if the .select input is checked in PostinganController, the read method, the length is equal to 0 then
     if ($("input.pilih:checked").length === 0) {
-        // tampilkan notifikasi menggunakan sweetalert yang menyatakan pesan berikut
+        // display a notification using sweetalert stating the following message
         Swal.fire('Anda belum memilih postingan.');
     }
-    // lain jika input .pilih yang di centang di PostinganController, panjang nya lebih atau sama dengan 1 maka
+    // Otherwise, if the .select input is checked in the PostinganController, the length is greater than or equal to 1 then
     else if ($("input.pilih:checked").length >= 1) {
-        // tampilkan konfirmasi penghapusan menggunakan sweetalert
+        // show deletion confirmation using sweetalert
         Swal.fire({
-            // judul: 
             title: 'Apakah anda yakin?',
-            // text: 
             text: "Anda tidak akan dapat mengembalikan ini!",
-            // ikon: 
             icon: 'warning',
-            // tampilkanTombolBatal
             showCancelButton: true,
-            // warnaTombolKonfirmasi
             confirmButtonColor: '#3085d6',
-            // warnaTombolBatal
             cancelButtonColor: '#d33',
-            // textTombolKonfirmasi
             confirmButtonText: 'Ya, hapus!'
         })
-        // kmeudian hasilnya, jalankan fungsi berikut, parameter result
+        // then the result, run the following function, parameter result
         .then((result) => {
-            // jika hasilnya di konfirmasi
+            // if the results are confirmed
             if (result.isConfirmed) {
-                // .serialize akan mengirimkan semua data pada table karena table disimpan di dalam form 
-                // sebenarnya aku mengirim beberapa value input name="postingan_ids" yang di centang
-                // jquery lakukan ajax tipe kirim, panggil route postingan.destroy, panggil #form_postingan, kirimkan value input
+                // .serialize will send all the data in the table because the table is stored in the form
+                 // actually I sent several input values name="posting_ids" which were checked
+                 // jquery do ajax type submit, call route posting.destroy, call #form_posting, send input value
                 $.post("{{ route('admin.postingan.destroy') }}", $("#form_postingan").serialize())
-                    // jika selesai dan berhasil maka jalankan fungsi berikut dan ambil tanggapan nya
+                    // If it is complete and successful then run the following function and get the response
                     .done(function(resp) {
-                        // notifkasi menggunakan sweetalert
+                        // notification using sweetalert
                         Swal.fire(
                             'Dihapus!',
                             'Berhasil menghapus postingan yang dipilih.',
                             'success'
                         );
-                        // reload ajax tablez
-                        // panggil value variable table, lalu ajax nya di muat ulang
+                        // reload ajax table
+                        // call the value variable table, then the ajax is reloaded
                         table.ajax.reload();
                     })
             };

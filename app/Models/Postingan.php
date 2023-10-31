@@ -7,10 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 // relasi banyak ke banyak atau many to many
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+// awal integrasi dengan package laravel spatie untuk mengurus file gambar yang diupload oleh package CKEditor
+use Spatie\Permission\Traits\HasRoles;
+// gunakan memilikiMedia
+use Spatie\MediaLibrary\HasMedia;
+// gunakan berinteraksiDenganMedia
+use Spatie\MediaLibrary\InteractsWithMedia;
+// gunakan media
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+// akhir integrasi dengan package laravel spatie untuk mengurus file gambar yang diupload oleh package CKEditor
 
-class Postingan extends Model
+
+// implements memilikiMedia itu adalah hasil dari integrasi dengan package laravel spatie
+class Postingan extends Model implements HasMedia
 {
     use HasFactory;
+    // integrasi ke package laravel spatie 
+    use InteractsWithMedia;
+    // use HasRoles;
 
     // nama table bawaan nya adalah jamak versi inggris maka nya aku mengubah nya
     // lindungi $meja = 'postingan';

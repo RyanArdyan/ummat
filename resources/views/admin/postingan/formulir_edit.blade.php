@@ -7,8 +7,10 @@
 {{-- @dorong('css') berfungsi mendorong value nya ke @stack('css') --}}
 @push('css')
 
-    <style>
+    {{-- TRIX CSS CDN TERBARU VERSI TERBARU 3 --}}
+    {{-- <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css"> --}}
 
+    <style>
     </style>
 
 @endpush
@@ -54,6 +56,8 @@
                             </span>
                         @endforeach
                     </p>
+                    {{-- name="kategori_id[]" agar bisa menyimpan banyak kategori yg dipilih ke dalam array --}}
+                    {{-- multiple="" agar aku bisa membuat select yg bisa pilih banyak kategori --}}
                     <select id="kategori_id" name="kategori_id[]" multiple=""
                         class="form-control input kategori_id_input" style="width: 30%">
                         {{-- Jika ingin element <option> terpilih maka gunakan attribute selected --}}
@@ -73,7 +77,14 @@
                 <div class="form-group">
                     <label for="konten_postingan">Konten<span class="text-danger"> *</span></label>
 
-                    <textarea class="ckeditor form-control" name="konten_postingan">{!! $detail_postingan->konten_postingan !!}</textarea>
+
+                    {{-- ini adalah input sebenarnya, jadi aku mengirim value input konten postingan lewat input ini --}}
+                    {{-- <input type="hidden" id="konten_postingan" name="konten_postingan" value="{{ $detail_postingan->konten_postingan }}"> --}}
+                    {{-- ini cuma user interface dari trix editor, input type hidden terhubung dengan trix editor lewat id yaitu konten_postingan --}}
+                    {{-- <trix-editor input="konten_postingan" class="trix-content"></trix-editor> --}}
+
+
+                    <textarea name="konten_postingan" id="konten_postingan" cols="30" rows="10">{!! $detail_postingan->konten_postingan !!}</textarea>
 
                     <span class="konten_postingan_error pesan_error text-danger"></span>
                 </div>
@@ -122,11 +133,25 @@
 {{-- dorong vaue @dorong('script') ke @stack('script') --}}
 @push('script')
     {{-- CKEditor adalah editor teks kaya WYSIWYG yang memungkinkan penulisan konten langsung di dalam halaman web atau aplikasi online.  --}}
-    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+    {{-- <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script> --}}
 
+    {{-- TRIX JS VRESI TERBARU YAITU 3 --}}
+    {{-- <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script> --}}
+
+    {{-- CKEditor versi 5, CDN --}}
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
     {{-- panggil script.js --}}
     <script>
+        // Menggunakan package CKEditor untuk menggunakan fitur WYSIWYG
+        ClassicEditor
+            // .buat, dokumen.dapatkanElementBerdasarkanId konten_postingan
+            .create(document.getElementById("konten_postingan"))
+            // jika error maka tangkap error nya di parameter error lalu jalankan fungsi berikut
+            .catch((error) => {
+                // cetak error nya lewat parameter error
+                console.log(error);
+            });
 
         // tampilkan pratinjau gambar ketika user mengubah gambar
         // jika #pilih_gambar_postingan diubah maka jalankan fungsi berikut
